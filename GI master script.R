@@ -21,3 +21,4 @@ source("SOGI_02_prepare_BRFSS.R") # run this file to prepare a single file `brfs
 # source("SOGI_22_GI_analyses.R") # GI analyses
 source("SOGI_21_GI_design_based.R") # Get design based prev estimates
 source("SOGI_22_GI_Q1.R") # Fit null, A, P, C, AP, AC, PC models
+source("SOGI_22_GI_Q2_mAPC.R") # Fit Bayesian mAPC models for tw, tm, nbgnc
