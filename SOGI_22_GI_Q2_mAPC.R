@@ -5,6 +5,8 @@
 # Setup ####
 rm(list = ls())
 
+## Directories ####
+## Create tables and plots directory for results if they don't exist
 if(!dir.exists("tables/GI_Q2")){
   if(!dir.exists("tables/")){
     dir.create("tables/")
@@ -19,7 +21,7 @@ if(!dir.exists("plots/GI_Q2")){
   dir.create("plots/GI_Q2")
 }
 
-# ## Libraries ####
+## Libraries ####
 # install.packages("INLA",
 #                  repos=c(getOption("repos"),
 #                          INLA="https://inla.r-inla-download.org/R/stable"))
@@ -67,6 +69,7 @@ mod_data <- prev_data %>%
                                 gender == "tm" ~ 2,
                                 TRUE ~ 3)) 
 
+## Check work
 coh_summary <- mod_data %>% 
   group_by(cohort) %>% tally()
 age_summary <- mod_data %>% 
@@ -76,8 +79,9 @@ per_summary <- mod_data %>%
 
 # Fit models ####
 
-## Define formula ####
-# logit_pijks =μ_strata +θ_age +φ_period,strata +ψ_cohort,strata.
+## Formulas ####
+## Create formula objects suitable for INLA for the following model
+## logit_pijks =μ_strata +θ_age +φ_period,strata +ψ_cohort,strata.
 
 pc_prec <- list(theta = list(prior = 'pc.prec', param=c(1, .5)))
 mod_formula_shareco <- logit_pijk ~ (-1) + gender + 
@@ -118,6 +122,7 @@ mod_formula_shareage <- logit_pijk ~ (-1) + gender +
 
 ### Shared Cohort ####
 
+#### Age ####
 lincombs_info_age_shareco <-
   data.frame(Index = 1:(max(mod_data$age_idx)*3),
              Gender = rep(c(1,2,3), each = max(mod_data$age_idx)),
@@ -150,10 +155,12 @@ for(row in 1:(nrow(lincombs_info_age_shareco))){
       names(lincombs_shareco)[row_idx] <- object.name
     }
     
+    ## Keep your environment clean
     rm(object.name)
   }
 }
 
+#### Period ####
 lincombs_info_per_shareco <-
   data.frame(Index = 1:(max(mod_data$period_idx)*3),
              Gender = rep(c(1,2,3), each = max(mod_data$period_idx)),
@@ -190,6 +197,7 @@ for(row in 1:(nrow(lincombs_info_per_shareco))){
   }
 }
 
+#### Cohort ####
 lincombs_info_coh_shareco <-
   data.frame(Index = 1:max(mod_data$cohort_idx),
              Gender = rep(NA, each = max(mod_data$cohort_idx)),
@@ -231,6 +239,7 @@ lincombs_info_shareco <- bind_rows(lincombs_info_age_shareco,
                                    lincombs_info_coh_shareco)
 
 ### Shared Age ####
+#### Cohort ####
 lincombs_info_coh_shareage <-
   data.frame(Index = 1:(max(mod_data$cohort_idx)*3),
              Gender = rep(c(1,2,3), each = max(mod_data$cohort_idx)),
@@ -266,6 +275,7 @@ for(row in 1:(nrow(lincombs_info_coh_shareage))){
   }
 }  
   
+#### Period ####
 lincombs_info_per_shareage <-
   data.frame(Index = 1:(max(mod_data$period_idx)*3),
              Gender = rep(c(1,2,3), each = max(mod_data$period_idx)),
@@ -300,6 +310,7 @@ for(row in 1:(nrow(lincombs_info_per_shareage))){
   }
 }  
 
+#### Age ####
 
 lincombs_info_age_shareage <-
   data.frame(Index = 1:(max(mod_data$age_idx)*1),
@@ -340,6 +351,7 @@ lincombs_info_shareage <- bind_rows(lincombs_info_age_shareage,
                                     lincombs_info_coh_shareage)
 
 ### Shared Period ####
+#### Cohort ####
 lincombs_info_coh_shareper<-
   data.frame(Index = 1:(max(mod_data$cohort_idx)*3),
              Gender = rep(c(1,2,3), each = max(mod_data$cohort_idx)),
@@ -375,6 +387,7 @@ for(row in 1:(nrow(lincombs_info_coh_shareper))){
   }
 }  
 
+#### Age ####
 lincombs_info_age_shareper <-
   data.frame(Index = 1:(max(mod_data$age_idx)*3),
              Gender = rep(c(1,2,3), each = max(mod_data$age_idx)),
@@ -409,7 +422,7 @@ for(row in 1:(nrow(lincombs_info_age_shareper))){
   }
 }  
 
-
+#### Period ####
 lincombs_info_per_shareper <-
   data.frame(Index = 1:(max(mod_data$period_idx)*1),
              Gender = rep(NA, each = max(mod_data$period_idx)),
@@ -470,6 +483,7 @@ per_info <- unique(mod_data[, c("period_idx", "period")])
 coh_info <- unique(mod_data[, c("cohort_idx", "cohort")])
 
 #### Plots ####
+##### A ####
 age_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>% 
@@ -508,7 +522,7 @@ ggsave(filename = "plots/GI_Q2/age_curvatures_shareage.png", age_shareage)
 age_shareage_std <- age_shareage + ylim(c(-1, 1))
 ggsave(filename = "plots/GI_Q2/age_curvatures_shareage_std.png",
        age_shareage_std)
-
+##### P ####
 per_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>% 
@@ -547,7 +561,7 @@ ggsave(filename = "plots/GI_Q2/per_curvatures_shareage.png", per_shareage)
 per_shareage_std <- per_shareage + ylim(c(-1, 1))
 ggsave(filename = "plots/GI_Q2/per_curvatures_shareage_std.png", 
        per_shareage_std)
-
+##### C ####
 coh_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>% 
@@ -604,6 +618,7 @@ mod_shareco <- inla(mod_formula_shareco,
                     verbose = TRUE)
 
 #### Plots ####
+##### A ####
 age_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>% 
@@ -642,7 +657,7 @@ ggsave(filename = "plots/GI_Q2/age_curvatures_shareco.png", age_shareco)
 age_shareco_std <- age_shareco + ylim(c(-1,1))
 ggsave(filename = "plots/GI_Q2/age_curvatures_shareco_std.png",
        age_shareco_std)
-
+##### P ####
 per_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>% 
@@ -682,6 +697,7 @@ per_shareco_std <- per_shareco + ylim(c(-1,1))
 ggsave(filename = "plots/GI_Q2/per_curvatures_shareco_std.png",
        per_shareco_std)
 
+##### C ####
 coh_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>% 
@@ -737,6 +753,7 @@ mod_shareper <- inla(mod_formula_shareper,
                      verbose = TRUE)
 
 #### Plots ####
+##### A ####
 age_shareper<- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>% 
@@ -776,6 +793,7 @@ age_shareper_std <- age_shareper + ylim(c(-1,1))
 ggsave(filename = "plots/GI_Q2/age_curvatures_shareper_std.png",
        age_shareper_std)
 
+##### P ####
 per_shareper <- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>% 
@@ -815,6 +833,7 @@ per_shareper_std <- per_shareper + ylim(c(-1,1))
 ggsave(filename = "plots/GI_Q2/per_curvatures_shareper_std.png",
        per_shareper_std)
 
+##### C ####
 coh_shareper <- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>% 
