@@ -117,6 +117,8 @@ mod_PC <- logit_pijk ~ 1 +
 
 ## Transwoman ####
 
+### Models ####
+
 mod_tw_null <- inla(mod_null,
                     data = mod_data %>% 
                       filter(gender == "tw") %>% 
@@ -220,7 +222,7 @@ mod_tw_PC <- inla(mod_PC,
                   scale = prec_logit_pijk,
                   verbose = TRUE)
 
-#### Tables ####
+#### Criteria Tables ####
 tw_criteria <- data.frame(Model = c("Null", "A", "P", "C",
                                     "AP", "AC", "PC"),
                           loglik = c(mod_tw_null$mlik[2],
@@ -249,7 +251,7 @@ write.csv(tw_criteria, file = paste0("tables/GI_Q1/",
                                      "tw_critera.csv"),
           row.names = FALSE)
 
-#### Save Model Outputs ####
+#### Model Outputs ####
 sink(file = "tables/GI_Q1/mod_tw_summaries.txt")
 summary(mod_tw_null)
 summary(mod_tw_A)
@@ -264,6 +266,7 @@ sink(file = NULL)
 
 #### AC ####
 
+##### Posterior samples ####
 post_tw_AC <- inla.posterior.sample(n = 1000, mod_tw_AC)
 
 age_idx <- mod_data %>% 
@@ -274,6 +277,9 @@ cohort_idx <- mod_data %>%
   unique() %>% 
   arrange(cohort_idx)
 
+## For each draw, filter down to only parameters
+##we need to do estimate of prevalence
+## & organize it in a usable way
 post_tw_AC_df <- lapply(post_tw_AC, function(draw){
   out <- draw$latent[grepl("cohort_idx", rownames(draw$latent)) |
                        grepl("age_idx", rownames(draw$latent)) |
@@ -290,10 +296,15 @@ post_tw_AC_df <- lapply(post_tw_AC, function(draw){
   return(out_df)
 })
 
+## Turn list of draws into a data.frame
 post_tw_AC_df <- do.call(rbind.data.frame, post_tw_AC_df) %>% 
   group_by(term, term_idx) %>% 
   mutate(draw_no = 1:length(term))
 
+## Combine linear terms in the log odds estimate by draw
+## and calculate median & credible interval estimates 
+## for log odds and prevalence for each sexual orientation
+## along the age and cohort dimensions 
 post_tw_AC_plot <- post_tw_AC_df %>% 
   filter(term != "Intercept") %>% 
   left_join(post_tw_AC_df %>% 
@@ -315,6 +326,7 @@ post_tw_AC_plot <- post_tw_AC_df %>%
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+##### Log Odds ####
 tw_AC_age_lo <- post_tw_AC_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
@@ -342,7 +354,7 @@ tw_AC_coh_lo <- post_tw_AC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/tw_AC_coh_logodds.png", tw_AC_coh_lo)
 
-
+##### Prevalence ####
 tw_AC_age_p <- post_tw_AC_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_p)) +
@@ -371,7 +383,7 @@ tw_AC_coh_p <- post_tw_AC_plot %>%
 ggsave(filename = "plots/GI_Q1/tw_AC_coh_prev.png", tw_AC_coh_p)
 
 #### PC ####
-
+##### Posteriors ####
 post_tw_PC <- inla.posterior.sample(n = 1000, mod_tw_PC)
 
 period_idx <- mod_data %>% 
@@ -420,6 +432,7 @@ post_tw_PC_plot <- post_tw_PC_df %>%
   mutate(term_idx_name = ifelse(term == "Period", period_idx$period[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+##### Log Odds ####
 
 tw_PC_per_lo <- post_tw_PC_plot %>%
   filter(term == "Period") %>% 
@@ -448,6 +461,7 @@ tw_PC_coh_lo <- post_tw_PC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/tw_PC_coh_logodds.png", tw_PC_coh_lo)
 
+##### Prevalences ####
 
 tw_PC_per_p <- post_tw_PC_plot %>%
   filter(term == "Period") %>% 
@@ -477,7 +491,7 @@ tw_PC_coh_p <- post_tw_PC_plot %>%
 ggsave(filename = "plots/GI_Q1/tw_PC_coh_prev.png", tw_PC_coh_p)
 
 #### AP ####
-
+##### Posteriors ####
 post_tw_AP <- inla.posterior.sample(n = 1000, mod_tw_AP)
 
 post_tw_AP_df <- lapply(post_tw_AP, function(draw){
@@ -520,7 +534,7 @@ post_tw_AP_plot <- post_tw_AP_df %>%
                    upper_p = quantile(expit(draw_sum), 0.975)) %>% 
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 period_idx$period[term_idx]))
-
+##### Log Odds ####
 tw_AP_age_lo <- post_tw_AP_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
@@ -552,6 +566,7 @@ ggsave(filename = "plots/GI_Q1/tw_AP_per_logodds.png", tw_AP_per_lo)
 
 #### C ####
 
+##### Posteriors ####
 post_tw_C <- inla.posterior.sample(n = 1000, mod_tw_C)
 
 post_tw_C_df <- lapply(post_tw_C, function(draw){
@@ -594,7 +609,7 @@ post_tw_C_plot <- post_tw_C_df %>%
                                 cohort_idx$cohort[term_idx]))
 
 
-
+##### Log Odds ####
 tw_C_coh_lo <- post_tw_C_plot %>%
   filter(term == "Cohort") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
@@ -608,6 +623,7 @@ tw_C_coh_lo <- post_tw_C_plot %>%
 
 ggsave(filename = "plots/GI_Q1/tw_C_coh_logodds.png", tw_C_coh_lo)
 
+##### Prevalences ####
 tw_C_coh_p <- post_tw_C_plot %>%
   filter(term == "Cohort") %>% 
   ggplot(aes(x = term_idx_name, y = med_p)) +
@@ -622,6 +638,7 @@ tw_C_coh_p <- post_tw_C_plot %>%
 ggsave(filename = "plots/GI_Q1/tw_C_coh_prev.png", tw_C_coh_p)
 
 ## Transman ####
+### Models ####
 
 mod_tm_null <- inla(mod_null,
                     data = mod_data %>% 
@@ -728,7 +745,8 @@ mod_tm_PC <- inla(mod_PC,
                   scale = prec_logit_pijk,
                   verbose = TRUE)
 
-#### Tables ####
+#### Criteria Tables ####
+
 tm_criteria <- data.frame(Model = c("Null", "A", "P", "C",
                                       "AP", "AC", "PC"),
                             loglik = c(mod_tm_null$mlik[2],
@@ -757,7 +775,7 @@ write.csv(tm_criteria, file = paste0("tables/GI_Q1/",
                                        "tm_critera.csv"),
           row.names = FALSE)
 
-#### Save Model Outputs ####
+#### Model Outputs ####
 sink(file = "tables/GI_Q1/mod_tm_summaries.txt")
 summary(mod_tm_null)
 summary(mod_tm_A)
@@ -771,7 +789,7 @@ sink(file = NULL)
 ### Plots ####
 
 #### AC ####
-
+##### Posteriors ####
 post_tm_AC <- inla.posterior.sample(n = 1000, mod_tm_AC)
 
 post_tm_AC_df <- lapply(post_tm_AC, function(draw){
@@ -815,6 +833,7 @@ post_tm_AC_plot <- post_tm_AC_df %>%
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+##### Log Odds ####
 
 tm_AC_age_lo <- post_tm_AC_plot %>%
   filter(term == "Age") %>% 
@@ -843,6 +862,7 @@ tm_AC_coh_lo <- post_tm_AC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/tm_AC_coh_logodds.png", tm_AC_coh_lo)
 
+##### Prevalences ####
 
 tm_AC_age_p <- post_tm_AC_plot %>%
   filter(term == "Age") %>% 
@@ -873,6 +893,7 @@ ggsave(filename = "plots/GI_Q1/tm_AC_coh_prev.png", tm_AC_coh_p)
 
 #### PC ####
 
+##### Posteriors ####
 post_tm_PC <- inla.posterior.sample(n = 1000, mod_tm_PC)
 
 post_tm_PC_df <- lapply(post_tm_PC, function(draw){
@@ -916,6 +937,7 @@ post_tm_PC_plot <- post_tm_PC_df %>%
   mutate(term_idx_name = ifelse(term == "Period", period_idx$period[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+##### Log Odds ####
 
 tm_PC_per_lo <- post_tm_PC_plot %>%
   filter(term == "Period") %>% 
@@ -944,6 +966,7 @@ tm_PC_coh_lo <- post_tm_PC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/tm_PC_coh_logodds.png", tm_PC_coh_lo)
 
+##### Log Odds ####
 
 tm_PC_per_p <- post_tm_PC_plot %>%
   filter(term == "Period") %>% 
@@ -974,7 +997,7 @@ ggsave(filename = "plots/GI_Q1/tm_PC_coh_prev.png", tm_PC_coh_p)
 
 
 #### AP ####
-
+##### Posteriors ####
 post_tm_AP <- inla.posterior.sample(n = 1000, mod_tm_AP)
 
 post_tm_AP_df <- lapply(post_tm_AP, function(draw){
@@ -1018,6 +1041,7 @@ post_tm_AP_plot <- post_tm_AP_df %>%
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 period_idx$period[term_idx]))
 
+##### Log Odds ####
 tm_AP_age_lo <- post_tm_AP_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
@@ -1047,7 +1071,7 @@ ggsave(filename = "plots/GI_Q1/tm_AP_per_logodds.png", tm_AP_per_lo)
 
 
 #### C ####
-
+##### Posteriors ####
 post_tm_C <- inla.posterior.sample(n = 1000, mod_tm_C)
 
 post_tm_C_df <- lapply(post_tm_C, function(draw){
@@ -1089,7 +1113,7 @@ post_tm_C_plot <- post_tm_C_df %>%
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
-
+##### Log Odds ####
 
 tm_C_coh_lo <- post_tm_C_plot %>%
   filter(term == "Cohort") %>% 
@@ -1103,6 +1127,8 @@ tm_C_coh_lo <- post_tm_C_plot %>%
   theme_classic()
 
 ggsave(filename = "plots/GI_Q1/tm_C_coh_logodds.png", tm_C_coh_lo)
+
+##### Prevalences ####
 
 tm_C_coh_p <- post_tm_C_plot %>%
   filter(term == "Cohort") %>% 
@@ -1120,6 +1146,7 @@ ggsave(filename = "plots/GI_Q1/tm_C_coh_prev.png", tm_C_coh_p)
 
 ## Nonbinary/Gender Non-conforming ####
 
+### Models ####
 mod_nbgnc_null <- inla(mod_null,
                        data = mod_data %>% 
                          filter(gender == "nbgnc") %>% 
@@ -1226,7 +1253,7 @@ mod_nbgnc_PC <- inla(mod_PC,
                      verbose = TRUE)
 
 
-#### Tables ####
+#### Criteria Tables ####
 nbgnc_criteria <- data.frame(Model = c("Null", "A", "P", "C",
                                       "AP", "AC", "PC"),
                             loglik = c(mod_nbgnc_null$mlik[2],
@@ -1255,7 +1282,7 @@ write.csv(nbgnc_criteria, file = paste0("tables/GI_Q1/",
                                        "nbgnc_critera.csv"),
           row.names = FALSE)
 
-#### Save Model Outputs ####
+#### Model Outputs ####
 sink(file = "tables/GI_Q1/mod_nbgnc_summaries.txt")
 summary(mod_nbgnc_null)
 summary(mod_nbgnc_A)
@@ -1269,7 +1296,7 @@ sink(file = NULL)
 ### Plots ####
 
 #### AC ####
-
+##### Posteriors ####
 post_nbgnc_AC <- inla.posterior.sample(n = 1000, mod_nbgnc_AC)
 
 post_nbgnc_AC_df <- lapply(post_nbgnc_AC, function(draw){
@@ -1313,7 +1340,7 @@ post_nbgnc_AC_plot <- post_nbgnc_AC_df %>%
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
-
+##### Log Odds ####
 nbgnc_AC_age_lo <- post_nbgnc_AC_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
@@ -1341,7 +1368,7 @@ nbgnc_AC_coh_lo <- post_nbgnc_AC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/nbgnc_AC_coh_logodds.png", nbgnc_AC_coh_lo)
 
-
+##### Prevalences ####
 nbgnc_AC_age_p <- post_nbgnc_AC_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_p)) +
@@ -1354,7 +1381,6 @@ nbgnc_AC_age_p <- post_nbgnc_AC_plot %>%
   theme_classic()
 
 ggsave(filename = "plots/GI_Q1/nbgnc_AC_age_prev.png", nbgnc_AC_age_p)
-
 
 nbgnc_AC_coh_p <- post_nbgnc_AC_plot %>%
   filter(term == "Cohort") %>% 
@@ -1371,7 +1397,7 @@ ggsave(filename = "plots/GI_Q1/nbgnc_AC_coh_prev.png", nbgnc_AC_coh_p)
 
 
 #### PC ####
-
+##### Posteriors ####
 post_nbgnc_PC <- inla.posterior.sample(n = 1000, mod_nbgnc_PC)
 
 post_nbgnc_PC_df <- lapply(post_nbgnc_PC, function(draw){
@@ -1415,6 +1441,7 @@ post_nbgnc_PC_plot <- post_nbgnc_PC_df %>%
   mutate(term_idx_name = ifelse(term == "Period", period_idx$period[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+##### Log Odds ####
 
 nbgnc_PC_per_lo <- post_nbgnc_PC_plot %>%
   filter(term == "Period") %>% 
@@ -1429,7 +1456,6 @@ nbgnc_PC_per_lo <- post_nbgnc_PC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/nbgnc_PC_per_logodds.png", nbgnc_PC_per_lo)
 
-
 nbgnc_PC_coh_lo <- post_nbgnc_PC_plot %>%
   filter(term == "Cohort") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
@@ -1443,7 +1469,7 @@ nbgnc_PC_coh_lo <- post_nbgnc_PC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/nbgnc_PC_coh_logodds.png", nbgnc_PC_coh_lo)
 
-
+##### Prevalences ####
 nbgnc_PC_per_p <- post_nbgnc_PC_plot %>%
   filter(term == "Period") %>% 
   ggplot(aes(x = term_idx_name, y = med_p)) +
@@ -1456,7 +1482,6 @@ nbgnc_PC_per_p <- post_nbgnc_PC_plot %>%
   theme_classic()
 
 ggsave(filename = "plots/GI_Q1/nbgnc_PC_per_prev.png", nbgnc_PC_per_p)
-
 
 nbgnc_PC_coh_p <- post_nbgnc_PC_plot %>%
   filter(term == "Cohort") %>% 
@@ -1471,9 +1496,8 @@ nbgnc_PC_coh_p <- post_nbgnc_PC_plot %>%
 
 ggsave(filename = "plots/GI_Q1/nbgnc_PC_coh_prev.png", nbgnc_PC_coh_p)
 
-
 #### AP ####
-
+##### Posteriors ####
 post_nbgnc_AP <- inla.posterior.sample(n = 1000, mod_nbgnc_AP)
 
 post_nbgnc_AP_df <- lapply(post_nbgnc_AP, function(draw){
@@ -1517,6 +1541,8 @@ post_nbgnc_AP_plot <- post_nbgnc_AP_df %>%
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 period_idx$period[term_idx]))
 
+##### Log Odds ####
+
 nbgnc_AP_age_lo <- post_nbgnc_AP_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
@@ -1529,7 +1555,6 @@ nbgnc_AP_age_lo <- post_nbgnc_AP_plot %>%
   theme_classic()
 
 ggsave(filename = "plots/GI_Q1/nbgnc_AP_age_logodds.png", nbgnc_AC_age_lo)
-
 
 nbgnc_AP_per_lo <- post_nbgnc_AP_plot %>%
   filter(term == "Period") %>% 
@@ -1544,10 +1569,8 @@ nbgnc_AP_per_lo <- post_nbgnc_AP_plot %>%
 
 ggsave(filename = "plots/GI_Q1/nbgnc_AP_per_logodds.png", nbgnc_AP_per_lo)
 
-
-
 #### C ####
-
+##### Posteriors ####
 post_nbgnc_C <- inla.posterior.sample(n = 1000, mod_nbgnc_C)
 
 post_nbgnc_C_df <- lapply(post_nbgnc_C, function(draw){
@@ -1589,7 +1612,7 @@ post_nbgnc_C_plot <- post_nbgnc_C_df %>%
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
-
+##### Log Odds ####
 
 nbgnc_C_coh_lo <- post_nbgnc_C_plot %>%
   filter(term == "Cohort") %>% 
@@ -1603,6 +1626,8 @@ nbgnc_C_coh_lo <- post_nbgnc_C_plot %>%
   theme_classic()
 
 ggsave(filename = "plots/GI_Q1/nbgnc_C_coh_logodds.png", nbgnc_C_coh_lo)
+
+##### Prevalences ####
 
 nbgnc_C_coh_p <- post_nbgnc_C_plot %>%
   filter(term == "Cohort") %>% 
@@ -1620,6 +1645,9 @@ ggsave(filename = "plots/GI_Q1/nbgnc_C_coh_prev.png", nbgnc_C_coh_p)
 # Manuscript Plots ####
 
 ## AC ####
+
+## Get min and max endpoints of intervals by sexual orientation
+## and age, period, or cohort across all models
 AC_ranges <- 
   bind_rows(post_tw_AC_plot %>% 
               group_by(term) %>% 
@@ -1637,21 +1665,18 @@ AC_ranges <-
                                upper = max(upper_lo),
                                Group = "Nonbinary/Gender Non-conforming"))
           
-## Across groups 
+## Across sexual orientation groups 
 AC_ranges %>% 
   group_by(term) %>% 
   dplyr::summarize(lower = min(lower),
                    upper = max(upper))
 
+## Handset appropriate limits
 AC_ylims <- c(-11, -2)
 A_xlims <- c(18, 79) + c(-1, 1)
 C_xlims <- c(1935, 2003) + c(-1,1)
 
-
-# par(mfrow = c(2,4),lend = 1)
-
-# sgac
-
+### png ####
 png("plots/GI_Q1/AC_8panel_logodds.png", 
     width = 300*6, height = 300*4, res=300)
 {
@@ -1893,6 +1918,7 @@ png("plots/GI_Q1/AC_8panel_logodds.png",
 dev.off()
 
 ## PC ####
+## Get ranges by SO x A/P/C
 PC_ranges <- bind_rows(post_tw_PC_plot %>% 
                          group_by(term) %>% 
                          dplyr::summarize(lower = min(lower_lo),
@@ -1914,16 +1940,13 @@ PC_ranges %>%
   dplyr::summarize(lower = min(lower),
                    upper = max(upper))
 
+## Hand set limits so they match AC, AP plots
 PC_ylims <- c(-11, -2)
 P_xlims <- c(2014, 2021) + c(-1, 1)
 C_xlims <- c(1935, 2003) + c(-1,1)
 P_labs <- c("\'14","\'15","\'16","\'17","\'18","\'19","\'20","\'21")
 
-
-
-# par(mfrow = c(2,4),lend = 1)
-
-# sgpc
+### png ####
 
 png("plots/GI_Q1/PC_8panel_logodds.png", 
     width = 300*6, height = 300*3, res=300)
@@ -2163,8 +2186,8 @@ png("plots/GI_Q1/PC_8panel_logodds.png",
 }
 dev.off()
 
-
 ## AP ####
+## Calculate min and max CI ranges by SO x A/P/C
 AP_ranges <- bind_rows(post_tw_AP_plot %>% 
                          group_by(term) %>% 
                          dplyr::summarize(lower = min(lower_lo),
@@ -2186,11 +2209,12 @@ AP_ranges %>%
   dplyr::summarize(lower = min(lower),
                    upper = max(upper))
 
+## Hand set limits so they match AC, AP plots
 AP_ylims <- c(-11, -2)
 A_xlims <- c(18, 79) + c(-1, 1)
 P_xlims <- c(2014, 2021) + c(-1,1)
 
-# sgap
+### png ####
 
 png("plots/GI_Q1/AP_8panel_logodds.png", 
     width = 300*6, height = 300*4, res=300)
