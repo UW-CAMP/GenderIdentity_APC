@@ -892,1435 +892,1154 @@ summary(mod_shareage)
 head(mod_shareage$summary.random$age_idx)
 head(mod_shareage$summary.linear.predictor)
 sink(file = NULL)
-# # 
-# # Manuscript plots ####
-# 
-# ## Shared Age ####
-# 
-# ### Prep Age ####
-# 
-# age_shareage <- mod_shareage$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareage,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-#                             Gender == 2 ~ "Transman",
-#                             Gender == 3 ~ "NB/GNC",
-#                             TRUE ~ "Shared")) %>%
-#   filter(TermName == "Age") %>% 
-#   left_join(age_info,
-#             by = c("Term" = "age_idx")) %>% 
-#   mutate(Age = age) %>% 
-#   arrange(Term)
-# 
-# ### Prep Period ####
-# 
-# per_shareage <- mod_shareage$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareage,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-#                             Gender == 2 ~ "Transman",
-#                             Gender == 3 ~ "NB/GNC",
-#                             TRUE ~ "Shared")) %>%
-#   filter(TermName == "Period") %>% 
-#   left_join(per_info,
-#             by = c("Term" = "period_idx")) %>% 
-#   mutate(Period = period) %>% 
-#   arrange(Term)
-# 
-# ### Prep Cohort ####
-# 
-# coh_shareage <- mod_shareage$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareage,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%
-#   mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-#                             Gender == 2 ~ "Transman",
-#                             Gender == 3 ~ "NB/GNC",
-#                             TRUE ~ "Shared")) %>%
-#   filter(TermName == "Cohort") %>% 
-#   left_join(coh_info,
-#             by = c("Term" = "cohort_idx")) %>% 
-#   mutate(Cohort = cohort) %>% 
-#   arrange(Term)
-# 
-# ## Get limits
-# age_shareage %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# per_shareage %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# coh_shareage %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# 
-# A_xlims <- c(14, 79)
-# P_xlims <- c(2013.75, 2021.25) #c(2014, 2021)
-# C_xlims <- c(1935, 2007)
-# 
-# shareage_ylims <- c(-1.2, 1.2)
-# 
-# 
-# ### Plot ####
-# png("plots/GI_Q2/SharedAge_panel_curvature.png", 
-#     width = 300*3, height = 300*3, res=300)
-# {
-#   par(mfrow = c(3,3), lend = 1)
-#   par(mar=c(5,0,2,0))
-#   par(oma=c(0,4,2,1))
-#   
-#   ## Bisexual 
-#   {
-#     { 
-#       ## Age
-#       plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#            xlab = "", ylab = "",
-#            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-# 
-#       mtext("Transwoman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
-#        
-#       ## title
-#       text("a. Age", x= 15, y= 0.43, cex=.9, adj=0)
-#       # title("Age", adj = 0, line = 4)
-#       
-#       #mtext("Curvature", adj = 0.275, side = 2,
-#       #      line = 2.5, cex = 0.8, outer = TRUE)
-#       #mtext("Curvature", adj = 0.85, side = 2,
-#       #      line = 2.5, cex = 0.8, outer = TRUE)
-#       ## Age axis
-#       #axis(1, at = seq(15, 75, 5))
-#       # mtext(side = 1, text = "Age", line = 2, cex = .9)
-#       mtext("Age", side = 1, line = 2, cex=0.6)
-#       axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#       mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#             cex=0.5, line=0.5)
-#       
-#       ## Log odds axis
-#       axis(2, at = seq(-.45, .45, .15), cex=0.5, labels = FALSE)
-#       mtext(side = 2, round(seq(-.45, .45, .15), 2), at = seq(-.45, .45, .15), 
-#             cex=0.5, line=0.5)
-#       mtext("Second Differences", side = 2, line = 2, cex = 0.6)
-# 
-#       ## y = 0
-#       abline(h = 0)
-#       
-#       ## Ests
-#       lines(age_shareage$Age[age_shareage$SO == "Bisexual"],
-#             age_shareage$`0.5quant`[age_shareage$SO == "Bisexual"],
-#             lwd = 2, col = "goldenrod")
-#       polygon(x = c(age_shareage$Age[age_shareage$SO == "Bisexual"],
-#                     rev(age_shareage$Age[age_shareage$SO == "Bisexual"])),
-#               y = c(age_shareage$`0.025quant`[age_shareage$SO == "Bisexual"],
-#                     rev(age_shareage$`0.975quant`[age_shareage$SO == 
-#                                                     "Bisexual"])),
-#               col = alpha("goldenrod", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Period
-#       plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#            xlab = "", ylab = "", 
-#            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#       ## title
-#       text("b. Period - female", x= 2014, y= 0.43, cex=.9, adj=0)
-# 
-#       ## Period axis
-#       mtext("Period", side = 1, line = 2, cex=0.6)
-#       axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#       mtext(side = 1, 2014:2021, at = 2014:2021, 
-#             cex=0.5, line=0.5)
-#       
-#       ## y = 0
-#       abline(h = 0)
-#       
-#       ## Ests
-#       lines(per_shareage$Period[per_shareage$SO == "Bisexual" &
-#                                   per_shareage$Gender == "Female"],
-#             per_shareage$`0.5quant`[per_shareage$SO == "Bisexual" &
-#                                       per_shareage$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(per_shareage$Period[per_shareage$SO == "Bisexual" &
-#                                           per_shareage$Gender == "Female"],
-#                     rev(per_shareage$Period[per_shareage$SO == "Bisexual" &
-#                                               per_shareage$Gender == "Female"])),
-#               y = c(per_shareage$`0.025quant`[per_shareage$SO == "Bisexual" &
-#                                                 per_shareage$Gender == "Female"],
-#                     rev(per_shareage$`0.975quant`[per_shareage$SO == "Bisexual" &
-#                                                     per_shareage$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Period
-#       plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#            xlab = "", ylab = "",
-#            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#       ## title
-#       text("c. Period - male", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#       ## Period axis
-#       mtext("Period", side = 1, line = 2, cex=0.6)
-#       axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#       mtext(side = 1, 2014:2021, at = 2014:2021, 
-#             cex=0.5, line=0.5)
-#       
-#       ## y = 0
-#       abline(h = 0)
-#       
-#       ## Ests
-#       lines(per_shareage$Period[per_shareage$SO == "Bisexual" &
-#                                   per_shareage$Gender == "Male"],
-#             per_shareage$`0.5quant`[per_shareage$SO == "Bisexual" &
-#                                       per_shareage$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(per_shareage$Period[per_shareage$SO == "Bisexual" &
-#                                           per_shareage$Gender == "Male"],
-#                     rev(per_shareage$Period[per_shareage$SO == "Bisexual" &
-#                                               per_shareage$Gender == "Male"])),
-#               y = c(per_shareage$`0.025quant`[per_shareage$SO == "Bisexual" &
-#                                                 per_shareage$Gender == "Male"],
-#                     rev(per_shareage$`0.975quant`[per_shareage$SO == "Bisexual" &
-#                                                     per_shareage$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Cohort
-#       plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#            xlab = "", ylab = "",
-#            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#       ## title
-#       text("d. Cohort - female", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#       ## Cohort axis
-#       mtext("Cohort", side = 1, line = 2, cex=0.6)
-#       axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#       mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#             cex=0.5, line=0.5)
-#       
-#       ## y = 0
-#       abline(h = 0)
-#       
-#       ## Ests
-#       lines(coh_shareage$Cohort[coh_shareage$SO == "Bisexual" &
-#                                   coh_shareage$Gender == "Female"],
-#             coh_shareage$`0.5quant`[coh_shareage$SO == "Bisexual" &
-#                                       coh_shareage$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(coh_shareage$Cohort[coh_shareage$SO == "Bisexual" &
-#                                           coh_shareage$Gender == "Female"],
-#                     rev(coh_shareage$Cohort[coh_shareage$SO == "Bisexual" &
-#                                               coh_shareage$Gender == "Female"])),
-#               y = c(coh_shareage$`0.025quant`[coh_shareage$SO == "Bisexual" &
-#                                                 coh_shareage$Gender == "Female"],
-#                     rev(coh_shareage$`0.975quant`[coh_shareage$SO == "Bisexual" &
-#                                                     coh_shareage$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Cohort
-#       plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#            xlab = "", ylab = "",
-#            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#       ## title
-#       text("e. Cohort - male", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#       ## Cohort axis
-#       mtext("Cohort", side = 1, line = 2, cex=0.6)
-#       axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#       mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#             cex=0.5, line=0.5)
-#       
-#       ## y = 0
-#       abline(h = 0)
-#       
-#       ## Ests
-#       lines(coh_shareage$Cohort[coh_shareage$SO == "Bisexual" &
-#                                   coh_shareage$Gender == "Male"],
-#             coh_shareage$`0.5quant`[coh_shareage$SO == "Bisexual" &
-#                                       coh_shareage$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(coh_shareage$Cohort[coh_shareage$SO == "Bisexual" &
-#                                           coh_shareage$Gender == "Male"],
-#                     rev(coh_shareage$Cohort[coh_shareage$SO == "Bisexual" &
-#                                               coh_shareage$Gender == "Male"])),
-#               y = c(coh_shareage$`0.025quant`[coh_shareage$SO == "Bisexual" &
-#                                                 coh_shareage$Gender == "Male"],
-#                     rev(coh_shareage$`0.975quant`[coh_shareage$SO == "Bisexual" &
-#                                                     coh_shareage$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#   }
-#   
-#   ## Lesbian/gay
-#   {
-#     { 
-#       ## Age
-#       plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#            xlab = "", ylab = "",
-#            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-# 
-#       ## title
-#       text("f. Age", x= 15, y= 0.43, cex=.9, adj=0)
-#       mtext("Lesbian/gay", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
-#       
-#       mtext("Age", side = 1, line = 2, cex=0.6)
-#       axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#       mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#             cex=0.5, line=0.5)
-#       
-#       ## Log odds axis
-#       axis(2, at = seq(-.45, .45, .15), cex=0.5, labels = FALSE)
-#       mtext(side = 2, round(seq(-.45, .45, .15), 2), at = seq(-.45, .45, .15), 
-#             cex=0.5, line=0.5)
-#       mtext("Second Differences", side = 2, line = 2, cex = 0.6)
-#       
-#       ## y = 0
-#       abline(h = 0)
-# 
-#       ## Ests
-#       lines(age_shareage$Age[age_shareage$SO == "Lesbian/gay"],
-#             age_shareage$`0.5quant`[age_shareage$SO == "Lesbian/gay"],
-#             lwd = 2, col = "goldenrod")
-#       polygon(x = c(age_shareage$Age[age_shareage$SO == "Lesbian/gay"],
-#                     rev(age_shareage$Age[age_shareage$SO == "Lesbian/gay"])),
-#               y = c(age_shareage$`0.025quant`[age_shareage$SO == "Lesbian/gay"],
-#                     rev(age_shareage$`0.975quant`[age_shareage$SO == 
-#                                                     "Lesbian/gay"])),
-#               col = alpha("goldenrod", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "", 
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("g. Period - female", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(per_shareage$Period[per_shareage$SO == "Lesbian/gay" &
-#                                   per_shareage$Gender == "Female"],
-#             per_shareage$`0.5quant`[per_shareage$SO == "Lesbian/gay" &
-#                                       per_shareage$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(per_shareage$Period[per_shareage$SO == "Lesbian/gay" &
-#                                           per_shareage$Gender == "Female"],
-#                     rev(per_shareage$Period[per_shareage$SO == "Lesbian/gay" &
-#                                               per_shareage$Gender == "Female"])),
-#               y = c(per_shareage$`0.025quant`[per_shareage$SO == "Lesbian/gay" &
-#                                                 per_shareage$Gender == "Female"],
-#                     rev(per_shareage$`0.975quant`[per_shareage$SO == "Lesbian/gay" &
-#                                                     per_shareage$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("h. Period - male", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(per_shareage$Period[per_shareage$SO == "Lesbian/gay" &
-#                                   per_shareage$Gender == "Male"],
-#             per_shareage$`0.5quant`[per_shareage$SO == "Lesbian/gay" &
-#                                       per_shareage$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(per_shareage$Period[per_shareage$SO == "Lesbian/gay" &
-#                                           per_shareage$Gender == "Male"],
-#                     rev(per_shareage$Period[per_shareage$SO == "Lesbian/gay" &
-#                                               per_shareage$Gender == "Male"])),
-#               y = c(per_shareage$`0.025quant`[per_shareage$SO == "Lesbian/gay" &
-#                                                 per_shareage$Gender == "Male"],
-#                     rev(per_shareage$`0.975quant`[per_shareage$SO == "Lesbian/gay" &
-#                                                     per_shareage$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("i. Cohort - female", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        ## Ests
-#       lines(coh_shareage$Cohort[coh_shareage$SO == "Lesbian/gay" &
-#                                   coh_shareage$Gender == "Female"],
-#             coh_shareage$`0.5quant`[coh_shareage$SO == "Lesbian/gay" &
-#                                       coh_shareage$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(coh_shareage$Cohort[coh_shareage$SO == "Lesbian/gay" &
-#                                           coh_shareage$Gender == "Female"],
-#                     rev(coh_shareage$Cohort[coh_shareage$SO == "Lesbian/gay" &
-#                                               coh_shareage$Gender == "Female"])),
-#               y = c(coh_shareage$`0.025quant`[coh_shareage$SO == "Lesbian/gay" &
-#                                                 coh_shareage$Gender == "Female"],
-#                     rev(coh_shareage$`0.975quant`[coh_shareage$SO == "Lesbian/gay" &
-#                                                     coh_shareage$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("j. Cohort - male", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(coh_shareage$Cohort[coh_shareage$SO == "Lesbian/gay" &
-#                                   coh_shareage$Gender == "Male"],
-#             coh_shareage$`0.5quant`[coh_shareage$SO == "Lesbian/gay" &
-#                                       coh_shareage$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(coh_shareage$Cohort[coh_shareage$SO == "Lesbian/gay" &
-#                                           coh_shareage$Gender == "Male"],
-#                     rev(coh_shareage$Cohort[coh_shareage$SO == "Lesbian/gay" &
-#                                               coh_shareage$Gender == "Male"])),
-#               y = c(coh_shareage$`0.025quant`[coh_shareage$SO == "Lesbian/gay" &
-#                                                 coh_shareage$Gender == "Male"],
-#                     rev(coh_shareage$`0.975quant`[coh_shareage$SO == "Lesbian/gay" &
-#                                                     coh_shareage$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#   }
-# }
-# dev.off()
-# 
-# ## Shared Period ####
-# 
-# ### Prep Age ####
-# 
-# ## BI
-# age_shareper <- mod_shareper$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareper,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Age") %>% 
-#   left_join(age_info,
-#             by = c("Term" = "age_idx")) %>% 
-#   mutate(Age = age,
-#          SO = "Bisexual") 
-# 
-# ## LG
-# lg_age_shareper <- mod_lg_shareper$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareper,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Age") %>% 
-#   left_join(age_info,
-#             by = c("Term" = "age_idx")) %>% 
-#   mutate(Age = age,
-#          SO = "Lesbian/gay")
-# 
-# ## Combine
-# age_shareper <- bind_rows(age_shareper, lg_age_shareper) %>% 
-#   arrange(SO, Term)
-# 
-# ### Prep Period ####
-# 
-# ## BI
-# per_shareper <- mod_shareper$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareper,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Period") %>% 
-#   left_join(per_info,
-#             by = c("Term" = "period_idx")) %>% 
-#   mutate(Period = period,
-#          SO = "Bisexual")
-# 
-# ## LG
-# lg_per_shareper <- mod_lg_shareper$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareper,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Period") %>% 
-#   left_join(per_info,
-#             by = c("Term" = "period_idx")) %>% 
-#   mutate(Period = period,
-#          SO = "Lesbian/gay")
-# 
-# ## Combine
-# per_shareper <- bind_rows(per_shareper, lg_per_shareper) %>% 
-#   arrange(SO, Term)
-# 
-# ### Prep Cohort ####
-# 
-# ## BI
-# coh_shareper <- mod_shareper$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareper,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Cohort") %>% 
-#   left_join(coh_info,
-#             by = c("Term" = "cohort_idx")) %>% 
-#   mutate(Cohort = cohort,
-#          SO = "Bisexual")
-# 
-# ## LG
-# lg_coh_shareper <- mod_lg_shareper$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareper,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Cohort") %>% 
-#   left_join(coh_info,
-#             by = c("Term" = "cohort_idx")) %>% 
-#   mutate(Cohort = cohort,
-#          SO = "Lesbian/gay")
-# 
-# coh_shareper <- bind_rows(coh_shareper, lg_coh_shareper) %>% 
-#   arrange(SO, Term)
-# 
-# ## Get limits
-# age_shareper %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# per_shareper %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# coh_shareper %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# 
-# A_xlims <- c(14, 79)
-# P_xlims <- c(2013.75, 2021.25) #c(2014, 2021)
-# C_xlims <- c(1935, 2007)
-# 
-# shareper_ylims <- c(-0.45, 0.45)
-# 
-# ### Plot ####
-# png("plots/GI_Q2/SharedPer_10panel_curvature.png", 
-#     width = 300*10, height = 300*5, res=300)
-# {
-#   par(mfrow = c(2,5), lend = 1)
-#   par(mar=c(5,0,2,0))
-#   par(oma=c(0,4,2,1))
-#   
-#   ## Bisexual 
-#   {
-#     { 
-#       ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        mtext("Bisexual", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
-#        
-#        ## title
-#        text("a. Age - female", x= 15, y= 0.43, cex=.9, adj=0)
-# 
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## Log odds axis
-#        axis(2, at = seq(-.45, .45, .15), cex=0.5, labels = FALSE)
-#        mtext(side = 2, round(seq(-.45, .45, .15), 2), at = seq(-.45, .45, .15), 
-#              cex=0.5, line=0.5)
-#        mtext("Second Differences", side = 2, line = 2, cex = 0.6)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(age_shareper$Age[age_shareper$SO == "Bisexual" &
-#                                age_shareper$Gender == "Female"],
-#             age_shareper$`0.5quant`[age_shareper$SO == "Bisexual" &
-#                                       age_shareper$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(age_shareper$Age[age_shareper$SO == "Bisexual" &
-#                                        age_shareper$Gender == "Female"],
-#                     rev(age_shareper$Age[age_shareper$SO == "Bisexual" &
-#                                            age_shareper$Gender == "Female"])),
-#               y = c(age_shareper$`0.025quant`[age_shareper$SO == "Bisexual" &
-#                                                 age_shareper$Gender == "Female"],
-#                     rev(age_shareper$`0.975quant`[age_shareper$SO == 
-#                                                     "Bisexual" &
-#                                                     age_shareper$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        ## title
-#        text("b. Age - male", x= 15, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(age_shareper$Age[age_shareper$SO == "Bisexual" &
-#                                age_shareper$Gender == "Male"],
-#             age_shareper$`0.5quant`[age_shareper$SO == "Bisexual" &
-#                                       age_shareper$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(age_shareper$Age[age_shareper$SO == "Bisexual" &
-#                                        age_shareper$Gender == "Male"],
-#                     rev(age_shareper$Age[age_shareper$SO == "Bisexual" &
-#                                            age_shareper$Gender == "Male"])),
-#               y = c(age_shareper$`0.025quant`[age_shareper$SO == "Bisexual" &
-#                                                 age_shareper$Gender == "Male"],
-#                     rev(age_shareper$`0.975quant`[age_shareper$SO == 
-#                                                     "Bisexual" &
-#                                                     age_shareper$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "", 
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("c. Period", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(per_shareper$Period[per_shareper$SO == "Bisexual"],
-#             per_shareper$`0.5quant`[per_shareper$SO == "Bisexual"],
-#             lwd = 2, col = "goldenrod")
-#       polygon(x = c(per_shareper$Period[per_shareper$SO == "Bisexual" ],
-#                     rev(per_shareper$Period[per_shareper$SO == "Bisexual"])),
-#               y = c(per_shareper$`0.025quant`[per_shareper$SO == "Bisexual"],
-#                     rev(per_shareper$`0.975quant`[per_shareper$SO == "Bisexual"])),
-#               col = alpha("goldenrod", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("d. Cohort - female", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(coh_shareper$Cohort[coh_shareper$SO == "Bisexual" &
-#                                   coh_shareper$Gender == "Female"],
-#             coh_shareper$`0.5quant`[coh_shareper$SO == "Bisexual" &
-#                                       coh_shareper$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(coh_shareper$Cohort[coh_shareper$SO == "Bisexual" &
-#                                           coh_shareper$Gender == "Female"],
-#                     rev(coh_shareper$Cohort[coh_shareper$SO == "Bisexual" &
-#                                               coh_shareper$Gender == "Female"])),
-#               y = c(coh_shareper$`0.025quant`[coh_shareper$SO == "Bisexual" &
-#                                                 coh_shareper$Gender == "Female"],
-#                     rev(coh_shareper$`0.975quant`[coh_shareper$SO == "Bisexual" &
-#                                                     coh_shareper$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("e. Cohort - male", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(coh_shareper$Cohort[coh_shareper$SO == "Bisexual" &
-#                                   coh_shareper$Gender == "Male"],
-#             coh_shareper$`0.5quant`[coh_shareper$SO == "Bisexual" &
-#                                       coh_shareper$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(coh_shareper$Cohort[coh_shareper$SO == "Bisexual" &
-#                                           coh_shareper$Gender == "Male"],
-#                     rev(coh_shareper$Cohort[coh_shareper$SO == "Bisexual" &
-#                                               coh_shareper$Gender == "Male"])),
-#               y = c(coh_shareper$`0.025quant`[coh_shareper$SO == "Bisexual" &
-#                                                 coh_shareper$Gender == "Male"],
-#                     rev(coh_shareper$`0.975quant`[coh_shareper$SO == "Bisexual" &
-#                                                     coh_shareper$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#   }
-#   
-#   ## Lesbian/gay
-#   {
-#     { 
-#       ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        mtext("Lesbian/gay", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
-#        
-#        ## title
-#        text("f. Age - female", x= 15, y= 0.43, cex=.9, adj=0)
-# 
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## Log odds axis
-#        axis(2, at = seq(-.45, .45, .15), cex=0.5, labels = FALSE)
-#        mtext(side = 2, round(seq(-.45, .45, .15), 2), at = seq(-.45, .45, .15), 
-#              cex=0.5, line=0.5)
-#        mtext("Second Differences", side = 2, line = 2, cex = 0.6)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(age_shareper$Age[age_shareper$SO == "Lesbian/gay" &
-#                                age_shareper$Gender == "Female"],
-#             age_shareper$`0.5quant`[age_shareper$SO == "Lesbian/gay" &
-#                                       age_shareper$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(age_shareper$Age[age_shareper$SO == "Lesbian/gay" &
-#                                        age_shareper$Gender == "Female"],
-#                     rev(age_shareper$Age[age_shareper$SO == "Lesbian/gay" &
-#                                            age_shareper$Gender == "Female"])),
-#               y = c(age_shareper$`0.025quant`[age_shareper$SO == "Lesbian/gay" &
-#                                                 age_shareper$Gender == "Female"],
-#                     rev(age_shareper$`0.975quant`[age_shareper$SO == 
-#                                                     "Lesbian/gay" &
-#                                                     age_shareper$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        ## title
-#        text("g. Age - male", x= 15, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(age_shareper$Age[age_shareper$SO == "Lesbian/gay" &
-#                                age_shareper$Gender == "Male"],
-#             age_shareper$`0.5quant`[age_shareper$SO == "Lesbian/gay" &
-#                                       age_shareper$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(age_shareper$Age[age_shareper$SO == "Lesbian/gay" &
-#                                        age_shareper$Gender == "Male"],
-#                     rev(age_shareper$Age[age_shareper$SO == "Lesbian/gay" &
-#                                            age_shareper$Gender == "Male"])),
-#               y = c(age_shareper$`0.025quant`[age_shareper$SO == "Lesbian/gay" &
-#                                                 age_shareper$Gender == "Male"],
-#                     rev(age_shareper$`0.975quant`[age_shareper$SO == 
-#                                                     "Lesbian/gay" &
-#                                                     age_shareper$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "", 
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("h. Period", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(per_shareper$Period[per_shareper$SO == "Lesbian/gay"],
-#             per_shareper$`0.5quant`[per_shareper$SO == "Lesbian/gay"],
-#             lwd = 2, col = "goldenrod")
-#       polygon(x = c(per_shareper$Period[per_shareper$SO == "Lesbian/gay" ],
-#                     rev(per_shareper$Period[per_shareper$SO == "Lesbian/gay"])),
-#               y = c(per_shareper$`0.025quant`[per_shareper$SO == "Lesbian/gay"],
-#                     rev(per_shareper$`0.975quant`[per_shareper$SO == "Lesbian/gay"])),
-#               col = alpha("goldenrod", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("i. Cohort - female", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(coh_shareper$Cohort[coh_shareper$SO == "Lesbian/gay" &
-#                                   coh_shareper$Gender == "Female"],
-#             coh_shareper$`0.5quant`[coh_shareper$SO == "Lesbian/gay" &
-#                                       coh_shareper$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(coh_shareper$Cohort[coh_shareper$SO == "Lesbian/gay" &
-#                                           coh_shareper$Gender == "Female"],
-#                     rev(coh_shareper$Cohort[coh_shareper$SO == "Lesbian/gay" &
-#                                               coh_shareper$Gender == "Female"])),
-#               y = c(coh_shareper$`0.025quant`[coh_shareper$SO == "Lesbian/gay" &
-#                                                 coh_shareper$Gender == "Female"],
-#                     rev(coh_shareper$`0.975quant`[coh_shareper$SO == "Lesbian/gay" &
-#                                                     coh_shareper$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("j. Cohort - male", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(coh_shareper$Cohort[coh_shareper$SO == "Lesbian/gay" &
-#                                   coh_shareper$Gender == "Male"],
-#             coh_shareper$`0.5quant`[coh_shareper$SO == "Lesbian/gay" &
-#                                       coh_shareper$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(coh_shareper$Cohort[coh_shareper$SO == "Lesbian/gay" &
-#                                           coh_shareper$Gender == "Male"],
-#                     rev(coh_shareper$Cohort[coh_shareper$SO == "Lesbian/gay" &
-#                                               coh_shareper$Gender == "Male"])),
-#               y = c(coh_shareper$`0.025quant`[coh_shareper$SO == "Lesbian/gay" &
-#                                                 coh_shareper$Gender == "Male"],
-#                     rev(coh_shareper$`0.975quant`[coh_shareper$SO == "Lesbian/gay" &
-#                                                     coh_shareper$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#   }
-# }
-# dev.off()
-# 
-# ## Shared Cohort####
-# 
-# ### Prep Age ####
-# 
-# ## BI
-# age_shareco <- mod_shareco$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareco,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Age") %>% 
-#   left_join(age_info,
-#             by = c("Term" = "age_idx")) %>% 
-#   mutate(Age = age,
-#          SO = "Bisexual") 
-# 
-# ## LG
-# lg_age_shareco <- mod_lg_shareco$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareco,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Age") %>% 
-#   left_join(age_info,
-#             by = c("Term" = "age_idx")) %>% 
-#   mutate(Age = age,
-#          SO = "Lesbian/gay")
-# 
-# ## Combine
-# age_shareco <- bind_rows(age_shareco, lg_age_shareco) %>% 
-#   arrange(SO, Term)
-# 
-# ### Prep Period ####
-# 
-# ## BI
-# per_shareco <- mod_shareco$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareco,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Period") %>% 
-#   left_join(per_info,
-#             by = c("Term" = "period_idx")) %>% 
-#   mutate(Period = period,
-#          SO = "Bisexual")
-# 
-# ## LG
-# lg_per_shareco <- mod_lg_shareco$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareco,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Period") %>% 
-#   left_join(per_info,
-#             by = c("Term" = "period_idx")) %>% 
-#   mutate(Period = period,
-#          SO = "Lesbian/gay")
-# 
-# ## Combine
-# per_shareco <- bind_rows(per_shareco, lg_per_shareco) %>% 
-#   arrange(SO, Term)
-# 
-# ### Prep Cohort ####
-# 
-# ## BI
-# coh_shareco <- mod_shareco$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareco,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Cohort") %>% 
-#   left_join(coh_info,
-#             by = c("Term" = "cohort_idx")) %>% 
-#   mutate(Cohort = cohort,
-#          SO = "Bisexual")
-# 
-# ## LG
-# lg_coh_shareco <- mod_lg_shareco$summary.lincomb.derived %>%
-#   left_join(lincombs_info_shareco,
-#             by = c("ID" = "LC_Index")) %>% 
-#   drop_na(Term) %>%  
-#   mutate(Gender = case_when(Gender == 1 ~ "Female",
-#                          Gender == 2 ~ "Male",
-#                          TRUE ~ "Shared")) %>%
-#   filter(TermName == "Cohort") %>% 
-#   left_join(coh_info,
-#             by = c("Term" = "cohort_idx")) %>% 
-#   mutate(Cohort = cohort,
-#          SO = "Lesbian/gay")
-# 
-# coh_shareco <- bind_rows(coh_shareco, lg_coh_shareco) %>% 
-#   arrange(SO, Term)
-# 
-# ## Get limits
-# age_shareco %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# per_shareco %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# coh_shareco %>% 
-#   dplyr::summarize(lower = min(`0.025quant`),
-#             upper = max(`0.975quant`))
-# 
-# A_xlims <- c(14, 79)
-# P_xlims <- c(2013.75, 2021.25) #c(2014, 2021)
-# C_xlims <- c(1935, 2007)
-# 
-# shareco_ylims <- c(-0.45, 0.45)
-# 
-# ### Plot ####
-# png("plots/GI_Q2/SharedCoh_10panel_curvature.png", 
-#     width = 300*10, height = 300*5, res=300)
-# {
-#    par(mfrow = c(2,5), lend = 1)
-#    par(mar=c(5,0,2,0))
-#    par(oma=c(0,4,2,1))
-#    
-#    
-#   ## Bisexual 
-#   {
-#     { 
-#        ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        mtext("Bisexual", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
-#        
-#        ## title
-#        text("a. Age - female", x= 15, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## Log odds axis
-#        axis(2, at = seq(-.45, .45, .15), cex=0.5, labels = FALSE)
-#        mtext(side = 2, round(seq(-.45, .45, .15), 2), at = seq(-.45, .45, .15), 
-#              cex=0.5, line=0.5)
-#        mtext("Second Differences", side = 2, line = 2, cex = 0.6)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(age_shareco$Age[age_shareco$SO == "Bisexual" &
-#                                age_shareco$Gender == "Female"],
-#             age_shareco$`0.5quant`[age_shareco$SO == "Bisexual" &
-#                                       age_shareco$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(age_shareco$Age[age_shareco$SO == "Bisexual" &
-#                                        age_shareco$Gender == "Female"],
-#                     rev(age_shareco$Age[age_shareco$SO == "Bisexual" &
-#                                            age_shareco$Gender == "Female"])),
-#               y = c(age_shareco$`0.025quant`[age_shareco$SO == "Bisexual" &
-#                                                 age_shareco$Gender == "Female"],
-#                     rev(age_shareco$`0.975quant`[age_shareco$SO == 
-#                                                     "Bisexual" &
-#                                                     age_shareco$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        ## title
-#        text("b. Age - male", x= 15, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        
-#       ## Ests
-#       lines(age_shareco$Age[age_shareco$SO == "Bisexual" &
-#                                age_shareco$Gender == "Male"],
-#             age_shareco$`0.5quant`[age_shareco$SO == "Bisexual" &
-#                                       age_shareco$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(age_shareco$Age[age_shareco$SO == "Bisexual" &
-#                                        age_shareco$Gender == "Male"],
-#                     rev(age_shareco$Age[age_shareco$SO == "Bisexual" &
-#                                            age_shareco$Gender == "Male"])),
-#               y = c(age_shareco$`0.025quant`[age_shareco$SO == "Bisexual" &
-#                                                 age_shareco$Gender == "Male"],
-#                     rev(age_shareco$`0.975quant`[age_shareco$SO == 
-#                                                     "Bisexual" &
-#                                                     age_shareco$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#       ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "", 
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("c. Period - female", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        
-#       ## Ests
-#       lines(per_shareco$Period[per_shareco$SO == "Bisexual" &
-#                                  per_shareco$Gender == "Female"],
-#             per_shareco$`0.5quant`[per_shareco$SO == "Bisexual" &
-#                                      per_shareco$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(per_shareco$Period[per_shareco$SO == "Bisexual" &
-#                                          per_shareco$Gender == "Female"],
-#                     rev(per_shareco$Period[per_shareco$SO == "Bisexual" &
-#                                              per_shareco$Gender == "Female"])),
-#               y = c(per_shareco$`0.025quant`[per_shareco$SO == "Bisexual" &
-#                                                per_shareco$Gender == "Female"],
-#                     rev(per_shareco$`0.975quant`[per_shareco$SO == "Bisexual" &
-#                                                    per_shareco$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "", 
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("d. Period - male", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        
-#       ## Ests
-#       lines(per_shareco$Period[per_shareco$SO == "Bisexual" &
-#                                  per_shareco$Gender == "Male"],
-#             per_shareco$`0.5quant`[per_shareco$SO == "Bisexual" &
-#                                      per_shareco$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(per_shareco$Period[per_shareco$SO == "Bisexual" &
-#                                          per_shareco$Gender == "Male"],
-#                     rev(per_shareco$Period[per_shareco$SO == "Bisexual" &
-#                                              per_shareco$Gender == "Male"])),
-#               y = c(per_shareco$`0.025quant`[per_shareco$SO == "Bisexual" &
-#                                                per_shareco$Gender == "Male"],
-#                     rev(per_shareco$`0.975quant`[per_shareco$SO == "Bisexual" &
-#                                                    per_shareco$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("e. Cohort", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        
-#       ## Ests
-#       lines(coh_shareco$Cohort[coh_shareco$SO == "Bisexual"],
-#             coh_shareco$`0.5quant`[coh_shareco$SO == "Bisexual"],
-#             lwd = 2, col = "goldenrod")
-#       polygon(x = c(coh_shareco$Cohort[coh_shareco$SO == "Bisexual"],
-#                     rev(coh_shareco$Cohort[coh_shareco$SO == "Bisexual"])),
-#               y = c(coh_shareco$`0.025quant`[coh_shareco$SO == "Bisexual"],
-#                     rev(coh_shareco$`0.975quant`[coh_shareco$SO == "Bisexual"])),
-#               col = alpha("goldenrod", 0.35), border = FALSE)
-#     }
-#     
-#   }
-#   
-#   ## Lesbian/gay
-#   {
-#     { 
-#        ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        mtext("Lesbian/gay", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
-#        
-#        ## title
-#        text("f. Age - female", x= 15, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## Log odds axis
-#        axis(2, at = seq(-.45, .45, .15), cex=0.5, labels = FALSE)
-#        mtext(side = 2, round(seq(-.45, .45, .15), 2), at = seq(-.45, .45, .15), 
-#              cex=0.5, line=0.5)
-#        mtext("Second Differences", side = 2, line = 2, cex = 0.6)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#       ## Ests
-#       lines(age_shareco$Age[age_shareco$SO == "Lesbian/gay" &
-#                               age_shareco$Gender == "Female"],
-#             age_shareco$`0.5quant`[age_shareco$SO == "Lesbian/gay" &
-#                                      age_shareco$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(age_shareco$Age[age_shareco$SO == "Lesbian/gay" &
-#                                       age_shareco$Gender == "Female"],
-#                     rev(age_shareco$Age[age_shareco$SO == "Lesbian/gay" &
-#                                           age_shareco$Gender == "Female"])),
-#               y = c(age_shareco$`0.025quant`[age_shareco$SO == "Lesbian/gay" &
-#                                                age_shareco$Gender == "Female"],
-#                     rev(age_shareco$`0.975quant`[age_shareco$SO == 
-#                                                    "Lesbian/gay" &
-#                                                    age_shareco$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Age
-#        plot(NA, xlim = A_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        
-#        ## title
-#        text("g. Age - male", x= 15, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Age axis
-#        mtext("Age", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        ## y = 0
-#       abline(h = 0)
-#       
-#       ## Ests
-#       lines(age_shareco$Age[age_shareco$SO == "Lesbian/gay" &
-#                               age_shareco$Gender == "Male"],
-#             age_shareco$`0.5quant`[age_shareco$SO == "Lesbian/gay" &
-#                                      age_shareco$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(age_shareco$Age[age_shareco$SO == "Lesbian/gay" &
-#                                       age_shareco$Gender == "Male"],
-#                     rev(age_shareco$Age[age_shareco$SO == "Lesbian/gay" &
-#                                           age_shareco$Gender == "Male"])),
-#               y = c(age_shareco$`0.025quant`[age_shareco$SO == "Lesbian/gay" &
-#                                                age_shareco$Gender == "Male"],
-#                     rev(age_shareco$`0.975quant`[age_shareco$SO == 
-#                                                    "Lesbian/gay" &
-#                                                    age_shareco$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "", 
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("h. Period - female", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        
-#       ## Ests
-#       lines(per_shareco$Period[per_shareco$SO == "Lesbian/gay" &
-#                                  per_shareco$Gender == "Female"],
-#             per_shareco$`0.5quant`[per_shareco$SO == "Lesbian/gay" &
-#                                      per_shareco$Gender == "Female"],
-#             lwd = 2, col = "navy")
-#       polygon(x = c(per_shareco$Period[per_shareco$SO == "Lesbian/gay" &
-#                                          per_shareco$Gender == "Female"],
-#                     rev(per_shareco$Period[per_shareco$SO == "Lesbian/gay" &
-#                                              per_shareco$Gender == "Female"])),
-#               y = c(per_shareco$`0.025quant`[per_shareco$SO == "Lesbian/gay" &
-#                                                per_shareco$Gender == "Female"],
-#                     rev(per_shareco$`0.975quant`[per_shareco$SO == "Lesbian/gay" &
-#                                                    per_shareco$Gender == "Female"])),
-#               col = alpha("navy", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Period
-#        plot(NA, xlim = P_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "", 
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("i. Period - male", x= 2014, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Period axis
-#        mtext("Period", side = 1, line = 2, cex=0.6)
-#        axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, 2014:2021, at = 2014:2021, 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        
-#       ## Ests
-#       lines(per_shareco$Period[per_shareco$SO == "Lesbian/gay" &
-#                                  per_shareco$Gender == "Male"],
-#             per_shareco$`0.5quant`[per_shareco$SO == "Lesbian/gay" &
-#                                      per_shareco$Gender == "Male"],
-#             lwd = 2, col = "forestgreen")
-#       polygon(x = c(per_shareco$Period[per_shareco$SO == "Lesbian/gay" &
-#                                          per_shareco$Gender == "Male"],
-#                     rev(per_shareco$Period[per_shareco$SO == "Lesbian/gay" &
-#                                              per_shareco$Gender == "Male"])),
-#               y = c(per_shareco$`0.025quant`[per_shareco$SO == "Lesbian/gay" &
-#                                                per_shareco$Gender == "Male"],
-#                     rev(per_shareco$`0.975quant`[per_shareco$SO == "Lesbian/gay" &
-#                                                    per_shareco$Gender == "Male"])),
-#               col = alpha("forestgreen", 0.35), border = FALSE)
-#     }
-#     
-#     { 
-#        ## Cohort
-#        plot(NA, xlim = C_xlims, ylim = shareage_ylims,
-#             xlab = "", ylab = "",
-#             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-#        ## title
-#        text("j. Cohort", x= 1938, y= 0.43, cex=.9, adj=0)
-#        
-#        ## Cohort axis
-#        mtext("Cohort", side = 1, line = 2, cex=0.6)
-#        axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
-#        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
-#              cex=0.5, line=0.5)
-#        
-#        ## y = 0
-#        abline(h = 0)
-#        
-#        
-#       ## Ests
-#       lines(coh_shareco$Cohort[coh_shareco$SO == "Lesbian/gay"],
-#             coh_shareco$`0.5quant`[coh_shareco$SO == "Lesbian/gay"],
-#             lwd = 2, col = "goldenrod")
-#       polygon(x = c(coh_shareco$Cohort[coh_shareco$SO == "Lesbian/gay"],
-#                     rev(coh_shareco$Cohort[coh_shareco$SO == "Lesbian/gay"])),
-#               y = c(coh_shareco$`0.025quant`[coh_shareco$SO == "Lesbian/gay"],
-#                     rev(coh_shareco$`0.975quant`[coh_shareco$SO == "Lesbian/gay"])),
-#               col = alpha("goldenrod", 0.35), border = FALSE)
-#     }
-#     
-#   }
-# }
-# dev.off()
-# 
+#
+# Manuscript plots ####
+
+## Shared Age ####
+
+### Prep Age ####
+
+age_shareage <- mod_shareage$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareage,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Age") %>%
+  left_join(age_info,
+            by = c("Term" = "age_idx")) %>%
+  mutate(Age = age) %>%
+  arrange(Term)
+
+### Prep Period ####
+
+per_shareage <- mod_shareage$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareage,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Period") %>%
+  left_join(per_info,
+            by = c("Term" = "period_idx")) %>%
+  mutate(Period = period) %>%
+  arrange(Term)
+
+### Prep Cohort ####
+
+coh_shareage <- mod_shareage$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareage,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Cohort") %>%
+  left_join(coh_info,
+            by = c("Term" = "cohort_idx")) %>%
+  mutate(Cohort = cohort) %>%
+  arrange(Term)
+
+## Get limits
+age_shareage %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+            upper = max(`0.975quant`))
+per_shareage %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+            upper = max(`0.975quant`))
+coh_shareage %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+            upper = max(`0.975quant`))
+
+A_xlims <- c(14, 79)
+P_xlims <- c(2013.75, 2021.25) #c(2014, 2021)
+C_xlims <- c(1935, 2007)
+
+shareage_ylims <- c(-1.2, 1.2)
+
+
+### Plot ####
+png("plots/GI_Q2/SharedAge_panel_curvature.png")
+    # width = 300*3, height = 300*3, res=300)
+{
+  par(mfrow = c(3,3), lend = 1)
+  par(mar=c(5,0,2,0))
+  par(oma=c(0,4,2,1))
+
+  ## Transwoman
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+
+      mtext("Transwoman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+
+      ## title
+      text("a. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      
+      ## x-axis
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+
+      ## y = 0
+      abline(h = 0)
+
+      ## Ests
+      lines(age_shareage$Age[age_shareage$Gender == "Shared"],
+            age_shareage$`0.5quant`[age_shareage$Gender == "Shared"],
+            lwd = 2, col = "goldenrod")
+      ## Intervals
+      polygon(x = c(age_shareage$Age[age_shareage$Gender == "Shared"],
+                    rev(age_shareage$Age[age_shareage$Gender == "Shared"])),
+              y = c(age_shareage$`0.025quant`[age_shareage$Gender == "Shared"],
+                    rev(age_shareage$`0.975quant`[age_shareage$Gender ==
+                                                    "Shared"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("b. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+
+      ## y = 0
+      abline(h = 0)
+
+      ## Ests
+      lines(per_shareage$Period[per_shareage$Gender == "Transwoman"],
+            per_shareage$`0.5quant`[per_shareage$Gender == "Transwoman"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareage$Period[per_shareage$Gender == "Transwoman"],
+                    rev(per_shareage$Period[per_shareage$Gender == "Transwoman"])),
+              y = c(per_shareage$`0.025quant`[per_shareage$Gender == "Transwoman"],
+                    rev(per_shareage$`0.975quant`[per_shareage$Gender ==
+                                                    "Transwoman"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("c. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+
+      ## y = 0
+      abline(h = 0)
+
+      ## Ests
+      lines(coh_shareage$Cohort[coh_shareage$Gender == "Transwoman"],
+            coh_shareage$`0.5quant`[coh_shareage$Gender == "Transwoman"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transwoman"],
+                    rev(coh_shareage$Cohort[coh_shareage$Gender == "Transwoman"])),
+              y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transwoman"],
+                    rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
+                                                    "Transwoman"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+
+  }
+
+  ## Transman
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+
+      ## title
+      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      mtext("Transman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+
+      ## x-axis 
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+
+      ## y = 0
+      abline(h = 0)
+
+      ## Ests
+      lines(age_shareage$Age[age_shareage$Gender == "Shared"],
+            age_shareage$`0.5quant`[age_shareage$Gender == "Shared"],
+            lwd = 2, col = "goldenrod")
+      polygon(x = c(age_shareage$Age[age_shareage$Gender == "Shared"],
+                    rev(age_shareage$Age[age_shareage$Gender == "Shared"])),
+              y = c(age_shareage$`0.025quant`[age_shareage$Gender == "Shared"],
+                    rev(age_shareage$`0.975quant`[age_shareage$Gender ==
+                                                    "Shared"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+
+    {
+      ## Period
+       plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+            xlab = "", ylab = "",
+            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+       ## title
+       text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+
+       ## Period axis
+       mtext("Period", side = 1, line = 2, cex=0.6)
+       axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+       mtext(side = 1, 2014:2021, at = 2014:2021,
+             cex=0.5, line=0.5)
+
+       ## y = 0
+       abline(h = 0)
+
+      ## Ests
+      lines(per_shareage$Period[per_shareage$Gender == "Transman"],
+            per_shareage$`0.5quant`[per_shareage$Gender == "Transman"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareage$Period[per_shareage$Gender == "Transman"],
+                    rev(per_shareage$Period[per_shareage$Gender == "Transman"])),
+              y = c(per_shareage$`0.025quant`[per_shareage$Gender == "Transman"],
+                    rev(per_shareage$`0.975quant`[per_shareage$Gender == 
+                                                    "Transman"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+
+    {
+      ## Cohort
+       plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+            xlab = "", ylab = "",
+            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+       ## title
+       text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+
+       ## Cohort axis
+       mtext("Cohort", side = 1, line = 2, cex=0.6)
+       axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+       mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+             cex=0.5, line=0.5)
+
+       ## y = 0
+       abline(h = 0)
+
+      ## Ests
+      lines(coh_shareage$Cohort[coh_shareage$Gender == "Transman"],
+            coh_shareage$`0.5quant`[coh_shareage$Gender == "Transman"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transman"],
+                    rev(coh_shareage$Cohort[coh_shareage$Gender == "Transman"])),
+              y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transman"],
+                    rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
+                                                    "Transman"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+
+  }
+  
+  ## Nonbinary
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      
+      ## title
+      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      mtext("NB/GNC", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## x-axis 
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(age_shareage$Age[age_shareage$Gender == "Shared"],
+            age_shareage$`0.5quant`[age_shareage$Gender == "Shared"],
+            lwd = 2, col = "goldenrod")
+      polygon(x = c(age_shareage$Age[age_shareage$Gender == "Shared"],
+                    rev(age_shareage$Age[age_shareage$Gender == "Shared"])),
+              y = c(age_shareage$`0.025quant`[age_shareage$Gender == "Shared"],
+                    rev(age_shareage$`0.975quant`[age_shareage$Gender ==
+                                                    "Shared"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(per_shareage$Period[per_shareage$Gender == "NB/GNC"],
+            per_shareage$`0.5quant`[per_shareage$Gender == "NB/GNC"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareage$Period[per_shareage$Gender == "NB/GNC"],
+                    rev(per_shareage$Period[per_shareage$Gender == "NB/GNC"])),
+              y = c(per_shareage$`0.025quant`[per_shareage$Gender == "NB/GNC"],
+                    rev(per_shareage$`0.975quant`[per_shareage$Gender == 
+                                                    "NB/GNC"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(coh_shareage$Cohort[coh_shareage$Gender == "NB/GNC"],
+            coh_shareage$`0.5quant`[coh_shareage$Gender == "NB/GNC"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "NB/GNC"],
+                    rev(coh_shareage$Cohort[coh_shareage$Gender == "NB/GNC"])),
+              y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "NB/GNC"],
+                    rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
+                                                    "NB/GNC"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+    
+  }
+}
+dev.off()
+
+## Shared Period ####
+
+
+### Prep Age ####
+
+age_shareper <- mod_shareper$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareper,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Age") %>%
+  left_join(age_info,
+            by = c("Term" = "age_idx")) %>%
+  mutate(Age = age) %>%
+  arrange(Term)
+
+### Prep Period ####
+
+per_shareper <- mod_shareper$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareper,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Period") %>%
+  left_join(per_info,
+            by = c("Term" = "period_idx")) %>%
+  mutate(Period = period) %>%
+  arrange(Term)
+
+### Prep Cohort ####
+
+coh_shareper <- mod_shareper$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareper,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Cohort") %>%
+  left_join(coh_info,
+            by = c("Term" = "cohort_idx")) %>%
+  mutate(Cohort = cohort) %>%
+  arrange(Term)
+
+## Get limits
+age_shareper %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+                   upper = max(`0.975quant`))
+per_shareper %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+                   upper = max(`0.975quant`))
+coh_shareper %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+                   upper = max(`0.975quant`))
+
+### Plot ####
+png("plots/GI_Q2/SharedPer_panel_curvature.png")
+     # width = 900, height = 900, res=300)
+{
+  par(mfrow = c(3,3), lend = 1)
+  par(mar=c(5,0,2,0))
+  par(oma=c(0,4,2,1))
+  
+  ## Transwoman
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      
+      mtext("Transwoman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## title
+      text("a. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      
+      ## x-axis
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(age_shareper$Age[age_shareper$Gender == "Transwoman"],
+            age_shareper$`0.5quant`[age_shareper$Gender == "Transwoman"],
+            lwd = 2, col = "goldenrod")
+      ## Intervals
+      polygon(x = c(age_shareper$Age[age_shareper$Gender == "Transwoman"],
+                    rev(age_shareper$Age[age_shareper$Gender == "Transwoman"])),
+              y = c(age_shareper$`0.025quant`[age_shareper$Gender == 
+                                                "Transwoman"],
+                    rev(age_shareper$`0.975quant`[age_shareper$Gender ==
+                                                    "Transwoman"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("b. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(per_shareper$Period[per_shareper$Gender == "Shared"],
+            per_shareper$`0.5quant`[per_shareper$Gender == "Shared"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareper$Period[per_shareper$Gender == "Shared"],
+                    rev(per_shareper$Period[per_shareper$Gender == "Shared"])),
+              y = c(per_shareper$`0.025quant`[per_shareper$Gender == "Shared"],
+                    rev(per_shareper$`0.975quant`[per_shareper$Gender ==
+                                                    "Shared"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("c. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(coh_shareper$Cohort[coh_shareper$Gender == "Transwoman"],
+            coh_shareper$`0.5quant`[coh_shareper$Gender == "Transwoman"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareper$Cohort[coh_shareper$Gender == "Transwoman"],
+                    rev(coh_shareper$Cohort[coh_shareper$Gender == "Transwoman"])),
+              y = c(coh_shareper$`0.025quant`[coh_shareper$Gender == "Transwoman"],
+                    rev(coh_shareper$`0.975quant`[coh_shareper$Gender == 
+                                                    "Transwoman"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+    
+  }
+  
+  ## Transman
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      
+      ## title
+      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      mtext("Transman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## x-axis 
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(age_shareper$Age[age_shareper$Gender == "Transman"],
+            age_shareper$`0.5quant`[age_shareper$Gender == "Transman"],
+            lwd = 2, col = "goldenrod")
+      polygon(x = c(age_shareper$Age[age_shareper$Gender == "Transman"],
+                    rev(age_shareper$Age[age_shareper$Gender == "Transman"])),
+              y = c(age_shareper$`0.025quant`[age_shareper$Gender == "Transman"],
+                    rev(age_shareper$`0.975quant`[age_shareper$Gender ==
+                                                    "Transman"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(per_shareper$Period[per_shareper$Gender == "Shared"],
+            per_shareper$`0.5quant`[per_shareper$Gender == "Shared"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareper$Period[per_shareper$Gender == "Shared"],
+                    rev(per_shareper$Period[per_shareper$Gender == "Shared"])),
+              y = c(per_shareper$`0.025quant`[per_shareper$Gender == "Shared"],
+                    rev(per_shareper$`0.975quant`[per_shareper$Gender == 
+                                                    "Shared"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(coh_shareper$Cohort[coh_shareper$Gender == "Transman"],
+            coh_shareper$`0.5quant`[coh_shareper$Gender == "Transman"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareper$Cohort[coh_shareper$Gender == "Transman"],
+                    rev(coh_shareper$Cohort[coh_shareper$Gender == "Transman"])),
+              y = c(coh_shareper$`0.025quant`[coh_shareper$Gender == "Transman"],
+                    rev(coh_shareper$`0.975quant`[coh_shareper$Gender == 
+                                                    "Transman"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+    
+  }
+  
+  ## Nonbinary
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      
+      ## title
+      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      mtext("NB/GNC", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## x-axis 
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(age_shareper$Age[age_shareper$Gender == "NB/GNC"],
+            age_shareper$`0.5quant`[age_shareper$Gender == "NB/GNC"],
+            lwd = 2, col = "goldenrod")
+      polygon(x = c(age_shareper$Age[age_shareper$Gender == "NB/GNC"],
+                    rev(age_shareper$Age[age_shareper$Gender == "NB/GNC"])),
+              y = c(age_shareper$`0.025quant`[age_shareper$Gender == "NB/GNC"],
+                    rev(age_shareper$`0.975quant`[age_shareper$Gender ==
+                                                    "NB/GNC"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(per_shareper$Period[per_shareper$Gender == "Shared"],
+            per_shareper$`0.5quant`[per_shareper$Gender == "Shared"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareper$Period[per_shareper$Gender == "Shared"],
+                    rev(per_shareper$Period[per_shareper$Gender == "Shared"])),
+              y = c(per_shareper$`0.025quant`[per_shareper$Gender == "Shared"],
+                    rev(per_shareper$`0.975quant`[per_shareper$Gender == 
+                                                    "Shared"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(coh_shareper$Cohort[coh_shareper$Gender == "NB/GNC"],
+            coh_shareper$`0.5quant`[coh_shareper$Gender == "NB/GNC"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareper$Cohort[coh_shareper$Gender == "NB/GNC"],
+                    rev(coh_shareper$Cohort[coh_shareper$Gender == "NB/GNC"])),
+              y = c(coh_shareper$`0.025quant`[coh_shareper$Gender == "NB/GNC"],
+                    rev(coh_shareper$`0.975quant`[coh_shareper$Gender == 
+                                                    "NB/GNC"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+    
+  }
+}
+dev.off()
+
+## Shared Cohort####
+
+### Prep Age ####
+
+age_shareco <- mod_shareco$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareco,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Age") %>%
+  left_join(age_info,
+            by = c("Term" = "age_idx")) %>%
+  mutate(Age = age) %>%
+  arrange(Term)
+
+### Prep Period ####
+
+per_shareco <- mod_shareco$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareco,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Period") %>%
+  left_join(per_info,
+            by = c("Term" = "period_idx")) %>%
+  mutate(Period = period) %>%
+  arrange(Term)
+
+### Prep Cohort ####
+
+coh_shareco <- mod_shareco$summary.lincomb.derived %>%
+  left_join(lincombs_info_shareco,
+            by = c("ID" = "LC_Index")) %>%
+  drop_na(Term) %>%
+  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
+                            Gender == 2 ~ "Transman",
+                            Gender == 3 ~ "NB/GNC",
+                            TRUE ~ "Shared")) %>%
+  filter(TermName == "Cohort") %>%
+  left_join(coh_info,
+            by = c("Term" = "cohort_idx")) %>%
+  mutate(Cohort = cohort) %>%
+  arrange(Term)
+
+## Get limits
+age_shareco %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+                   upper = max(`0.975quant`))
+per_shareco %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+                   upper = max(`0.975quant`))
+coh_shareco %>%
+  dplyr::summarize(lower = min(`0.025quant`),
+                   upper = max(`0.975quant`))
+
+### Plot ####
+png("plots/GI_Q2/SharedPer_panel_curvature.png")
+# width = 900, height = 900, res=300)
+{
+  par(mfrow = c(3,3), lend = 1)
+  par(mar=c(5,0,2,0))
+  par(oma=c(0,4,2,1))
+  
+  ## Transwoman
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      
+      mtext("Transwoman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## title
+      text("a. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      
+      ## x-axis
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(age_shareco$Age[age_shareco$Gender == "Transwoman"],
+            age_shareco$`0.5quant`[age_shareco$Gender == "Transwoman"],
+            lwd = 2, col = "goldenrod")
+      ## Intervals
+      polygon(x = c(age_shareco$Age[age_shareco$Gender == "Transwoman"],
+                    rev(age_shareco$Age[age_shareco$Gender == "Transwoman"])),
+              y = c(age_shareco$`0.025quant`[age_shareco$Gender == 
+                                                "Transwoman"],
+                    rev(age_shareco$`0.975quant`[age_shareco$Gender ==
+                                                    "Transwoman"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("b. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(per_shareco$Period[per_shareco$Gender == "Transwoman"],
+            per_shareco$`0.5quant`[per_shareco$Gender == "Transwoman"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareco$Period[per_shareco$Gender == "Transwoman"],
+                    rev(per_shareco$Period[per_shareco$Gender == "Transwoman"])),
+              y = c(per_shareco$`0.025quant`[per_shareco$Gender == "Transwoman"],
+                    rev(per_shareco$`0.975quant`[per_shareco$Gender ==
+                                                    "Transwoman"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("c. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(coh_shareco$Cohort[coh_shareco$Gender == "Shared"],
+            coh_shareco$`0.5quant`[coh_shareco$Gender == "Shared"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareco$Cohort[coh_shareco$Gender == "Shared"],
+                    rev(coh_shareco$Cohort[coh_shareco$Gender == "Shared"])),
+              y = c(coh_shareco$`0.025quant`[coh_shareco$Gender == "Shared"],
+                    rev(coh_shareco$`0.975quant`[coh_shareco$Gender == 
+                                                    "Shared"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+    
+  }
+  
+  ## Transman
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      
+      ## title
+      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      mtext("Transman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## x-axis 
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(age_shareco$Age[age_shareco$Gender == "Transman"],
+            age_shareco$`0.5quant`[age_shareco$Gender == "Transman"],
+            lwd = 2, col = "goldenrod")
+      polygon(x = c(age_shareco$Age[age_shareco$Gender == "Transman"],
+                    rev(age_shareco$Age[age_shareco$Gender == "Transman"])),
+              y = c(age_shareco$`0.025quant`[age_shareco$Gender == "Transman"],
+                    rev(age_shareco$`0.975quant`[age_shareco$Gender ==
+                                                    "Transman"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(per_shareco$Period[per_shareco$Gender == "Transman"],
+            per_shareco$`0.5quant`[per_shareco$Gender == "Transman"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareco$Period[per_shareco$Gender == "Transman"],
+                    rev(per_shareco$Period[per_shareco$Gender == "Transman"])),
+              y = c(per_shareco$`0.025quant`[per_shareco$Gender == "Transman"],
+                    rev(per_shareco$`0.975quant`[per_shareco$Gender == 
+                                                    "Transman"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(coh_shareco$Cohort[coh_shareco$Gender == "Shared"],
+            coh_shareco$`0.5quant`[coh_shareco$Gender == "Shared"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareco$Cohort[coh_shareco$Gender == "Shared"],
+                    rev(coh_shareco$Cohort[coh_shareco$Gender == "Shared"])),
+              y = c(coh_shareco$`0.025quant`[coh_shareco$Gender == "Shared"],
+                    rev(coh_shareco$`0.975quant`[coh_shareco$Gender == 
+                                                    "Shared"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+    
+  }
+  
+  ## Nonbinary
+  {
+    {
+      ## Age
+      plot(NA, xlim = A_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      
+      ## title
+      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      mtext("NB/GNC", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## x-axis 
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+           cex=0.5, labels = FALSE)
+      mtext(side = 2, 
+            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
+            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
+            cex=0.5, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(age_shareco$Age[age_shareco$Gender == "NB/GNC"],
+            age_shareco$`0.5quant`[age_shareco$Gender == "NB/GNC"],
+            lwd = 2, col = "goldenrod")
+      polygon(x = c(age_shareco$Age[age_shareco$Gender == "NB/GNC"],
+                    rev(age_shareco$Age[age_shareco$Gender == "NB/GNC"])),
+              y = c(age_shareco$`0.025quant`[age_shareco$Gender == "NB/GNC"],
+                    rev(age_shareco$`0.975quant`[age_shareco$Gender ==
+                                                    "NB/GNC"])),
+              col = alpha("goldenrod", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Period
+      plot(NA, xlim = P_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, 2014:2021, at = 2014:2021,
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(per_shareco$Period[per_shareco$Gender == "NB/GNC"],
+            per_shareco$`0.5quant`[per_shareco$Gender == "NB/GNC"],
+            lwd = 2, col = "navy")
+      polygon(x = c(per_shareco$Period[per_shareco$Gender == "NB/GNC"],
+                    rev(per_shareco$Period[per_shareco$Gender == "NB/GNC"])),
+              y = c(per_shareco$`0.025quant`[per_shareco$Gender == "NB/GNC"],
+                    rev(per_shareco$`0.975quant`[per_shareco$Gender == 
+                                                    "NB/GNC"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    {
+      ## Cohort
+      plot(NA, xlim = C_xlims, ylim = shareage_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
+            cex=0.5, line=0.5)
+      
+      ## y = 0
+      abline(h = 0)
+      
+      ## Ests
+      lines(coh_shareco$Cohort[coh_shareco$Gender == "Shared"],
+            coh_shareco$`0.5quant`[coh_shareco$Gender == "Shared"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(coh_shareco$Cohort[coh_shareco$Gender == "Shared"],
+                    rev(coh_shareco$Cohort[coh_shareco$Gender == "Shared"])),
+              y = c(coh_shareco$`0.025quant`[coh_shareco$Gender == "Shared"],
+                    rev(coh_shareco$`0.975quant`[coh_shareco$Gender == 
+                                                    "Shared"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+    
+  }
+}
+dev.off()
+
+
