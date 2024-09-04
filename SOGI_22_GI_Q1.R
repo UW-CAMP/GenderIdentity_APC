@@ -442,6 +442,7 @@ tw_PC_per_lo <- post_tw_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transwoman") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
   xlab("Period")+
   theme_classic()
 
@@ -456,6 +457,7 @@ tw_PC_coh_lo <- post_tw_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transwoman") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
   xlab("Cohort")+
   theme_classic()
 
@@ -947,6 +949,7 @@ tm_PC_per_lo <- post_tm_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transman") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
   xlab("Period")+
   theme_classic()
 
@@ -961,6 +964,7 @@ tm_PC_coh_lo <- post_tm_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transman") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
   xlab("Cohort")+
   theme_classic()
 
@@ -1451,6 +1455,7 @@ nbgnc_PC_per_lo <- post_nbgnc_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Nonbinary/Gender Non-conforming") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
   xlab("Period")+
   theme_classic()
 
@@ -1464,6 +1469,7 @@ nbgnc_PC_coh_lo <- post_nbgnc_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Nonbinary/Gender Non-conforming") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
   xlab("Cohort")+
   theme_classic()
 
