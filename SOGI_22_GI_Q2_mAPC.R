@@ -488,8 +488,8 @@ age_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                         Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                         Gender == 2 ~ "Transgender man",
                          Gender == 3 ~ "NB/GNC",
                          TRUE ~ "Shared")) %>%
   filter(TermName == "Age") %>% 
@@ -504,13 +504,13 @@ age_shareage <- mod_shareage$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -519,7 +519,7 @@ age_shareage <- mod_shareage$summary.lincomb.derived %>%
 
 ggsave(filename = "plots/GI_Q2/age_curvatures_shareage.png", age_shareage)
 
-age_shareage_std <- age_shareage + ylim(c(-1, 1))
+age_shareage_std <- age_shareage + ylim(c(-2, 2))
 ggsave(filename = "plots/GI_Q2/age_curvatures_shareage_std.png",
        age_shareage_std)
 ##### P ####
@@ -527,8 +527,8 @@ per_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Period") %>% 
@@ -543,13 +543,13 @@ per_shareage <- mod_shareage$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -558,7 +558,7 @@ per_shareage <- mod_shareage$summary.lincomb.derived %>%
 
 ggsave(filename = "plots/GI_Q2/per_curvatures_shareage.png", per_shareage)
 
-per_shareage_std <- per_shareage + ylim(c(-1, 1))
+per_shareage_std <- per_shareage + ylim(c(-2, 2))
 ggsave(filename = "plots/GI_Q2/per_curvatures_shareage_std.png", 
        per_shareage_std)
 ##### C ####
@@ -566,8 +566,8 @@ coh_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Cohort") %>% 
@@ -582,13 +582,13 @@ coh_shareage <- mod_shareage$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -598,7 +598,7 @@ coh_shareage <- mod_shareage$summary.lincomb.derived %>%
 
 ggsave(filename = "plots/GI_Q2/coh_curvatures_shareage.png", coh_shareage)
 
-coh_shareage_std <- coh_shareage + ylim(c(-1, 1))
+coh_shareage_std <- coh_shareage + ylim(c(-2, 2))
 ggsave(filename = "plots/GI_Q2/coh_curvatures_shareage_std.png",
        coh_shareage_std)
 
@@ -623,8 +623,8 @@ age_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Age") %>% 
@@ -639,13 +639,13 @@ age_shareco <- mod_shareco$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -662,8 +662,8 @@ per_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Period") %>% 
@@ -678,13 +678,13 @@ per_shareco <- mod_shareco$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -693,7 +693,7 @@ per_shareco <- mod_shareco$summary.lincomb.derived %>%
 
 ggsave(filename = "plots/GI_Q2/per_curvatures_shareco.png", per_shareco)
 
-per_shareco_std <- per_shareco + ylim(c(-1,1))
+per_shareco_std <- per_shareco + ylim(c(-2,2))
 ggsave(filename = "plots/GI_Q2/per_curvatures_shareco_std.png",
        per_shareco_std)
 
@@ -702,8 +702,8 @@ coh_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Cohort") %>% 
@@ -718,13 +718,13 @@ coh_shareco <- mod_shareco$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -758,8 +758,8 @@ age_shareper<- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Age") %>% 
@@ -774,13 +774,13 @@ age_shareper<- mod_shareper$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -798,8 +798,8 @@ per_shareper <- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Period") %>% 
@@ -814,13 +814,13 @@ per_shareper <- mod_shareper$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -838,8 +838,8 @@ coh_shareper <- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>% 
   drop_na(Term) %>%  
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Cohort") %>% 
@@ -854,13 +854,13 @@ coh_shareper <- mod_shareper$summary.lincomb.derived %>%
               alpha = 0.5, color = NA) +
   scale_color_manual(values =
                        c("Shared" = "goldenrod",
-                         "Transwoman" = "navy",
-                         "Transman" = "forestgreen",
+                         "Transgender woman" = "navy",
+                         "Transgender man" = "forestgreen",
                          "NB/GNC" = "firebrick")) +
   scale_fill_manual(values =
                       c("Shared" = "goldenrod",
-                        "Transwoman" = "navy",
-                        "Transman" = "forestgreen",
+                        "Transgender woman" = "navy",
+                        "Transgender man" = "forestgreen",
                         "NB/GNC" = "firebrick")) +
   theme_classic() +
   facet_wrap(~Gender) +
@@ -903,8 +903,8 @@ age_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Age") %>%
@@ -919,8 +919,8 @@ per_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Period") %>%
@@ -935,8 +935,8 @@ coh_shareage <- mod_shareage$summary.lincomb.derived %>%
   left_join(lincombs_info_shareage,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Cohort") %>%
@@ -979,7 +979,7 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
 
-      mtext("Transwoman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      mtext("Transgender woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
 
       ## title
       text("a. Age", x= 15, y= 1.05, cex=.9, adj=0)
@@ -1033,14 +1033,14 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
       abline(h = 0)
 
       ## Ests
-      lines(per_shareage$Period[per_shareage$Gender == "Transwoman"],
-            per_shareage$`0.5quant`[per_shareage$Gender == "Transwoman"],
+      lines(per_shareage$Period[per_shareage$Gender == "Transgender woman"],
+            per_shareage$`0.5quant`[per_shareage$Gender == "Transgender woman"],
             lwd = 2, col = "navy")
-      polygon(x = c(per_shareage$Period[per_shareage$Gender == "Transwoman"],
-                    rev(per_shareage$Period[per_shareage$Gender == "Transwoman"])),
-              y = c(per_shareage$`0.025quant`[per_shareage$Gender == "Transwoman"],
+      polygon(x = c(per_shareage$Period[per_shareage$Gender == "Transgender woman"],
+                    rev(per_shareage$Period[per_shareage$Gender == "Transgender woman"])),
+              y = c(per_shareage$`0.025quant`[per_shareage$Gender == "Transgender woman"],
                     rev(per_shareage$`0.975quant`[per_shareage$Gender ==
-                                                    "Transwoman"])),
+                                                    "Transgender woman"])),
               col = alpha("navy", 0.35), border = FALSE)
     }
 
@@ -1062,14 +1062,14 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
       abline(h = 0)
 
       ## Ests
-      lines(coh_shareage$Cohort[coh_shareage$Gender == "Transwoman"],
-            coh_shareage$`0.5quant`[coh_shareage$Gender == "Transwoman"],
+      lines(coh_shareage$Cohort[coh_shareage$Gender == "Transgender woman"],
+            coh_shareage$`0.5quant`[coh_shareage$Gender == "Transgender woman"],
             lwd = 2, col = "firebrick")
-      polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transwoman"],
-                    rev(coh_shareage$Cohort[coh_shareage$Gender == "Transwoman"])),
-              y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transwoman"],
+      polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transgender woman"],
+                    rev(coh_shareage$Cohort[coh_shareage$Gender == "Transgender woman"])),
+              y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transgender woman"],
                     rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
-                                                    "Transwoman"])),
+                                                    "Transgender woman"])),
               col = alpha("firebrick", 0.35), border = FALSE)
     }
 
@@ -1085,7 +1085,7 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
 
       ## title
       text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
-      mtext("Transman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      mtext("Transgender man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
 
       ## x-axis 
       mtext("Age", side = 1, line = 2, cex=0.6)
@@ -1135,14 +1135,14 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
        abline(h = 0)
 
       ## Ests
-      lines(per_shareage$Period[per_shareage$Gender == "Transman"],
-            per_shareage$`0.5quant`[per_shareage$Gender == "Transman"],
+      lines(per_shareage$Period[per_shareage$Gender == "Transgender man"],
+            per_shareage$`0.5quant`[per_shareage$Gender == "Transgender man"],
             lwd = 2, col = "navy")
-      polygon(x = c(per_shareage$Period[per_shareage$Gender == "Transman"],
-                    rev(per_shareage$Period[per_shareage$Gender == "Transman"])),
-              y = c(per_shareage$`0.025quant`[per_shareage$Gender == "Transman"],
+      polygon(x = c(per_shareage$Period[per_shareage$Gender == "Transgender man"],
+                    rev(per_shareage$Period[per_shareage$Gender == "Transgender man"])),
+              y = c(per_shareage$`0.025quant`[per_shareage$Gender == "Transgender man"],
                     rev(per_shareage$`0.975quant`[per_shareage$Gender == 
-                                                    "Transman"])),
+                                                    "Transgender man"])),
               col = alpha("navy", 0.35), border = FALSE)
     }
 
@@ -1164,14 +1164,14 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
        abline(h = 0)
 
       ## Ests
-      lines(coh_shareage$Cohort[coh_shareage$Gender == "Transman"],
-            coh_shareage$`0.5quant`[coh_shareage$Gender == "Transman"],
+      lines(coh_shareage$Cohort[coh_shareage$Gender == "Transgender man"],
+            coh_shareage$`0.5quant`[coh_shareage$Gender == "Transgender man"],
             lwd = 2, col = "firebrick")
-      polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transman"],
-                    rev(coh_shareage$Cohort[coh_shareage$Gender == "Transman"])),
-              y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transman"],
+      polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transgender man"],
+                    rev(coh_shareage$Cohort[coh_shareage$Gender == "Transgender man"])),
+              y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transgender man"],
                     rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
-                                                    "Transman"])),
+                                                    "Transgender man"])),
               col = alpha("firebrick", 0.35), border = FALSE)
     }
 
@@ -1290,8 +1290,8 @@ age_shareper <- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Age") %>%
@@ -1306,8 +1306,8 @@ per_shareper <- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Period") %>%
@@ -1322,8 +1322,8 @@ coh_shareper <- mod_shareper$summary.lincomb.derived %>%
   left_join(lincombs_info_shareper,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Cohort") %>%
@@ -1359,7 +1359,7 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       
-      mtext("Transwoman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      mtext("Transgender woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## title
       text("a. Age", x= 15, y= 1.05, cex=.9, adj=0)
@@ -1383,16 +1383,16 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(age_shareper$Age[age_shareper$Gender == "Transwoman"],
-            age_shareper$`0.5quant`[age_shareper$Gender == "Transwoman"],
+      lines(age_shareper$Age[age_shareper$Gender == "Transgender woman"],
+            age_shareper$`0.5quant`[age_shareper$Gender == "Transgender woman"],
             lwd = 2, col = "goldenrod")
       ## Intervals
-      polygon(x = c(age_shareper$Age[age_shareper$Gender == "Transwoman"],
-                    rev(age_shareper$Age[age_shareper$Gender == "Transwoman"])),
+      polygon(x = c(age_shareper$Age[age_shareper$Gender == "Transgender woman"],
+                    rev(age_shareper$Age[age_shareper$Gender == "Transgender woman"])),
               y = c(age_shareper$`0.025quant`[age_shareper$Gender == 
-                                                "Transwoman"],
+                                                "Transgender woman"],
                     rev(age_shareper$`0.975quant`[age_shareper$Gender ==
-                                                    "Transwoman"])),
+                                                    "Transgender woman"])),
               col = alpha("goldenrod", 0.35), border = FALSE)
     }
     
@@ -1443,14 +1443,14 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(coh_shareper$Cohort[coh_shareper$Gender == "Transwoman"],
-            coh_shareper$`0.5quant`[coh_shareper$Gender == "Transwoman"],
+      lines(coh_shareper$Cohort[coh_shareper$Gender == "Transgender woman"],
+            coh_shareper$`0.5quant`[coh_shareper$Gender == "Transgender woman"],
             lwd = 2, col = "firebrick")
-      polygon(x = c(coh_shareper$Cohort[coh_shareper$Gender == "Transwoman"],
-                    rev(coh_shareper$Cohort[coh_shareper$Gender == "Transwoman"])),
-              y = c(coh_shareper$`0.025quant`[coh_shareper$Gender == "Transwoman"],
+      polygon(x = c(coh_shareper$Cohort[coh_shareper$Gender == "Transgender woman"],
+                    rev(coh_shareper$Cohort[coh_shareper$Gender == "Transgender woman"])),
+              y = c(coh_shareper$`0.025quant`[coh_shareper$Gender == "Transgender woman"],
                     rev(coh_shareper$`0.975quant`[coh_shareper$Gender == 
-                                                    "Transwoman"])),
+                                                    "Transgender woman"])),
               col = alpha("firebrick", 0.35), border = FALSE)
     }
     
@@ -1466,7 +1466,7 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       
       ## title
       text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
-      mtext("Transman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      mtext("Transgender man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## x-axis 
       mtext("Age", side = 1, line = 2, cex=0.6)
@@ -1487,14 +1487,14 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(age_shareper$Age[age_shareper$Gender == "Transman"],
-            age_shareper$`0.5quant`[age_shareper$Gender == "Transman"],
+      lines(age_shareper$Age[age_shareper$Gender == "Transgender man"],
+            age_shareper$`0.5quant`[age_shareper$Gender == "Transgender man"],
             lwd = 2, col = "goldenrod")
-      polygon(x = c(age_shareper$Age[age_shareper$Gender == "Transman"],
-                    rev(age_shareper$Age[age_shareper$Gender == "Transman"])),
-              y = c(age_shareper$`0.025quant`[age_shareper$Gender == "Transman"],
+      polygon(x = c(age_shareper$Age[age_shareper$Gender == "Transgender man"],
+                    rev(age_shareper$Age[age_shareper$Gender == "Transgender man"])),
+              y = c(age_shareper$`0.025quant`[age_shareper$Gender == "Transgender man"],
                     rev(age_shareper$`0.975quant`[age_shareper$Gender ==
-                                                    "Transman"])),
+                                                    "Transgender man"])),
               col = alpha("goldenrod", 0.35), border = FALSE)
     }
     
@@ -1545,14 +1545,14 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(coh_shareper$Cohort[coh_shareper$Gender == "Transman"],
-            coh_shareper$`0.5quant`[coh_shareper$Gender == "Transman"],
+      lines(coh_shareper$Cohort[coh_shareper$Gender == "Transgender man"],
+            coh_shareper$`0.5quant`[coh_shareper$Gender == "Transgender man"],
             lwd = 2, col = "firebrick")
-      polygon(x = c(coh_shareper$Cohort[coh_shareper$Gender == "Transman"],
-                    rev(coh_shareper$Cohort[coh_shareper$Gender == "Transman"])),
-              y = c(coh_shareper$`0.025quant`[coh_shareper$Gender == "Transman"],
+      polygon(x = c(coh_shareper$Cohort[coh_shareper$Gender == "Transgender man"],
+                    rev(coh_shareper$Cohort[coh_shareper$Gender == "Transgender man"])),
+              y = c(coh_shareper$`0.025quant`[coh_shareper$Gender == "Transgender man"],
                     rev(coh_shareper$`0.975quant`[coh_shareper$Gender == 
-                                                    "Transman"])),
+                                                    "Transgender man"])),
               col = alpha("firebrick", 0.35), border = FALSE)
     }
     
@@ -1670,8 +1670,8 @@ age_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Age") %>%
@@ -1686,8 +1686,8 @@ per_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Period") %>%
@@ -1702,8 +1702,8 @@ coh_shareco <- mod_shareco$summary.lincomb.derived %>%
   left_join(lincombs_info_shareco,
             by = c("ID" = "LC_Index")) %>%
   drop_na(Term) %>%
-  mutate(Gender = case_when(Gender == 1 ~ "Transwoman",
-                            Gender == 2 ~ "Transman",
+  mutate(Gender = case_when(Gender == 1 ~ "Transgender woman",
+                            Gender == 2 ~ "Transgender man",
                             Gender == 3 ~ "NB/GNC",
                             TRUE ~ "Shared")) %>%
   filter(TermName == "Cohort") %>%
@@ -1739,7 +1739,7 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       
-      mtext("Transwoman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      mtext("Transgender woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## title
       text("a. Age", x= 15, y= 1.05, cex=.9, adj=0)
@@ -1763,16 +1763,16 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(age_shareco$Age[age_shareco$Gender == "Transwoman"],
-            age_shareco$`0.5quant`[age_shareco$Gender == "Transwoman"],
+      lines(age_shareco$Age[age_shareco$Gender == "Transgender woman"],
+            age_shareco$`0.5quant`[age_shareco$Gender == "Transgender woman"],
             lwd = 2, col = "goldenrod")
       ## Intervals
-      polygon(x = c(age_shareco$Age[age_shareco$Gender == "Transwoman"],
-                    rev(age_shareco$Age[age_shareco$Gender == "Transwoman"])),
+      polygon(x = c(age_shareco$Age[age_shareco$Gender == "Transgender woman"],
+                    rev(age_shareco$Age[age_shareco$Gender == "Transgender woman"])),
               y = c(age_shareco$`0.025quant`[age_shareco$Gender == 
-                                                "Transwoman"],
+                                                "Transgender woman"],
                     rev(age_shareco$`0.975quant`[age_shareco$Gender ==
-                                                    "Transwoman"])),
+                                                    "Transgender woman"])),
               col = alpha("goldenrod", 0.35), border = FALSE)
     }
     
@@ -1794,14 +1794,14 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(per_shareco$Period[per_shareco$Gender == "Transwoman"],
-            per_shareco$`0.5quant`[per_shareco$Gender == "Transwoman"],
+      lines(per_shareco$Period[per_shareco$Gender == "Transgender woman"],
+            per_shareco$`0.5quant`[per_shareco$Gender == "Transgender woman"],
             lwd = 2, col = "navy")
-      polygon(x = c(per_shareco$Period[per_shareco$Gender == "Transwoman"],
-                    rev(per_shareco$Period[per_shareco$Gender == "Transwoman"])),
-              y = c(per_shareco$`0.025quant`[per_shareco$Gender == "Transwoman"],
+      polygon(x = c(per_shareco$Period[per_shareco$Gender == "Transgender woman"],
+                    rev(per_shareco$Period[per_shareco$Gender == "Transgender woman"])),
+              y = c(per_shareco$`0.025quant`[per_shareco$Gender == "Transgender woman"],
                     rev(per_shareco$`0.975quant`[per_shareco$Gender ==
-                                                    "Transwoman"])),
+                                                    "Transgender woman"])),
               col = alpha("navy", 0.35), border = FALSE)
     }
     
@@ -1846,7 +1846,7 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       
       ## title
       text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
-      mtext("Transman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      mtext("Transgender man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## x-axis 
       mtext("Age", side = 1, line = 2, cex=0.6)
@@ -1867,14 +1867,14 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(age_shareco$Age[age_shareco$Gender == "Transman"],
-            age_shareco$`0.5quant`[age_shareco$Gender == "Transman"],
+      lines(age_shareco$Age[age_shareco$Gender == "Transgender man"],
+            age_shareco$`0.5quant`[age_shareco$Gender == "Transgender man"],
             lwd = 2, col = "goldenrod")
-      polygon(x = c(age_shareco$Age[age_shareco$Gender == "Transman"],
-                    rev(age_shareco$Age[age_shareco$Gender == "Transman"])),
-              y = c(age_shareco$`0.025quant`[age_shareco$Gender == "Transman"],
+      polygon(x = c(age_shareco$Age[age_shareco$Gender == "Transgender man"],
+                    rev(age_shareco$Age[age_shareco$Gender == "Transgender man"])),
+              y = c(age_shareco$`0.025quant`[age_shareco$Gender == "Transgender man"],
                     rev(age_shareco$`0.975quant`[age_shareco$Gender ==
-                                                    "Transman"])),
+                                                    "Transgender man"])),
               col = alpha("goldenrod", 0.35), border = FALSE)
     }
     
@@ -1896,14 +1896,14 @@ png("plots/GI_Q2/SharedPer_panel_curvature.png")
       abline(h = 0)
       
       ## Ests
-      lines(per_shareco$Period[per_shareco$Gender == "Transman"],
-            per_shareco$`0.5quant`[per_shareco$Gender == "Transman"],
+      lines(per_shareco$Period[per_shareco$Gender == "Transgender man"],
+            per_shareco$`0.5quant`[per_shareco$Gender == "Transgender man"],
             lwd = 2, col = "navy")
-      polygon(x = c(per_shareco$Period[per_shareco$Gender == "Transman"],
-                    rev(per_shareco$Period[per_shareco$Gender == "Transman"])),
-              y = c(per_shareco$`0.025quant`[per_shareco$Gender == "Transman"],
+      polygon(x = c(per_shareco$Period[per_shareco$Gender == "Transgender man"],
+                    rev(per_shareco$Period[per_shareco$Gender == "Transgender man"])),
+              y = c(per_shareco$`0.025quant`[per_shareco$Gender == "Transgender man"],
                     rev(per_shareco$`0.975quant`[per_shareco$Gender == 
-                                                    "Transman"])),
+                                                    "Transgender man"])),
               col = alpha("navy", 0.35), border = FALSE)
     }
     

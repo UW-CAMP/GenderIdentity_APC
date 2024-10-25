@@ -333,7 +333,7 @@ tw_AC_age_lo <- post_tw_AC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Log Odds") +
   xlab("Age")+
   theme_classic()
@@ -347,7 +347,7 @@ tw_AC_coh_lo <- post_tw_AC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Log Odds") +
   xlab("Cohort")+
   theme_classic()
@@ -361,7 +361,7 @@ tw_AC_age_p <- post_tw_AC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Prevalence") +
   xlab("Age")+
   theme_classic()
@@ -375,7 +375,7 @@ tw_AC_coh_p <- post_tw_AC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Prevalence") +
   xlab("Cohort")+
   theme_classic()
@@ -440,13 +440,14 @@ tw_PC_per_lo <- post_tw_PC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
   xlab("Period")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/tw_PC_per_logodds.png", tw_PC_per_lo)
+ggsave(filename = "plots/GI_Q1/tw_PC_per_logodds.png", tw_PC_per_lo,
+       width = 2.66, height = 2.66, units = "in")
 
 
 tw_PC_coh_lo <- post_tw_PC_plot %>%
@@ -455,13 +456,14 @@ tw_PC_coh_lo <- post_tw_PC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
   xlab("Cohort")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/tw_PC_coh_logodds.png", tw_PC_coh_lo)
+ggsave(filename = "plots/GI_Q1/tw_PC_coh_logodds.png", tw_PC_coh_lo,
+       width = 2.66, height = 2.66, units = "in")
 
 ##### Prevalences ####
 
@@ -471,7 +473,7 @@ tw_PC_per_p <- post_tw_PC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Prevalence") +
   xlab("Period")+
   theme_classic()
@@ -485,7 +487,7 @@ tw_PC_coh_p <- post_tw_PC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Prevalence") +
   xlab("Cohort")+
   theme_classic()
@@ -543,7 +545,7 @@ tw_AP_age_lo <- post_tw_AP_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Log Odds") +
   xlab("Age")+
   theme_classic()
@@ -557,7 +559,7 @@ tw_AP_per_lo <- post_tw_AP_plot %>%
   geom_line(color = "goldenrod") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "goldenrod",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Log Odds") +
   xlab("Period")+
   theme_classic()
@@ -618,7 +620,7 @@ tw_C_coh_lo <- post_tw_C_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Log Odds") +
   xlab("Cohort")+
   theme_classic()
@@ -632,7 +634,7 @@ tw_C_coh_p <- post_tw_C_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transwoman") +
+  ggtitle("Transgender Woman") +
   ylab("Prevalence") +
   xlab("Cohort")+
   theme_classic()
@@ -843,7 +845,7 @@ tm_AC_age_lo <- post_tm_AC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Log Odds") +
   xlab("Age")+
   theme_classic()
@@ -857,7 +859,7 @@ tm_AC_coh_lo <- post_tm_AC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Log Odds") +
   xlab("Cohort")+
   theme_classic()
@@ -872,7 +874,7 @@ tm_AC_age_p <- post_tm_AC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Prevalence") +
   xlab("Age")+
   theme_classic()
@@ -886,7 +888,7 @@ tm_AC_coh_p <- post_tm_AC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Prevalence") +
   xlab("Cohort")+
   theme_classic()
@@ -947,13 +949,14 @@ tm_PC_per_lo <- post_tm_PC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
   xlab("Period")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/tm_PC_per_logodds.png", tm_PC_per_lo)
+ggsave(filename = "plots/GI_Q1/tm_PC_per_logodds.png", tm_PC_per_lo,
+       width = 2.66, height = 2.66, units = "in")
 
 
 tm_PC_coh_lo <- post_tm_PC_plot %>%
@@ -962,15 +965,16 @@ tm_PC_coh_lo <- post_tm_PC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
   xlab("Cohort")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/tm_PC_coh_logodds.png", tm_PC_coh_lo)
+ggsave(filename = "plots/GI_Q1/tm_PC_coh_logodds.png", tm_PC_coh_lo,
+       width = 2.66, height = 2.66, units = "in")
 
-##### Log Odds ####
+##### Prevalence ####
 
 tm_PC_per_p <- post_tm_PC_plot %>%
   filter(term == "Period") %>% 
@@ -978,7 +982,7 @@ tm_PC_per_p <- post_tm_PC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Prevalence") +
   xlab("Period")+
   theme_classic()
@@ -992,7 +996,7 @@ tm_PC_coh_p <- post_tm_PC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Prevalence") +
   xlab("Cohort")+
   theme_classic()
@@ -1052,7 +1056,7 @@ tm_AP_age_lo <- post_tm_AP_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Log Odds") +
   xlab("Age")+
   theme_classic()
@@ -1066,7 +1070,7 @@ tm_AP_per_lo <- post_tm_AP_plot %>%
   geom_line(color = "goldenrod") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "goldenrod",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Log Odds") +
   xlab("Period")+
   theme_classic()
@@ -1125,7 +1129,7 @@ tm_C_coh_lo <- post_tm_C_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Log Odds") +
   xlab("Cohort")+
   theme_classic()
@@ -1140,7 +1144,7 @@ tm_C_coh_p <- post_tm_C_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_p, ymax = upper_p), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Transman") +
+  ggtitle("Transgender Man") +
   ylab("Prevalence") +
   xlab("Cohort")+
   theme_classic()
@@ -1455,11 +1459,12 @@ nbgnc_PC_per_lo <- post_nbgnc_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Nonbinary/Gender Non-conforming") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
   xlab("Period")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/nbgnc_PC_per_logodds.png", nbgnc_PC_per_lo)
+ggsave(filename = "plots/GI_Q1/nbgnc_PC_per_logodds.png", nbgnc_PC_per_lo,
+       width = 2.66, height = 2.66, units = "in")
 
 nbgnc_PC_coh_lo <- post_nbgnc_PC_plot %>%
   filter(term == "Cohort") %>% 
@@ -1469,11 +1474,12 @@ nbgnc_PC_coh_lo <- post_nbgnc_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Nonbinary/Gender Non-conforming") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -4)) +
+  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
   xlab("Cohort")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/nbgnc_PC_coh_logodds.png", nbgnc_PC_coh_lo)
+ggsave(filename = "plots/GI_Q1/nbgnc_PC_coh_logodds.png", nbgnc_PC_coh_lo,
+       width = 2.66, height = 2.66, units = "in")
 
 ##### Prevalences ####
 nbgnc_PC_per_p <- post_nbgnc_PC_plot %>%
