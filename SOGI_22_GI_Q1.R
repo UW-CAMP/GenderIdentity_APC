@@ -1457,7 +1457,7 @@ nbgnc_PC_per_lo <- post_nbgnc_PC_plot %>%
   geom_line(color = "navy") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
               color = "white", alpha = 0.3) +
-  ggtitle("Nonbinary/Gender Non-conforming") +
+  ggtitle("Nonbinary/\nGender Non-conforming") +
   ylab("Log Odds") +
   scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
   xlab("Period")+
@@ -1472,10 +1472,10 @@ nbgnc_PC_coh_lo <- post_nbgnc_PC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Nonbinary/Gender Non-conforming") +
+  ggtitle("Nonbinary/\nGender Non-conforming") +
   ylab("Log Odds") +
   scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
-  xlab("Cohort")+
+  xlab("Cohort") +
   theme_classic()
 
 ggsave(filename = "plots/GI_Q1/nbgnc_PC_coh_logodds.png", nbgnc_PC_coh_lo,
