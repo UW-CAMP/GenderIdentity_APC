@@ -12,7 +12,7 @@ source("SOGI_00_packages.R")
 
 # define functions
 tableNA <- function(x, ...){
-   table(x, useNA = "ifany", ...)  
+  table(x, useNA = "ifany", ...)  
 }
 
 # call in data
@@ -34,295 +34,359 @@ period_v <- min(brfss_dat$year):max(brfss_dat$year)
 
 # * Plots & Visual Analyses -------
 # >> Plots 1: X = reported sex, Y= gender identity ------
-ids <- c("are transgender women", "are transgender men", "are gender nonconforming", 
-           "are cisgender", "are unsure of their gender identity", "did not diclose their gender identity")
+ids <- c("Transgender woman", "Transgender man", "Non-binary/Gender non-conforming", 
+         "Cisgender", "Don't know/Not sure",
+         "Declined to Answer")
 cols <- rainbow_hcl(cohort_n) 
 cols_pds <- rainbow_hcl(period_n) 
 n_ids <- length(ids)
 
 ## Core plots: Population = overall, by age organized by survey year ---------
 for (id in 1:n_ids) {
-   plot(x= period_v[1] - 
-           cohort_v[which(!is.na(gi_props_A[,1,id]))],
-        y=gi_props_A[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds[1],
-        xlim = c(18, 80),
-        ylim = (id==4)*c(95, 100) + (id!=4)*c(0,5),
-        xlab = "Respondent age",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Percent of respondents who ", ids[id], ",\n",
-                      "by age and organized by period (survey year),", "\n", 
-                      "BRFSS (2014-2021)")
-   )
-   
-   temp_x <- period_v[1]-cohort_v[which(!is.na(gi_props_A[,1,id]))]
-   temp <- loess((gi_props_A[,1,id] %>% na.rm) ~ temp_x)
-   lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
-   
-   for(period in 2:length(period_v)) {
-      lines(x= period_v[period] -
-               cohort_v[which(!is.na(gi_props_A[,period,id]))],
-            y=gi_props_A[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds[period])
-      temp_x <- period_v[period]-cohort_v[which(!is.na(gi_props_A[,period,id]))]
-      temp <- loess((gi_props_A[,period,id] %>% na.rm) ~ temp_x)
-      lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
-   }
-   
-   for(cohort in seq(1, length(cohort_v), 5)) {
-      legend(c("bottom"[id==4],"topleft"[id!=4]), 
-             inset = 0.05, 
-             border = "black",
-             title = "Period (survey year)",
-             legend = c(seq(min(period_v), max(period_v))),
-             col = cols_pds[seq(1, length(period_v))],
-             lwd = 3,
-             lty = 1.5,
-             cex = 1,
-             ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
-             bg="gray99")
-   }
+  png(filename = paste0("plots/GI_ap_", id, ".png"),
+      width = 400, height = 300, units = "px")
+  par(mfrow = c(1,1), lend = 1)
+  plot(x= rev(period_v[1] - cohort_v),
+       y= rev(gi_props_A[,1,id]),
+       type = "o",
+       col = cols_pds[1],
+       xlim = c(18, 80),
+       ylim = (id==4)*c(95, 100) + (id!=4)*c(0,3),
+       # ylim = c(0, 3),
+       xlab = "Age",
+       cex.axis = 1,
+       cex.lab = 1.25,
+       cex.main = 1,
+       ylab = paste0("% of respondents"),
+       main = paste0(ids[id], "\n", 
+                     "BRFSS (2014-2021)")
+  )
+  
+  temp_x <- rev(period_v[1] - cohort_v)
+  temp <- loess(rev(gi_props_A[,1,id]) ~ temp_x)
+  lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
+  
+  for(period in 2:length(period_v)) {
+    lines(x= rev(period_v[period] - cohort_v),
+          y= rev(gi_props_A[,period,id]),
+          type = "o",
+          col = cols_pds[period])
+    temp_x <- rev(period_v[period] - cohort_v)
+    temp <- loess(rev(gi_props_A[,period,id]) ~ temp_x)
+    lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
+  }
+  
+  for(cohort in seq(1, length(cohort_v), 5)) {
+    legend(c("bottom"[id==4],"topleft"[id!=4]), 
+           inset = 0.05, 
+           border = "black",
+           title = "Period (survey year)",
+           legend = c(seq(min(period_v), max(period_v))),
+           col = cols_pds[seq(1, length(period_v))],
+           lwd = 3,
+           lty = 1.5,
+           cex = 1,
+           # ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
+           ncol = 2,
+           bg="gray99",
+           bty = "n")
+  }
+  dev.off()
 }
 
 ## Core plots: Population = overall, by birth cohort organized by survey year ------
-for (id in 1:n_ids) {
-   plot(x= cohort_v[which(!is.na(gi_props_A[,1,id]))],
-     y=gi_props_A[,1,id] %>% na.rm,
-     type = "o",
-     col = cols_pds[1],
-     xlim= c(cohort_v[cohort_n],cohort_v[1]),
-     ylim = (id==4)*c(95, 100) + (id!=4)*c(0,5),
-     xlab = "Birth cohort",
-     cex.axis = 1.25,
-     cex.lab = 1.25,
-     cex.main = 1.25,
-     ylab = paste0("% of respondents who ", ids[id]),
-     main = paste0("Percent of respondents who ", ids[id], ",\n",
-                   "by birth cohort and organized by period (survey year)", "\n", 
-                   "BRFSS (2014-2021)")
-)
 
-temp <- loess((gi_props_A[,1,id] %>% na.rm) ~ 
-                 cohort_v[which(!is.na(gi_props_A[,1,id]))], span=0.3)
-lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
-
-for(period in 2:length(period_v)) {
-   lines(x= cohort_v[which(!is.na(gi_props_A[,period,id]))],
-         y=gi_props_A[,period,id] %>% na.rm,
-         type = "o",
-         col = cols_pds[period])
-   temp <- loess((gi_props_A[,period,id] %>% na.rm) ~ 
-                    cohort_v[which(!is.na(gi_props_A[,period,id]))], span=0.3)
-   lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
-   
+png(filename = paste0("plots/GI_pc_all.png"),
+    height = 900, width = 1200, units = "px")
+par(mfrow = c(3,2), lend = 1)
+for (id in c(1:3, 5:6)) {
+  id_no <- match(id, c(1:3, 5:6))
+  plot(x= cohort_v,
+       y= gi_props_A[,1,id],
+       type = "o",
+       col = cols_pds[1],
+       xlim= c(cohort_v[1], cohort_v[cohort_n]),
+       ylim = (id==4)*c(95, 100) + (id!=4)*c(0,3),
+       xlab = "Cohort",
+       cex.axis = 1,
+       cex.lab = 1.25,
+       cex.main = 1,
+       ylab = paste0("% of respondents"),
+       main = ""
+  )
+  
+  title(main = paste0(LETTERS[id_no], ") ", ids[id]), adj = 0)
+  
+  temp <- loess(gi_props_A[,1,id] ~ cohort_v, span=0.3)
+  lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
+  
+  for(period in 2:length(period_v)) {
+    lines(x= cohort_v,
+          y= gi_props_A[,period,id],
+          type = "o",
+          col = cols_pds[period])
+    temp <- loess(gi_props_A[,period,id] ~ cohort_v, span=0.3)
+    lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
+    
+  }
 }
-
-legend(c("bottom"[id==4],"topleft"[id!=4]), 
-       inset = 0.05, 
+plot(NA, xlim = c(0,1),
+     ylim = c(0,1), axes = F, xlab = "", ylab = "")
+legend(x = "center",inset = 0,
+       # inset = 0.05, 
        border = "black",
        title = "Period (survey year)",
        legend = c(seq(min(period_v), max(period_v))),
        col = cols_pds[seq(1, length(period_v))],
        lwd = 3,
        lty = 1.5,
-       cex = 1,
-       ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
+       cex = 1.25,
+       ncol = 2,
+       bty = "n",
        bg="gray99")
+dev.off()
+
+
+
+png(filename = paste0("plots/GI_ap_all.png"),
+    height = 900, width = 1200, units = "px")
+par(mfrow = c(3,2), lend = 1)
+for (id in c(1:3, 5:6)) {
+  id_no <- match(id, c(1:3, 5:6))
+  plot(x= rev(period_v[1] - cohort_v),
+       y= rev(gi_props_A[,1,id]),
+       type = "o",
+       col = cols_pds[1],
+       xlim= c(18, 80),
+       ylim = (id==4)*c(95, 100) + (id!=4)*c(0,3),
+       xlab = "Age",
+       cex.axis = 1,
+       cex.lab = 1.25,
+       cex.main = 1,
+       ylab = paste0("% of respondents"),
+       main = ""
+  )
+  
+  title(main = paste0(LETTERS[id_no], ") ", ids[id]), adj = 0)
+  
+  temp <- loess(rev(gi_props_A[,1,id]) ~ rev(period_v[1] - cohort_v), span=0.3)
+  lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
+  
+  for(period in 2:length(period_v)) {
+    lines(x= rev(period_v[period] - cohort_v),
+          y= rev(gi_props_A[,period,id]),
+          type = "o",
+          col = cols_pds[period])
+    temp <- loess(rev(gi_props_A[,period,id]) ~ 
+                    rev(period_v[period] - cohort_v), span=0.3)
+    lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
+    
+  }
 }
+plot(NA, xlim = c(0,1),
+     ylim = c(0,1), axes = F, xlab = "", ylab = "")
+legend(x = "center",inset = 0,
+       # inset = 0.05, 
+       border = "black",
+       title = "Period (survey year)",
+       legend = c(seq(min(period_v), max(period_v))),
+       col = cols_pds[seq(1, length(period_v))],
+       lwd = 3,
+       lty = 1.5,
+       cex = 1.25,
+       ncol = 2,
+       bty = "n",
+       bg="gray99")
+dev.off()
 
 ## Population = female sex, by age organized by survey year
 for (id in 1:n_ids) {
-   plot(x= period_v[1] - 
-           cohort_v[which(!is.na(gi_props_F[,1,id]))],
-        y=gi_props_F[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds[1],
-        xlim = c(18, 80),
-        ylim = (id==4)*c(94, 100) + (id!=4)*c(0,6),
-        xlab = "Respondent age",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who report female sex, percent who ", ids[id], ",\n",
-                      "by age and organized by period (survey year),", "\n", 
-                      "BRFSS (2014-2021)")
-   )
-   
-   temp_x <- period_v[1]-cohort_v[which(!is.na(gi_props_F[,1,id]))]
-   temp <- loess((gi_props_F[,1,id] %>% na.rm) ~ temp_x)
-   lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
-   
-   for(period in 2:length(period_v)) {
-      lines(x= period_v[period] -
-               cohort_v[which(!is.na(gi_props_F[,period,id]))],
-            y=gi_props_F[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds[period])
-      temp_x <- period_v[period]-cohort_v[which(!is.na(gi_props_F[,period,id]))]
-      temp <- loess((gi_props_F[,period,id] %>% na.rm) ~ temp_x)
-      lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
-   }
-   
-   for(cohort in seq(1, length(cohort_v), 5)) {
-      legend(c("bottom"[id==4],"topleft"[id!=4]), 
-             inset = 0.05, 
-             border = "black",
-             title = "Period (survey year)",
-             legend = c(seq(min(period_v), max(period_v))),
-             col = cols_pds[seq(1, length(period_v))],
-             lwd = 3,
-             lty = 1.5,
-             cex = 1,
-             ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
-             bg="gray99")
-   }
+  plot(x= period_v[1] - 
+         cohort_v[which(!is.na(gi_props_F[,1,id]))],
+       y=gi_props_F[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds[1],
+       xlim = c(18, 80),
+       ylim = (id==4)*c(94, 100) + (id!=4)*c(0,6),
+       xlab = "Respondent age",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who report female sex, percent who ", ids[id], ",\n",
+                     "by age and organized by period (survey year),", "\n", 
+                     "BRFSS (2014-2021)")
+  )
+  
+  temp_x <- period_v[1]-cohort_v[which(!is.na(gi_props_F[,1,id]))]
+  temp <- loess((gi_props_F[,1,id] %>% na.rm) ~ temp_x)
+  lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
+  
+  for(period in 2:length(period_v)) {
+    lines(x= period_v[period] -
+            cohort_v[which(!is.na(gi_props_F[,period,id]))],
+          y=gi_props_F[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds[period])
+    temp_x <- period_v[period]-cohort_v[which(!is.na(gi_props_F[,period,id]))]
+    temp <- loess((gi_props_F[,period,id] %>% na.rm) ~ temp_x)
+    lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
+  }
+  
+  for(cohort in seq(1, length(cohort_v), 5)) {
+    legend(c("bottom"[id==4],"topleft"[id!=4]), 
+           inset = 0.05, 
+           border = "black",
+           title = "Period (survey year)",
+           legend = c(seq(min(period_v), max(period_v))),
+           col = cols_pds[seq(1, length(period_v))],
+           lwd = 3,
+           lty = 1.5,
+           cex = 1,
+           ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
+           bg="gray99")
+  }
 }
 
 ## Population = female sex, by cohort organized by survey year
 for (id in 1:n_ids) {
-   plot(x= cohort_v[which(!is.na(gi_props_F[,1,id]))],
-        y=gi_props_F[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds[1],
-        xlim= c(cohort_v[cohort_n],cohort_v[1]),
-        ylim = (id==4)*c(92, 100) + (id!=4)*c(0,8),
-        xlab = "Birth cohort",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who report female sex, percent who ", ids[id], ",\n",
-                      "by birth cohort and organized by period (survey year)", "\n", 
-                      "BRFSS (2014-2021)")
-   )
-   
-   temp <- loess((gi_props_F[,1,id] %>% na.rm) ~ 
-                    cohort_v[which(!is.na(gi_props_F[,1,id]))])
-   lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
-   
-   for(period in 2:length(period_v)) {
-      lines(x= cohort_v[which(!is.na(gi_props_F[,period,id]))],
-            y=gi_props_F[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds[period])
-      temp <- loess((gi_props_F[,period,id] %>% na.rm) ~ 
-                       cohort_v[which(!is.na(gi_props_F[,period,id]))])
-      lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
-      
-   }
-   
-   legend(c("bottom"[id==4],"topleft"[id!=4]), 
-          inset = 0.05, 
-          border = "black",
-          title = "Period (survey year)",
-          legend = c(seq(min(period_v), max(period_v))),
-          col = cols_pds[seq(1, length(period_v))],
-          lwd = 3,
-          lty = 1.5,
-          cex = 1,
-          ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
-          bg="gray99")
+  plot(x= cohort_v[which(!is.na(gi_props_F[,1,id]))],
+       y=gi_props_F[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds[1],
+       xlim= c(cohort_v[cohort_n],cohort_v[1]),
+       ylim = (id==4)*c(92, 100) + (id!=4)*c(0,8),
+       xlab = "Birth cohort",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who report female sex, percent who ", ids[id], ",\n",
+                     "by birth cohort and organized by period (survey year)", "\n", 
+                     "BRFSS (2014-2021)")
+  )
+  
+  temp <- loess((gi_props_F[,1,id] %>% na.rm) ~ 
+                  cohort_v[which(!is.na(gi_props_F[,1,id]))])
+  lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
+  
+  for(period in 2:length(period_v)) {
+    lines(x= cohort_v[which(!is.na(gi_props_F[,period,id]))],
+          y=gi_props_F[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds[period])
+    temp <- loess((gi_props_F[,period,id] %>% na.rm) ~ 
+                    cohort_v[which(!is.na(gi_props_F[,period,id]))])
+    lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
+    
+  }
+  
+  legend(c("bottom"[id==4],"topleft"[id!=4]), 
+         inset = 0.05, 
+         border = "black",
+         title = "Period (survey year)",
+         legend = c(seq(min(period_v), max(period_v))),
+         col = cols_pds[seq(1, length(period_v))],
+         lwd = 3,
+         lty = 1.5,
+         cex = 1,
+         ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
+         bg="gray99")
 }
 
 ## Population = male sex, by age organized by survey year
 for (id in 1:n_ids) {
-   plot(x= period_v[1] - 
-           cohort_v[which(!is.na(gi_props_M[,1,id]))],
-        y=gi_props_M[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds[1],
-        xlim = c(19, 80),
-        ylim = (id==4)*c(92, 100) + (id!=4)*c(0,8),
-        xlab = "Respondent age",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who report male sex, percent who ", ids[id], ",\n",
-                      "by age and organized by period (survey year),", "\n", 
-                      "BRFSS (2014-2021)")
-   )
-   
-   temp_x <- period_v[1]-cohort_v[which(!is.na(gi_props_M[,1,id]))]
-   temp <- loess((gi_props_M[,1,id] %>% na.rm) ~ temp_x)
-   lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
-   
-   for(period in 2:length(period_v)) {
-      lines(x= period_v[period] -
-               cohort_v[which(!is.na(gi_props_M[,period,id]))],
-            y=gi_props_M[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds[period])
-      temp_x <- period_v[period]-cohort_v[which(!is.na(gi_props_M[,period,id]))]
-      temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ temp_x)
-      lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
-   }
-   
-   for(cohort in seq(1, length(cohort_v), 5)) {
-      legend(c("bottom"[id==4],"topleft"[id!=4]), 
-             inset = 0.05, 
-             border = "black",
-             title = "Period (survey year)",
-             legend = c(seq(min(period_v), max(period_v))),
-             col = cols_pds[seq(1, length(period_v))],
-             lwd = 3,
-             lty = 1.5,
-             cex = 1,
-             ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
-             bg="gray99")
-   }
+  plot(x= period_v[1] - 
+         cohort_v[which(!is.na(gi_props_M[,1,id]))],
+       y=gi_props_M[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds[1],
+       xlim = c(19, 80),
+       ylim = (id==4)*c(92, 100) + (id!=4)*c(0,8),
+       xlab = "Respondent age",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who report male sex, percent who ", ids[id], ",\n",
+                     "by age and organized by period (survey year),", "\n", 
+                     "BRFSS (2014-2021)")
+  )
+  
+  temp_x <- period_v[1]-cohort_v[which(!is.na(gi_props_M[,1,id]))]
+  temp <- loess((gi_props_M[,1,id] %>% na.rm) ~ temp_x)
+  lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
+  
+  for(period in 2:length(period_v)) {
+    lines(x= period_v[period] -
+            cohort_v[which(!is.na(gi_props_M[,period,id]))],
+          y=gi_props_M[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds[period])
+    temp_x <- period_v[period]-cohort_v[which(!is.na(gi_props_M[,period,id]))]
+    temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ temp_x)
+    lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
+  }
+  
+  for(cohort in seq(1, length(cohort_v), 5)) {
+    legend(c("bottom"[id==4],"topleft"[id!=4]), 
+           inset = 0.05, 
+           border = "black",
+           title = "Period (survey year)",
+           legend = c(seq(min(period_v), max(period_v))),
+           col = cols_pds[seq(1, length(period_v))],
+           lwd = 3,
+           lty = 1.5,
+           cex = 1,
+           ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
+           bg="gray99")
+  }
 }
 
 ## Population = male sex, by cohort organized by survey year
 for (id in 1:n_ids) {
-   plot(x= cohort_v[which(!is.na(gi_props_M[,1,id]))],
-        y=gi_props_M[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds[1],
-        xlim= c(cohort_v[cohort_n],cohort_v[1]),
-        ylim = (id==4)*c(94, 100) + (id!=4)*c(0,6),
-        xlab = "Birth cohort",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who report male sex, percent who ", ids[id], ",\n",
-                      "by birth cohort and organized by period (survey year)", "\n", 
-                      "BRFSS (2014-2021)")
-   )
-   
-   temp <- loess((gi_props_M[,1,id] %>% na.rm) ~ 
-                    cohort_v[which(!is.na(gi_props_M[,1,id]))])
-   lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
-   
-   for(period in 2:length(period_v)) {
-      lines(x= cohort_v[which(!is.na(gi_props_M[,period,id]))],
-            y=gi_props_M[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds[period])
-      temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ 
-                       cohort_v[which(!is.na(gi_props_M[,period,id]))])
-      lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
-      
-   }
-   
-   legend(c("bottom"[id==4],"topleft"[id!=4]), 
-          inset = 0.05, 
-          border = "black",
-          title = "Period (survey year)",
-          legend = c(seq(min(period_v), max(period_v))),
-          col = cols_pds[seq(1, length(period_v))],
-          lwd = 3,
-          lty = 1.5,
-          cex = 1,
-          ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
-          bg="gray99")
+  plot(x= cohort_v[which(!is.na(gi_props_M[,1,id]))],
+       y=gi_props_M[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds[1],
+       xlim= c(cohort_v[cohort_n],cohort_v[1]),
+       ylim = (id==4)*c(94, 100) + (id!=4)*c(0,6),
+       xlab = "Birth cohort",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who report male sex, percent who ", ids[id], ",\n",
+                     "by birth cohort and organized by period (survey year)", "\n", 
+                     "BRFSS (2014-2021)")
+  )
+  
+  temp <- loess((gi_props_M[,1,id] %>% na.rm) ~ 
+                  cohort_v[which(!is.na(gi_props_M[,1,id]))])
+  lines(temp$x, temp$fitted, col=cols_pds[1], lwd=3)
+  
+  for(period in 2:length(period_v)) {
+    lines(x= cohort_v[which(!is.na(gi_props_M[,period,id]))],
+          y=gi_props_M[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds[period])
+    temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ 
+                    cohort_v[which(!is.na(gi_props_M[,period,id]))])
+    lines(temp$x, temp$fitted, col=cols_pds[period], lwd=3)
+    
+  }
+  
+  legend(c("bottom"[id==4],"topleft"[id!=4]), 
+         inset = 0.05, 
+         border = "black",
+         title = "Period (survey year)",
+         legend = c(seq(min(period_v), max(period_v))),
+         col = cols_pds[seq(1, length(period_v))],
+         lwd = 3,
+         lty = 1.5,
+         cex = 1,
+         ncol = ceiling(length(min(brfss_dat$year):max(brfss_dat$year))/2),
+         bg="gray99")
 }
 
 ### >> Plots 2: X = gender identity, Y = sex at birth ------
@@ -341,186 +405,186 @@ n_ids_sab <- length(ids_sab)
 
 ## >> * Population = female SAB, by cohort organized by survey year ------
 for (id in 1:n_ids) {
-   plot(x= cohort_v_sab[which(!is.na(sab_props_F[,1,id]))],
-        y=sab_props_F[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds_sab[1],
-        xlim= c(cohort_v_sab[cohort_n_sab],cohort_v_sab[1]),
-        ylim = (id!=4)*c(0,20) + (id == 4)*c(90,100),
-        xlab = "Birth cohort",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who were assigned female sex at birth,", "\n", "percent who ", ids[id], ",\n",
-                      "by birth cohort and organized by period (survey year), BRFSS (2019-2021)")
-   )
-   
-   temp <- loess((sab_props_F[,1,id] %>% na.rm) ~ 
-                    cohort_v_sab[which(!is.na(sab_props_F[,1,id]))])
-   lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
-   
-   for(period in 2:length(period_v_sab)) {
-      lines(x= cohort_v_sab[which(!is.na(sab_props_F[,period,id]))],
-            y=sab_props_F[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds_sab[period])
-      temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ 
-                       cohort_v_sab[which(!is.na(sab_props_F[,period,id]))])
-      lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
-      
-   }
-   
-   legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
-          inset = 0.05, 
-          border = "black",
-          title = "Period (survey year)",
-          legend = c(seq(min(period_v_sab), max(period_v_sab))),
-          col = cols_pds_sab[seq(1, length(period_v_sab))],
-          lwd = 3,
-          lty = 1.5,
-          cex = 1,
-          bg="gray99")
+  plot(x= cohort_v_sab[which(!is.na(sab_props_F[,1,id]))],
+       y=sab_props_F[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds_sab[1],
+       xlim= c(cohort_v_sab[cohort_n_sab],cohort_v_sab[1]),
+       ylim = (id!=4)*c(0,20) + (id == 4)*c(90,100),
+       xlab = "Birth cohort",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who were assigned female sex at birth,", "\n", "percent who ", ids[id], ",\n",
+                     "by birth cohort and organized by period (survey year), BRFSS (2019-2021)")
+  )
+  
+  temp <- loess((sab_props_F[,1,id] %>% na.rm) ~ 
+                  cohort_v_sab[which(!is.na(sab_props_F[,1,id]))])
+  lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
+  
+  for(period in 2:length(period_v_sab)) {
+    lines(x= cohort_v_sab[which(!is.na(sab_props_F[,period,id]))],
+          y=sab_props_F[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds_sab[period])
+    temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ 
+                    cohort_v_sab[which(!is.na(sab_props_F[,period,id]))])
+    lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
+    
+  }
+  
+  legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
+         inset = 0.05, 
+         border = "black",
+         title = "Period (survey year)",
+         legend = c(seq(min(period_v_sab), max(period_v_sab))),
+         col = cols_pds_sab[seq(1, length(period_v_sab))],
+         lwd = 3,
+         lty = 1.5,
+         cex = 1,
+         bg="gray99")
 }
 
 ## >> * Population = female SAB, by age organized by survey year ------
 for (id in 1:n_ids) {
-   plot(x= period_v_sab[1] - 
-           cohort_v_sab[which(!is.na(sab_props_F[,1,id]))],
-        y=sab_props_F[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds_sab[1],
-        xlim = c(18, 80),
-        ylim = (id==4)*c(90, 100) + (id!=4)*c(0,15),
-        xlab = "Respondent age",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who were assigned female sex at birth,", "\n", "percent who ", ids[id], ",\n",
-                      "by age and organized by period (survey year), BRFSS (2019-2021)")
-   )
-   
-   temp_x <- period_v_sab[1]-cohort_v_sab[which(!is.na(sab_props_F[,1,id]))]
-   temp <- loess((sab_props_F[,1,id] %>% na.rm) ~ temp_x)
-   lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
-   
-   for(period in 2:length(period_v_sab)) {
-      lines(x= period_v_sab[period] -
-               cohort_v_sab[which(!is.na(sab_props_F[,period,id]))],
-            y=sab_props_F[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds_sab[period])
-      temp_x <- period_v_sab[period]-cohort_v_sab[which(!is.na(sab_props_F[,period,id]))]
-      temp <- loess((sab_props_F[,period,id] %>% na.rm) ~ temp_x)
-      lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
-   }
-   
-   for(cohort in seq(1, length(cohort_v_sab), 5)) {
-      legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
-             inset = 0.05, 
-             border = "black",
-             title = "Period (survey year)",
-             legend = c(seq(min(period_v_sab), max(period_v_sab))),
-             col = cols_pds_sab[seq(1, length(period_v_sab))],
-             lwd = 3,
-             lty = 1.5,
-             cex = 1,
-             bg="gray99")
-   }
+  plot(x= period_v_sab[1] - 
+         cohort_v_sab[which(!is.na(sab_props_F[,1,id]))],
+       y=sab_props_F[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds_sab[1],
+       xlim = c(18, 80),
+       ylim = (id==4)*c(90, 100) + (id!=4)*c(0,15),
+       xlab = "Respondent age",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who were assigned female sex at birth,", "\n", "percent who ", ids[id], ",\n",
+                     "by age and organized by period (survey year), BRFSS (2019-2021)")
+  )
+  
+  temp_x <- period_v_sab[1]-cohort_v_sab[which(!is.na(sab_props_F[,1,id]))]
+  temp <- loess((sab_props_F[,1,id] %>% na.rm) ~ temp_x)
+  lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
+  
+  for(period in 2:length(period_v_sab)) {
+    lines(x= period_v_sab[period] -
+            cohort_v_sab[which(!is.na(sab_props_F[,period,id]))],
+          y=sab_props_F[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds_sab[period])
+    temp_x <- period_v_sab[period]-cohort_v_sab[which(!is.na(sab_props_F[,period,id]))]
+    temp <- loess((sab_props_F[,period,id] %>% na.rm) ~ temp_x)
+    lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
+  }
+  
+  for(cohort in seq(1, length(cohort_v_sab), 5)) {
+    legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
+           inset = 0.05, 
+           border = "black",
+           title = "Period (survey year)",
+           legend = c(seq(min(period_v_sab), max(period_v_sab))),
+           col = cols_pds_sab[seq(1, length(period_v_sab))],
+           lwd = 3,
+           lty = 1.5,
+           cex = 1,
+           bg="gray99")
+  }
 }
 
 
 ## >> * Population = male SAB, by cohort organized by survey year ------
 for (id in 1:n_ids) {
-   plot(x= cohort_v_sab[which(!is.na(sab_props_M[,1,id]))],
-        y=sab_props_M[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds_sab[1],
-        xlim= c(cohort_v_sab[cohort_n_sab],cohort_v_sab[1]),
-        ylim = (id!=4)*c(0,20) + (id == 4)*c(90,100),
-        xlab = "Birth cohort",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who were assigned male sex at birth,", "\n", "percent who ", ids[id], ",\n",
-                      "by birth cohort and organized by period (survey year), BRFSS (2019-2021)")
-   )
-   
-   temp <- loess((sab_props_M[,1,id] %>% na.rm) ~ 
-                    cohort_v_sab[which(!is.na(sab_props_M[,1,id]))])
-   lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
-   
-   for(period in 2:length(period_v_sab)) {
-      lines(x= cohort_v_sab[which(!is.na(sab_props_M[,period,id]))],
-            y=sab_props_M[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds_sab[period])
-      temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ 
-                       cohort_v_sab[which(!is.na(sab_props_M[,period,id]))])
-      lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
-      
-   }
-   
-   legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
-          inset = 0.05, 
-          border = "black",
-          title = "Period (survey year)",
-          legend = c(seq(min(period_v_sab), max(period_v_sab))),
-          col = cols_pds_sab[seq(1, length(period_v_sab))],
-          lwd = 3,
-          lty = 1.5,
-          cex = 1,
-          bg="gray99")
+  plot(x= cohort_v_sab[which(!is.na(sab_props_M[,1,id]))],
+       y=sab_props_M[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds_sab[1],
+       xlim= c(cohort_v_sab[cohort_n_sab],cohort_v_sab[1]),
+       ylim = (id!=4)*c(0,20) + (id == 4)*c(90,100),
+       xlab = "Birth cohort",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who were assigned male sex at birth,", "\n", "percent who ", ids[id], ",\n",
+                     "by birth cohort and organized by period (survey year), BRFSS (2019-2021)")
+  )
+  
+  temp <- loess((sab_props_M[,1,id] %>% na.rm) ~ 
+                  cohort_v_sab[which(!is.na(sab_props_M[,1,id]))])
+  lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
+  
+  for(period in 2:length(period_v_sab)) {
+    lines(x= cohort_v_sab[which(!is.na(sab_props_M[,period,id]))],
+          y=sab_props_M[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds_sab[period])
+    temp <- loess((gi_props_M[,period,id] %>% na.rm) ~ 
+                    cohort_v_sab[which(!is.na(sab_props_M[,period,id]))])
+    lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
+    
+  }
+  
+  legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
+         inset = 0.05, 
+         border = "black",
+         title = "Period (survey year)",
+         legend = c(seq(min(period_v_sab), max(period_v_sab))),
+         col = cols_pds_sab[seq(1, length(period_v_sab))],
+         lwd = 3,
+         lty = 1.5,
+         cex = 1,
+         bg="gray99")
 }
 
 
 ## >> * Population = male SAB, by age organized by survey year ------
 for (id in 1:n_ids) {
-   plot(x= period_v_sab[1] - 
-           cohort_v_sab[which(!is.na(sab_props_M[,1,id]))],
-        y=sab_props_M[,1,id] %>% na.rm,
-        type = "o",
-        col = cols_pds_sab[1],
-        xlim = c(18, 80),
-        ylim = (id==4)*c(90, 100) + (id!=4)*c(0,15),
-        xlab = "Respondent age",
-        cex.axis = 1.25,
-        cex.lab = 1.25,
-        cex.main = 1.25,
-        ylab = paste0("% of respondents who ", ids[id]),
-        main = paste0("Among respondents who were assigned male sex at birth,", "\n", "percent who ", ids[id], ",\n",
-                      "by age and organized by period (survey year), BRFSS (2019-2021)")
-   )
-   
-   temp_x <- period_v_sab[1]-cohort_v_sab[which(!is.na(sab_props_M[,1,id]))]
-   temp <- loess((sab_props_M[,1,id] %>% na.rm) ~ temp_x)
-   lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
-   
-   for(period in 2:length(period_v_sab)) {
-      lines(x= period_v_sab[period] -
-               cohort_v_sab[which(!is.na(sab_props_M[,period,id]))],
-            y=sab_props_M[,period,id] %>% na.rm,
-            type = "o",
-            col = cols_pds_sab[period])
-      temp_x <- period_v_sab[period]-cohort_v_sab[which(!is.na(sab_props_M[,period,id]))]
-      temp <- loess((sab_props_M[,period,id] %>% na.rm) ~ temp_x)
-      lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
-   }
-   
-   for(cohort in seq(1, length(cohort_v_sab), 5)) {
-      legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
-             inset = 0.05, 
-             border = "black",
-             title = "Period (survey year)",
-             legend = c(seq(min(period_v_sab), max(period_v_sab))),
-             col = cols_pds_sab[seq(1, length(period_v_sab))],
-             lwd = 3,
-             lty = 1.5,
-             cex = 1,
-             bg="gray99")
-   }
+  plot(x= period_v_sab[1] - 
+         cohort_v_sab[which(!is.na(sab_props_M[,1,id]))],
+       y=sab_props_M[,1,id] %>% na.rm,
+       type = "o",
+       col = cols_pds_sab[1],
+       xlim = c(18, 80),
+       ylim = (id==4)*c(90, 100) + (id!=4)*c(0,15),
+       xlab = "Respondent age",
+       cex.axis = 1.25,
+       cex.lab = 1.25,
+       cex.main = 1.25,
+       ylab = paste0("% of respondents who ", ids[id]),
+       main = paste0("Among respondents who were assigned male sex at birth,", "\n", "percent who ", ids[id], ",\n",
+                     "by age and organized by period (survey year), BRFSS (2019-2021)")
+  )
+  
+  temp_x <- period_v_sab[1]-cohort_v_sab[which(!is.na(sab_props_M[,1,id]))]
+  temp <- loess((sab_props_M[,1,id] %>% na.rm) ~ temp_x)
+  lines(temp$x, temp$fitted, col=cols_pds_sab[1], lwd=3)
+  
+  for(period in 2:length(period_v_sab)) {
+    lines(x= period_v_sab[period] -
+            cohort_v_sab[which(!is.na(sab_props_M[,period,id]))],
+          y=sab_props_M[,period,id] %>% na.rm,
+          type = "o",
+          col = cols_pds_sab[period])
+    temp_x <- period_v_sab[period]-cohort_v_sab[which(!is.na(sab_props_M[,period,id]))]
+    temp <- loess((sab_props_M[,period,id] %>% na.rm) ~ temp_x)
+    lines(temp$x, temp$fitted, col=cols_pds_sab[period], lwd=3)
+  }
+  
+  for(cohort in seq(1, length(cohort_v_sab), 5)) {
+    legend(c("bottomleft"[id==4],"topleft"[id!=4]), 
+           inset = 0.05, 
+           border = "black",
+           title = "Period (survey year)",
+           legend = c(seq(min(period_v_sab), max(period_v_sab))),
+           col = cols_pds_sab[seq(1, length(period_v_sab))],
+           lwd = 3,
+           lty = 1.5,
+           cex = 1,
+           bg="gray99")
+  }
 }
 
 
