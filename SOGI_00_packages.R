@@ -25,4 +25,7 @@ library(labelled) # used for data management
 library(weights) # for using chi squared test with weighted data 
 library(survey) # for weighted prev estimates and 95% CI (comparing 18 YO)
 library(ggplot2)
+library(ggstream) # for proportions over time plots
 library(trend) # for Mann-Kendall test of monotonicty
+library(multiCA) # multinomial trend test
+library(gridExtra)

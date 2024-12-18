@@ -16,6 +16,7 @@ tableNA <- function(x, ...){
 }
 
 # call in data
+combo_dat <- readRDS("data - clean/combined.rds")
 sab_dat <- readRDS("data - clean/brfss_sab.rds")
 sab_props_M <- readRDS("data - clean/sab_props_M.rds")
 sab_props_F <- readRDS("data - clean/sab_props_F.rds")
@@ -63,9 +64,188 @@ round(prop.table(questionr::wtd.table(x=sab_comp$gender,
                                       weights=sab_comp$weight),margin=1)*100,1)
 
 # 2: plots -----
+
+## Sex ####
+data_1x1 <- combo_dat %>%
+  filter(source == "BRFSS") %>% 
+  select(year, age, cohort,
+         sex, gender, gender, so, so_new, sab, sex,
+         contains("cohort_"), contains("pd_"),
+         index, weight, stratum) %>% 
+  mutate(tw_bin = ifelse(gender == "1_transwoman", 1, 0),
+         tm_bin = ifelse(gender == "2_transman", 1, 0),
+         nbgnc_bin = ifelse(gender == "3_nbgnc", 1, 0),
+         cis_bin = ifelse(gender == "4_cisgender", 1, 0),
+         dkns_bin = ifelse(gender == "5_DKNS", 1, 0),
+         ref_bin = ifelse(gender == "6_ref", 1, 0)) %>%
+  mutate(across(where(is.factor), ~as.character(.x))) %>% 
+  rename("period" = "year")
+
+## Check out pbject
+summary(data_1x1)
+tableNA(data_1x1$age, data_1x1$cohort)
+tableNA(data_1x1$period, data_1x1$cohort)
+tableNA(data_1x1$age, data_1x1$period)
+
+
+## Specify design object ####
+
+brfss_des <- svydesign(ids = ~1, strata = ~period + stratum,
+                       weights = ~weight, data = data_1x1)
+
+brfss_des
+
+
+## Get weighted estimates ####
+
+sex_prop <- svyby(~sex, by = ~period + gender, brfss_des, svymean)
+so_prop <- svyby(~so_new, by = ~period + gender, brfss_des, svymean)
+sab_prop <- svyby(~sab, by = ~period + gender, 
+                  subset(brfss_des, period >= 2019 & !is.na(sab)),
+                  svymean, na.rm.all = TRUE)
+
+
+## Stream plots ####
+### Sex ####
+names(sex_prop)[3:4] <- paste0("mean.", names(sex_prop)[3:4])
+names(sex_prop) <- gsub("sex", "", names(sex_prop))
+gend_col <- c("navy", "forestgreen", "firebrick",
+              "goldenrod", "grey80")
+gend_names <- c("Transwoman", "Transman",
+                "NB/GNC", "Don't know/Not sure",
+                "Declined to Answer")
+names(gend_col) <- gend_names
+sex_plot <- sex_prop %>% 
+  pivot_longer(cols = contains("."),
+               names_to = c(".value", "sex"),
+               names_pattern = "(.*)\\.(.*)") %>% 
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
+                            grepl("2_", gender) ~ "Transman",
+                            grepl("3_", gender) ~ "NB/GNC",
+                            grepl("4_", gender) ~ "Cisgender",
+                            grepl("5_", gender) ~ "Don't know/Not sure",
+                            grepl("6_", gender) ~ "Declined to Answer")) %>% 
+  filter(gender != "Cisgender" & sex == "Female") %>% 
+  mutate(gender = factor(gender, levels = gend_names)) %>% 
+  ggplot() +
+  ylim(c(0,1)) +
+  xlab("Period") +
+  ylab("Proportion") +
+  ggtitle("A) Female Sex") +
+  geom_line(aes(x = period, y = mean, color = gender), linewidth = 1) +
+  scale_color_manual(name = "Gender Identity",
+                     values = gend_col) +
+  theme_classic()
+sex_plot
+
+### SAB ####
+names(sab_prop)[3:6] <- paste0("mean.", c("male", "female", "dkns", "ref"))
+names(sab_prop) <- gsub("sab1_", "", names(sab_prop))
+names(sab_prop) <- gsub("sab2_", "", names(sab_prop))
+names(sab_prop) <- gsub("sab3_", "", names(sab_prop))
+names(sab_prop) <- gsub("sab4_", "", names(sab_prop))
+names(sab_prop)
+sab_cols <- c("navy", "forestgreen", "goldenrod", "grey80")
+sab_names <-  c("Female", "Male", "Don't know/Not sure",
+                "Declined to Answer")
+names(sab_cols) <- sab_names
+
+sab_plot <- 
+  sab_prop %>% 
+  pivot_longer(cols = contains("."),
+               names_to = c(".value", "SAB"),
+               names_pattern = "(.*)\\.(.*)") %>% 
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
+                            grepl("2_", gender) ~ "Transman",
+                            grepl("3_", gender) ~ "NB/GNC",
+                            grepl("4_", gender) ~ "Cisgender",
+                            grepl("5_", gender) ~ "Don't know/Not sure",
+                            grepl("6_", gender) ~ "Declined to Answer",
+                            TRUE ~ NA),
+         SAB = case_when(SAB == "male" ~ "Male",
+                         SAB == "female" ~ "Female",
+                         SAB == "dkns" ~ "Don't know/Not sure",
+                         SAB == "ref" ~ "Declined to Answer",
+                         TRUE ~ NA),
+         mean = ifelse(is.na(mean), 0, mean),
+         se = ifelse(is.na(se), 0, se)) %>% 
+  filter(gender != "Cisgender" & !is.na(SAB)) %>% 
+  mutate(gender = factor(gender, levels = c("Transwoman", "Transman",
+                                            "NB/GNC", "Don't know/Not sure",
+                                            "Declined to Answer")),
+         SAB = factor(SAB, levels = sab_names)) %>% 
+  ggplot() +
+  geom_bar(aes(x = period, y = mean, fill = SAB), stat = "identity",
+           position = "stack") +
+  scale_fill_manual(name = "Sex at Birth",
+                    values = sab_cols) +
+  xlab("Period") +
+  ylab("Proportion") +
+  ggtitle("B) Sex at Birth") +
+  facet_wrap(~gender) +
+  theme_classic()
+
+sex_sab_plot <- grid.arrange(sex_plot, sab_plot, nrow = 1)
+
+ggsave(filename = "plots/sex_sab_by_gi.png", plot = sex_sab_plot,
+       width = 12, height = 8, units = "in")
+
+### SO ####
+
+names(so_prop)[3:7] <- paste0("mean.", c("straight", "lesgay", "bi",
+                                         "dko", "ref"))
+names(so_prop) <- gsub("so_new1_", "", names(so_prop))
+names(so_prop) <- gsub("so_new2_", "", names(so_prop))
+names(so_prop) <- gsub("so_new3_", "", names(so_prop))
+names(so_prop) <- gsub("so_new4_", "", names(so_prop))
+names(so_prop) <- gsub("so_new5_", "", names(so_prop))
+names(so_prop)
+so_names <- c("Straight", "Lesbian/Gay", "Bisexual",
+              "Don't know/Not sure",
+              "Declined to Answer")
+so_cols <- c("navy", "forestgreen", "goldenrod",
+             "firebrick", "grey80")
+names(so_cols) <- so_names
+
+so_plot <- so_prop %>% 
+  pivot_longer(cols = contains("."),
+               names_to = c(".value", "SO"),
+               names_pattern = "(.*)\\.(.*)") %>% 
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
+                            grepl("2_", gender) ~ "Transman",
+                            grepl("3_", gender) ~ "NB/GNC",
+                            grepl("4_", gender) ~ "Cisgender",
+                            grepl("5_", gender) ~ "Don't know/Not sure",
+                            grepl("6_", gender) ~ "Declined to Answer",
+                            TRUE ~ NA),
+         SO = case_when(SO == "straight" ~ "Straight",
+                        SO == "lesgay" ~ "Lesbian/Gay",
+                        SO == "bi" ~ "Bisexual",
+                        SO == "dko" ~ "Don't know/Not sure",
+                        SO == "ref" ~ "Declined to Answer",
+                        TRUE ~ NA),
+         mean = ifelse(is.na(mean), 0, mean),
+         se = ifelse(is.na(se), 0, se)) %>% 
+  filter(!is.na(gender) & gender != "Cisgender") %>% 
+  mutate(gender = factor(gender, levels = c("Transwoman", "Transman",
+                                            "NB/GNC", "Don't know/Not sure",
+                                            "Declined to Answer")),
+         SO = factor(SO, levels = so_names)) %>% 
+  ggplot() +
+  geom_stream(aes(x = period, y = mean, fill = SO), type = "proportion") +
+  scale_fill_manual(name = "Sexual Orientation",
+                    values = so_cols) +
+  facet_wrap(~gender) +
+  xlab("Period") +
+  ylab("Proportion") +
+  ggtitle("Sexual Orientation by Gender Identity") +
+  theme_classic()
+
+ggsave(filename = "plots/so_by_gi.png", plot = so_plot,
+       width = 6, height = 8, units = "in")
+
 # generate objects needed for analyses
 sex_var_values <- levels(as.factor(sab_comp$sex_bin))
-
 cohort_n <- length(min(sab_comp$cohort):max(sab_comp$cohort))
 period_n <- length(min(sab_comp$year):max(sab_comp$year))
 cohort_v <- min(sab_comp$cohort):max(sab_comp$cohort) 
