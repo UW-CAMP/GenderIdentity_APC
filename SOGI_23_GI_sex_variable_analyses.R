@@ -138,6 +138,32 @@ sex_plot <- sex_prop %>%
   theme_classic()
 sex_plot
 
+sex_stream_plot <- sex_prop %>% 
+  pivot_longer(cols = contains("."),
+               names_to = c(".value", "sex"),
+               names_pattern = "(.*)\\.(.*)") %>% 
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
+                            grepl("2_", gender) ~ "Transman",
+                            grepl("3_", gender) ~ "NB/GNC",
+                            grepl("4_", gender) ~ "Cisgender",
+                            grepl("5_", gender) ~ "Don't know/Not sure",
+                            grepl("6_", gender) ~ "Declined to Answer")) %>% 
+  filter(gender != "Cisgender") %>% 
+  mutate(gender = factor(gender, levels = gend_names),
+         sex = factor(sex, levels = c("Female", "Male"))) %>% 
+  ggplot() +
+  xlab("Period") +
+  ylab("Proportion") +
+  ggtitle("A) Sex") +
+  geom_stream(aes(x = period, y = mean, fill = sex), type = "proportion") +
+  scale_fill_manual(name = "Sex",
+                     values = c("Female" = "navy",
+                                "Male" = "forestgreen")) +
+  facet_wrap(~gender) +
+  theme_classic()
+sex_stream_plot
+
+
 ### SAB ####
 names(sab_prop)[3:6] <- paste0("mean.", c("male", "female", "dkns", "ref"))
 names(sab_prop) <- gsub("sab1_", "", names(sab_prop))
@@ -185,9 +211,9 @@ sab_plot <-
   facet_wrap(~gender) +
   theme_classic()
 
-sex_sab_plot <- grid.arrange(sex_plot, sab_plot, nrow = 1)
+sex_sab_plot <- grid.arrange(sex_stream_plot, sab_plot, nrow = 1)
 
-ggsave(filename = "plots/sex_sab_by_gi.png", plot = sex_sab_plot,
+ggsave(filename = "plots/sex_stream_sab_by_gi.png", plot = sex_sab_plot,
        width = 12, height = 8, units = "in")
 
 ### SO ####
