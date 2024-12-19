@@ -244,6 +244,69 @@ so_plot <- so_prop %>%
 ggsave(filename = "plots/so_by_gi.png", plot = so_plot,
        width = 6, height = 8, units = "in")
 
+
+
+so_to_test<- so_prop %>% 
+  pivot_longer(cols = contains("."),
+               names_to = c(".value", "SO"),
+               names_pattern = "(.*)\\.(.*)") %>% 
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
+                            grepl("2_", gender) ~ "Transman",
+                            grepl("3_", gender) ~ "NB/GNC",
+                            grepl("4_", gender) ~ "Cisgender",
+                            grepl("5_", gender) ~ "Don't know/Not sure",
+                            grepl("6_", gender) ~ "Declined to Answer",
+                            TRUE ~ NA),
+         SO = case_when(SO == "straight" ~ "Straight",
+                        SO == "lesgay" ~ "Lesbian/Gay",
+                        SO == "bi" ~ "Bisexual",
+                        SO == "dko" ~ "Don't know/Not sure",
+                        SO == "ref" ~ "Declined to Answer",
+                        TRUE ~ NA),
+         mean = ifelse(is.na(mean), 0, mean),
+         se = ifelse(is.na(se), 0, se)) %>% 
+  filter(!is.na(gender) & gender != "Cisgender") %>% 
+  mutate(gender = factor(gender, levels = c("Transwoman", "Transman",
+                                            "NB/GNC", "Don't know/Not sure",
+                                            "Declined to Answer")),
+         SO = factor(SO, levels = so_names),
+         mean = mean*100) 
+
+sex_to_test <- sex_prop %>% 
+  pivot_longer(cols = contains("."),
+               names_to = c(".value", "sex"),
+               names_pattern = "(.*)\\.(.*)") %>% 
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
+                            grepl("2_", gender) ~ "Transman",
+                            grepl("3_", gender) ~ "NB/GNC",
+                            grepl("4_", gender) ~ "Cisgender",
+                            grepl("5_", gender) ~ "Don't know/Not sure",
+                            grepl("6_", gender) ~ "Declined to Answer")) %>% 
+  filter(gender != "Cisgender") %>% 
+  mutate(gender = factor(gender, levels = gend_names),
+         mean = mean*100)
+
+
+for(gend in gend_names){
+  sink(file= paste0("tables/multiCA_so_",
+                    gsub("/", "", gend), ".txt"))
+  out <- multiCA.test(SO~period, weights = mean,
+               data = so_to_test %>% 
+                 filter(gender == gend))
+  print(summary(out))
+  sink()
+  
+  sink(file= paste0("tables/multiCA_sex_",
+                    gsub("/", "", gend), ".txt"))
+  multiCA.test(sex~period, weights = mean,
+               data = so_to_test %>% 
+                 filter(gender == gend))
+  sink()
+}
+
+
+
+
 # generate objects needed for analyses
 sex_var_values <- levels(as.factor(sab_comp$sex_bin))
 cohort_n <- length(min(sab_comp$cohort):max(sab_comp$cohort))
