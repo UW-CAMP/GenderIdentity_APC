@@ -293,19 +293,17 @@ for(gend in gend_names){
   out <- multiCA.test(SO~period, weights = mean,
                data = so_to_test %>% 
                  filter(gender == gend))
-  print(summary(out))
+  print(out)
   sink()
   
   sink(file= paste0("tables/multiCA_sex_",
                     gsub("/", "", gend), ".txt"))
-  multiCA.test(sex~period, weights = mean,
-               data = so_to_test %>% 
+  out <- multiCA.test(sex~period, weights = mean,
+               data = sex_to_test %>% 
                  filter(gender == gend))
+  print(out)
   sink()
 }
-
-
-
 
 # generate objects needed for analyses
 sex_var_values <- levels(as.factor(sab_comp$sex_bin))
