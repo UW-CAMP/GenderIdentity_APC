@@ -54,13 +54,26 @@ data_1x1 <- brfss %>%
   mutate(across(where(is.factor), ~as.character(.x))) %>% 
   rename("period" = "year", "stratum" = "strata")
   
-## Check out pbject
+## Check out object
 summary(data_1x1)
 tableNA(data_1x1$age, data_1x1$cohort)
 tableNA(data_1x1$period, data_1x1$cohort)
 tableNA(data_1x1$age, data_1x1$period)
 
+## Overall TNB proportion - simple point estimate by year
 
+data_1x1 <- data_1x1 %>% 
+  mutate(tnb = ifelse(gender %in% c("1_transwoman",
+                                    "2_transman",
+                                    "3_nbgnc"), 1, 0)
+  )
+tableNA(data_1x1$gender, data_1x1$tnb)
+periods <- unique(data_1x1$period)
+sapply(periods, function(x) 
+  sum(data_1x1$weight[data_1x1$period==x & data_1x1$tnb==1]) / 
+  sum(data_1x1$weight[data_1x1$period==x])
+  )
+              
 ## Specify design object ####
 
 brfss_des <- svydesign(ids = ~1, strata = ~period + stratum,
