@@ -95,7 +95,11 @@ for (id in 1:n_ids) {
   dev.off()
 }
 
-## Core plots: Population = overall, by birth cohort organized by survey year ------
+########################################################################################
+###### Core plots: 
+########################################################################################
+
+### Shared
 
 lwd <- 0.3
 cex <- 0.3
@@ -108,6 +112,8 @@ yline <- 2
 xline <- 2
 loess.span <- 0.5
 
+### Fig 1: all IDs except cis, by birth cohort, organized by survey year
+  
 png(filename = paste0("plots/GI_pc_all.png"),
   #  height = 900, width = 1200, units = "px")
   height = 9, width = 6.5, units = "in", res=300)
@@ -175,6 +181,7 @@ legend(x = "center",inset = 0,
        bg="gray99")
 dev.off()
 
+### Fig S1: all IDs except cis, by age, organized by survey year
 
 png(filename = paste0("plots/GI_ap_all.png"),
     #  height = 900, width = 1200, units = "px")
@@ -243,6 +250,136 @@ legend(x = "center",inset = 0,
        bg="gray99")
 dev.off()
 
+
+### Fig S2: cis, one panel by cohort and one by age, organized by survey year
+
+lwd <- 0.3
+cex <- 0.3
+loess.lwd <- 1.5
+cex.axis <- 0.5
+lwd.ticks <- 0.5
+cex.axis.labs <- 0.6
+cex.main <- 0.8
+yline <- 2
+xline <- 2
+loess.span <- 0.5
+
+png(filename = paste0("plots/GI_cis.png"),
+    #  height = 900, width = 1200, units = "px")
+    height = 4, width = 6.5, units = "in", res=300)
+par(mfrow = c(1,2), lend = 1)
+
+id <- 4
+plot(x= cohort_v,
+       y= gi_props_A[,1,id],
+       type = "o",
+       col = cols_pds[1],
+       xlim= c(cohort_v[1], cohort_v[cohort_n]),
+       ylim = (id==4)*c(94, 100) + (id!=4)*c(0,3),
+       #xlab = "Cohort",
+       #cex.axis = 1,
+       #cex.lab = 1.25,
+       #cex.main = 1,
+       #ylab = paste0("% of respondents"),
+       #main = ""
+       cex=cex,
+       xlab="", ylab="",
+       xaxs="i", yaxs="i",
+       axes=FALSE,
+       lwd=0.3
+)
+  
+temp <- loess(gi_props_A[,1,id] ~ cohort_v, span=loess.span)
+lines(temp$x, temp$fitted, col=cols_pds[1], lwd=loess.lwd)
+
+for(period in 2:length(period_v)) {
+  lines(x= cohort_v,
+        y= gi_props_A[,period,id],
+        type = "o", cex=cex,
+        col = cols_pds[period], lwd=lwd)
+  temp <- loess(gi_props_A[,period,id] ~ cohort_v, span=loess.span)
+  lines(temp$x, temp$fitted, col=cols_pds[period], lwd=loess.lwd)
+}
+
+axis(1, col = "grey40", col.axis = "grey20", 
+     at = seq(1940,2000,10), cex.axis=cex.axis, lwd=0, lwd.ticks=lwd.ticks, mgp=c(3,0.5,0))
+axis(2, col = "grey40", col.axis = "grey20", 
+     at = seq(94, 100, 0.5), cex.axis=cex.axis, lwd=0, lwd.ticks=lwd.ticks, mgp=c(3,0.5,0))
+box(col = "grey60")
+mtext("Birth cohort", side = 1, outer = FALSE, cex = cex.axis.labs, line = xline,
+      col = "grey20")
+mtext("% of respondents", side = 2, outer = FALSE, cex = cex.axis.labs, 
+      line = yline, col = "grey20")
+mtext(paste0(ids[id], ", by cohort"), side = 3, outer = FALSE, 
+      cex = cex.main, col = "grey20", line=0.5, adj=0)
+
+legend(x = 1955, #"center",
+       y = 95.75,
+       border = "black",
+       title = "Period (survey year)",
+       legend = c(seq(min(period_v), max(period_v))),
+       col = cols_pds[seq(1, length(period_v))],
+       lwd = 2,
+       lty = 1.5,
+       cex = 0.5,
+       ncol = 2,
+       bty = "n",
+       bg="gray99")
+
+
+plot(x= rev(period_v[1] - cohort_v),
+     y= rev(gi_props_A[,1,id]),
+     type = "o",
+     col = cols_pds[1],
+     xlim= c(18, 80),
+     ylim = (id==4)*c(94, 100) + (id!=4)*c(0,3),
+     #xlab = "Age",
+     #cex.axis = 1,
+     #cex.lab = 1.25,
+     #cex.main = 1,
+     #ylab = paste0("% of respondents"),
+     #main = ""
+     cex=cex,
+     xlab="", ylab="",
+     xaxs="i", yaxs="i",
+     axes=FALSE,
+     lwd=0.3
+)
+
+temp <- loess(rev(gi_props_A[,1,id]) ~ rev(period_v[1] - cohort_v), span=loess.span)
+lines(temp$x, temp$fitted, col=cols_pds[1], lwd=loess.lwd)
+
+for(period in 2:length(period_v)) {
+  lines(x= rev(period_v[period] - cohort_v),
+        y= rev(gi_props_A[,period,id]),
+        type = "o", cex=cex,
+        col = cols_pds[period], lwd=lwd)
+  temp <- loess(rev(gi_props_A[,period,id]) ~ 
+                  rev(period_v[period] - cohort_v), span=loess.span)
+  lines(temp$x, temp$fitted, col=cols_pds[period], lwd=loess.lwd)
+    
+}
+
+axis(1, col = "grey40", col.axis = "grey20", 
+     at = seq(20, 80, 5), cex.axis=cex.axis, lwd=0, lwd.ticks=lwd.ticks, mgp=c(3,0.5,0))
+axis(2, col = "grey40", col.axis = "grey20", 
+     at = seq(94, 100, 0.5), cex.axis=cex.axis, lwd=0, lwd.ticks=lwd.ticks, mgp=c(3,0.5,0))
+box(col = "grey60")
+mtext("Age", side = 1, outer = FALSE, cex = cex.axis.labs, line = xline,
+      col = "grey20")
+mtext("% of respondents", side = 2, outer = FALSE, cex = cex.axis.labs, 
+      line = yline, col = "grey20")
+mtext(paste0(ids[id], ", by age"), side = 3, outer = FALSE, 
+      cex = cex.main, col = "grey20", line=0.5, adj=0)
+
+dev.off()
+
+
+
+
+
+
+##### Vestigial
 
 ## Population = female sex, by age organized by survey year
 for (id in 1:n_ids) {
