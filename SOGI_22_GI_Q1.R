@@ -1356,13 +1356,15 @@ nbgnc_AC_age_lo <- post_nbgnc_AC_plot %>%
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo),
               fill = "firebrick",
               color = "white", alpha = 0.3) +
-  ggtitle("Nonbinary/Gender Non-conforming") +
+  # ggtitle("Nonbinary/\nGender Non-conforming") +
+  ggtitle("NB/GNC") +
   ylab("Log Odds") +
   scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Age")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/nbgnc_AC_age_logodds.png", nbgnc_AC_age_lo)
+ggsave(filename = "plots/GI_Q1/nbgnc_AC_age_logodds.png", nbgnc_AC_age_lo,
+       width = 2.66, height = 2.66, units = "in")
 
 
 nbgnc_AC_coh_lo <- post_nbgnc_AC_plot %>%
@@ -1371,13 +1373,15 @@ nbgnc_AC_coh_lo <- post_nbgnc_AC_plot %>%
   geom_line(color = "forestgreen") +
   geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "forestgreen",
               color = "white", alpha = 0.3) +
-  ggtitle("Nonbinary/Gender Non-conforming") +
+  # ggtitle("Nonbinary/\nGender Non-conforming") +
+  ggtitle("NB/GNC") +
   ylab("Log Odds") +
   scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Cohort")+
   theme_classic()
 
-ggsave(filename = "plots/GI_Q1/nbgnc_AC_coh_logodds.png", nbgnc_AC_coh_lo)
+ggsave(filename = "plots/GI_Q1/nbgnc_AC_coh_logodds.png", nbgnc_AC_coh_lo,
+       width = 2.66, height = 2.66, units = "in")
 
 ##### Prevalences ####
 nbgnc_AC_age_p <- post_nbgnc_AC_plot %>%
