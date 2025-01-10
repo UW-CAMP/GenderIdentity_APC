@@ -442,7 +442,7 @@ tw_PC_per_lo <- post_tw_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transgender Woman") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
+  scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Period")+
   theme_classic()
 
@@ -458,7 +458,7 @@ tw_PC_coh_lo <- post_tw_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transgender Woman") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
+  scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Cohort")+
   theme_classic()
 
@@ -951,7 +951,7 @@ tm_PC_per_lo <- post_tm_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transgender Man") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
+  scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Period")+
   theme_classic()
 
@@ -967,7 +967,7 @@ tm_PC_coh_lo <- post_tm_PC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Transgender Man") +
   ylab("Log Odds") +
-  scale_y_continuous(breaks = seq(-7, -4, 0.5), limits = c(-7.5, -3.75)) +
+  scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Cohort")+
   theme_classic()
 
@@ -1352,11 +1352,13 @@ post_nbgnc_AC_plot <- post_nbgnc_AC_df %>%
 nbgnc_AC_age_lo <- post_nbgnc_AC_plot %>%
   filter(term == "Age") %>% 
   ggplot(aes(x = term_idx_name, y = med_lo)) +
-  geom_line(color = "navy") +
-  geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo), fill = "navy",
+  geom_line(color = "firebrick") +
+  geom_ribbon(aes(ymin = lower_lo, ymax = upper_lo),
+              fill = "firebrick",
               color = "white", alpha = 0.3) +
   ggtitle("Nonbinary/Gender Non-conforming") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Age")+
   theme_classic()
 
@@ -1371,6 +1373,7 @@ nbgnc_AC_coh_lo <- post_nbgnc_AC_plot %>%
               color = "white", alpha = 0.3) +
   ggtitle("Nonbinary/Gender Non-conforming") +
   ylab("Log Odds") +
+  scale_y_continuous(breaks = seq(-9, -2, 1), limits = c(-10, -2)) +
   xlab("Cohort")+
   theme_classic()
 
@@ -1655,6 +1658,39 @@ nbgnc_C_coh_p <- post_nbgnc_C_plot %>%
 ggsave(filename = "plots/GI_Q1/nbgnc_C_coh_prev.png", nbgnc_C_coh_p)
 
 # Manuscript Plots ####
+
+## Best model ####
+
+## Get min and max endpoints of intervals by sexual orientation
+## and age, period, or cohort across all models
+best_ranges <- 
+  bind_rows(post_tw_PC_plot %>% 
+              group_by(term) %>% 
+              dplyr::summarize(lower = min(lower_lo),
+                               upper = max(upper_lo),
+                               Group = "Transwomen"),
+            post_tm_PC_plot %>% 
+              group_by(term) %>% 
+              dplyr::summarize(lower = min(lower_lo),
+                               upper = max(upper_lo),
+                               Group = "Transmen"),
+            post_nbgnc_AC_plot %>% 
+              group_by(term) %>% 
+              dplyr::summarize(lower = min(lower_lo),
+                               upper = max(upper_lo),
+                               Group = "Nonbinary/Gender Non-conforming"))
+
+## Across sexual orientation groups 
+best_ranges %>% 
+  group_by(term) %>% 
+  dplyr::summarize(lower = min(lower),
+                   upper = max(upper))
+
+## Handset appropriate limits
+best_ylims <- c(-10, -2)
+A_xlims <- c(18, 79) + c(-1, 1)
+C_xlims <- c(1935, 2003) + c(-1,1)
+P_xlims <- c(2014, 2021) + c(-1,1)
 
 ## AC ####
 
