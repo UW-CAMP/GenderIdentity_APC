@@ -1684,7 +1684,7 @@ best_ranges <-
                                upper = max(upper_lo),
                                Group = "Nonbinary/Gender Non-conforming"))
 
-## Across sexual orientation groups 
+## Across gender groups 
 best_ranges %>% 
   group_by(term) %>% 
   dplyr::summarize(lower = min(lower),
@@ -1695,6 +1695,216 @@ best_ylims <- c(-10, -2)
 A_xlims <- c(18, 79) + c(-1, 1)
 C_xlims <- c(1935, 2003) + c(-1,1)
 P_xlims <- c(2014, 2021) + c(-1,1)
+P_labs <- c("\'14","\'15","\'16","\'17","\'18","\'19","\'20","\'21")
+
+### png ####
+png("plots/GI_Q1/BestModel_6panel_logodds.png", 
+    width = 300*6, height = 300*4, res=300)
+{
+  par(mfrow = c(2,3), lend = 1)
+  par(mar=c(5,0,2,0))
+  par(oma=c(0,4,2,1))
+  
+  
+  ## Cohort 
+  {
+    { 
+      ## TW
+      plot(NA, xlim = C_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      # text("A. Transwoman", x=1935, y=-2.5, cex=.9, adj=0)
+      mtext("Trans woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Cohort axis
+      #axis(1, at = seq(1940, 2010, 10))
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(best_ylims[1], best_ylims[2], 2), cex=0.5, labels = FALSE)
+      mtext(side = 2, seq(best_ylims[1], best_ylims[2], 2),
+            at = seq(best_ylims[1], best_ylims[2], 2), 
+            cex=0.5, line=0.5)
+      mtext("Log Odds", side = 2, line = 2, cex = 0.6)
+      
+      ## Ests
+      lines(post_tw_PC_plot$term_idx_name[post_tw_PC_plot$term ==
+                                            "Cohort"],
+            post_tw_PC_plot$med_lo[post_tw_PC_plot$term == "Cohort"],
+            lwd = 2, col = "forestgreen")
+      polygon(x = c(post_tw_PC_plot$term_idx_name[post_tw_PC_plot$term == 
+                                                    "Cohort"],
+                    rev(post_tw_PC_plot$term_idx_name[post_tw_PC_plot$term == 
+                                                        "Cohort"])),
+              y = c(post_tw_PC_plot$upper_lo[post_tw_PC_plot$term == 
+                                               "Cohort"],
+                    rev(post_tw_PC_plot$lower_lo[post_tw_PC_plot$term == 
+                                                   "Cohort"])),
+              col = alpha("forestgreen", 0.35), border = FALSE)
+    }
+    
+    { 
+      ## TM
+      plot(NA, xlim = C_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      mtext("Trans man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Age axis
+      #axis(1, at = seq(1940, 2010, 10))
+      # mtext(side = 1, text = "Cohort", line = 2, cex = .9)
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
+            cex=0.5, line=0.5)
+      
+      ## Ests
+      lines(post_tm_PC_plot$term_idx_name[post_tm_PC_plot$term == "Cohort"],
+            post_tm_PC_plot$med_lo[post_tm_PC_plot$term == "Cohort"],
+            lwd = 2, col = "forestgreen")
+      polygon(x = c(post_tm_PC_plot$term_idx_name[post_tm_PC_plot$term == 
+                                                    "Cohort"],
+                    rev(post_tm_PC_plot$term_idx_name[post_tm_PC_plot$term == 
+                                                        "Cohort"])),
+              y = c(post_tm_PC_plot$upper_lo[post_tm_PC_plot$term == 
+                                               "Cohort"],
+                    rev(post_tm_PC_plot$lower_lo[post_tm_PC_plot$term ==
+                                                   "Cohort"])),
+              col = alpha("forestgreen", 0.35), border = FALSE)
+    }
+    
+    { 
+      ## GNC
+      plot(NA, xlim = C_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      mtext("Nonbinary/\nGender Non-conforming", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Cohort axis
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
+            cex=0.5, line=0.5)
+      
+      ## Ests
+      lines(post_nbgnc_AC_plot$term_idx_name[post_nbgnc_AC_plot$term == "Cohort"],
+            post_nbgnc_AC_plot$med_lo[post_nbgnc_AC_plot$term == "Cohort"],
+            lwd = 2, col = "forestgreen")
+      polygon(x = c(post_nbgnc_AC_plot$term_idx_name[post_nbgnc_AC_plot$term == 
+                                                       "Cohort"],
+                    rev(post_nbgnc_AC_plot$term_idx_name[post_nbgnc_AC_plot$term == 
+                                                           "Cohort"])),
+              y = c(post_nbgnc_AC_plot$upper_lo[post_nbgnc_AC_plot$term == "Cohort"],
+                    rev(post_nbgnc_AC_plot$lower_lo[post_nbgnc_AC_plot$term == 
+                                                      "Cohort"])),
+              col = alpha("forestgreen", 0.35), border = FALSE)
+    }
+  }
+  
+  ## Period / Age 
+  {
+    { 
+      ## TW
+      plot(NA, xlim = P_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      mtext("Trans woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, P_labs, at = 2014:2021, 
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(best_ylims[1], best_ylims[2], 2), cex=0.5, labels = FALSE)
+      mtext(side = 2, seq(best_ylims[1], best_ylims[2], 2),
+            at = seq(best_ylims[1], best_ylims[2], 2), 
+            cex=0.5, line=0.5)
+      mtext("Log Odds", side = 2, line = 2, cex = 0.6)
+      
+      ## Ests
+      lines(post_tw_PC_plot$term_idx_name[post_tw_PC_plot$term ==
+                                            "Period"],
+            post_tw_PC_plot$med_lo[post_tw_PC_plot$term == "Period"],
+            lwd = 2, col = "navy")
+      polygon(x = c(post_tw_PC_plot$term_idx_name[post_tw_PC_plot$term == 
+                                                    "Period"],
+                    rev(post_tw_PC_plot$term_idx_name[post_tw_PC_plot$term == 
+                                                        "Period"])),
+              y = c(post_tw_PC_plot$upper_lo[post_tw_PC_plot$term == 
+                                               "Period"],
+                    rev(post_tw_PC_plot$lower_lo[post_tw_PC_plot$term == 
+                                                   "Period"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    { 
+      ## TM
+      plot(NA, xlim = P_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      mtext("Trans man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, P_labs, at = 2014:2021, 
+            cex=0.5, line=0.5)
+      
+      ## Ests
+      lines(post_tm_PC_plot$term_idx_name[post_tm_PC_plot$term == "Period"],
+            post_tm_PC_plot$med_lo[post_tm_PC_plot$term == "Period"],
+            lwd = 2, col = "navy")
+      polygon(x = c(post_tm_PC_plot$term_idx_name[post_tm_PC_plot$term == 
+                                                    "Period"],
+                    rev(post_tm_PC_plot$term_idx_name[post_tm_PC_plot$term == 
+                                                        "Period"])),
+              y = c(post_tm_PC_plot$upper_lo[post_tm_PC_plot$term == 
+                                               "Period"],
+                    rev(post_tm_PC_plot$lower_lo[post_tm_PC_plot$term ==
+                                                   "Period"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    { 
+      ## GNC
+      plot(NA, xlim = A_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      mtext("Nonbinary/\nGender Non-conforming", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Age axis
+      mtext("Age", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(20, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(20, 75, 5), at = seq(20, 75, 5), 
+            cex=0.5, line=0.5)
+      
+      ## Ests
+      lines(post_nbgnc_AC_plot$term_idx_name[post_nbgnc_AC_plot$term == "Age"],
+            post_nbgnc_AC_plot$med_lo[post_nbgnc_AC_plot$term == "Age"],
+            lwd = 2, col = "firebrick")
+      polygon(x = c(post_nbgnc_AC_plot$term_idx_name[post_nbgnc_AC_plot$term == 
+                                                       "Age"],
+                    rev(post_nbgnc_AC_plot$term_idx_name[post_nbgnc_AC_plot$term == 
+                                                           "Age"])),
+              y = c(post_nbgnc_AC_plot$upper_lo[post_nbgnc_AC_plot$term == "Age"],
+                    rev(post_nbgnc_AC_plot$lower_lo[post_nbgnc_AC_plot$term == 
+                                                      "Age"])),
+              col = alpha("firebrick", 0.35), border = FALSE)
+    }
+  }
+}
+dev.off()
+
 
 ## AC ####
 
