@@ -72,8 +72,8 @@ data_1x1 <- combo_dat %>%
          sex, gender, gender, so, so_new, sab, sex,
          contains("cohort_"), contains("pd_"),
          index, weight, stratum) %>% 
-  mutate(tw_bin = ifelse(gender == "1_transwoman", 1, 0),
-         tm_bin = ifelse(gender == "2_transman", 1, 0),
+  mutate(tw_bin = ifelse(gender == "1_Transgender woman", 1, 0),
+         tm_bin = ifelse(gender == "2_Transgender man", 1, 0),
          nbgnc_bin = ifelse(gender == "3_nbgnc", 1, 0),
          cis_bin = ifelse(gender == "4_cisgender", 1, 0),
          dkns_bin = ifelse(gender == "5_DKNS", 1, 0),
@@ -111,7 +111,7 @@ names(sex_prop)[3:4] <- paste0("mean.", names(sex_prop)[3:4])
 names(sex_prop) <- gsub("sex", "", names(sex_prop))
 gend_col <- c("navy", "forestgreen", "firebrick",
               "goldenrod", "grey80")
-gend_names <- c("Transwoman", "Transman",
+gend_names <- c("Transgender woman", "Transgender man",
                 "NB/GNC", "Don't know/Not sure",
                 "Declined to Answer")
 names(gend_col) <- gend_names
@@ -119,8 +119,8 @@ sex_plot <- sex_prop %>%
   pivot_longer(cols = contains("."),
                names_to = c(".value", "sex"),
                names_pattern = "(.*)\\.(.*)") %>% 
-  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
-                            grepl("2_", gender) ~ "Transman",
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transgender woman",
+                            grepl("2_", gender) ~ "Transgender man",
                             grepl("3_", gender) ~ "NB/GNC",
                             grepl("4_", gender) ~ "Cisgender",
                             grepl("5_", gender) ~ "Don't know/Not sure",
@@ -142,8 +142,8 @@ sex_stream_plot <- sex_prop %>%
   pivot_longer(cols = contains("."),
                names_to = c(".value", "sex"),
                names_pattern = "(.*)\\.(.*)") %>% 
-  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
-                            grepl("2_", gender) ~ "Transman",
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transgender woman",
+                            grepl("2_", gender) ~ "Transgender man",
                             grepl("3_", gender) ~ "NB/GNC",
                             grepl("4_", gender) ~ "Cisgender",
                             grepl("5_", gender) ~ "Don't know/Not sure",
@@ -155,11 +155,12 @@ sex_stream_plot <- sex_prop %>%
   xlab("Period") +
   ylab("Proportion") +
   ggtitle("A) Sex") +
-  geom_stream(aes(x = period, y = mean, fill = sex), type = "proportion") +
+  geom_stream(aes(x = period, y = mean, fill = sex), type = "proportion",
+              show.legend = FALSE) +
   scale_fill_manual(name = "Sex",
                      values = c("Female" = "navy",
                                 "Male" = "forestgreen")) +
-  facet_wrap(~gender) +
+  facet_wrap(~gender, ncol = 5) +
   theme_classic()
 sex_stream_plot
 
@@ -181,8 +182,8 @@ sab_plot <-
   pivot_longer(cols = contains("."),
                names_to = c(".value", "SAB"),
                names_pattern = "(.*)\\.(.*)") %>% 
-  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
-                            grepl("2_", gender) ~ "Transman",
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transgender woman",
+                            grepl("2_", gender) ~ "Transgender man",
                             grepl("3_", gender) ~ "NB/GNC",
                             grepl("4_", gender) ~ "Cisgender",
                             grepl("5_", gender) ~ "Don't know/Not sure",
@@ -196,25 +197,26 @@ sab_plot <-
          mean = ifelse(is.na(mean), 0, mean),
          se = ifelse(is.na(se), 0, se)) %>% 
   filter(gender != "Cisgender" & !is.na(SAB)) %>% 
-  mutate(gender = factor(gender, levels = c("Transwoman", "Transman",
+  mutate(gender = factor(gender, levels = c("Transgender woman", "Transgender man",
                                             "NB/GNC", "Don't know/Not sure",
                                             "Declined to Answer")),
          SAB = factor(SAB, levels = sab_names)) %>% 
   ggplot() +
   geom_bar(aes(x = period, y = mean, fill = SAB), stat = "identity",
            position = "stack") +
-  scale_fill_manual(name = "Sex at Birth",
+  scale_fill_manual(name = "Responses",
                     values = sab_cols) +
   xlab("Period") +
   ylab("Proportion") +
-  ggtitle("B) Sex at Birth") +
-  facet_wrap(~gender) +
-  theme_classic()
+  ggtitle("B) Sex Assigned at Birth") +
+  facet_wrap(~gender, ncol = 5) +
+  theme_classic() +
+  theme(legend.position = "bottom")
 
-sex_sab_plot <- grid.arrange(sex_stream_plot, sab_plot, nrow = 1)
+sex_sab_plot <- grid.arrange(sex_stream_plot, sab_plot, nrow = 2)
 
 ggsave(filename = "plots/sex_stream_sab_by_gi.png", plot = sex_sab_plot,
-       width = 12, height = 8, units = "in")
+       width = 8, height = 9, units = "in")
 
 ### SO ####
 
@@ -237,8 +239,8 @@ so_plot <- so_prop %>%
   pivot_longer(cols = contains("."),
                names_to = c(".value", "SO"),
                names_pattern = "(.*)\\.(.*)") %>% 
-  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
-                            grepl("2_", gender) ~ "Transman",
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transgender woman",
+                            grepl("2_", gender) ~ "Transgender man",
                             grepl("3_", gender) ~ "NB/GNC",
                             grepl("4_", gender) ~ "Cisgender",
                             grepl("5_", gender) ~ "Don't know/Not sure",
@@ -253,7 +255,7 @@ so_plot <- so_prop %>%
          mean = ifelse(is.na(mean), 0, mean),
          se = ifelse(is.na(se), 0, se)) %>% 
   filter(!is.na(gender) & gender != "Cisgender") %>% 
-  mutate(gender = factor(gender, levels = c("Transwoman", "Transman",
+  mutate(gender = factor(gender, levels = c("Transgender woman", "Transgender man",
                                             "NB/GNC", "Don't know/Not sure",
                                             "Declined to Answer")),
          SO = factor(SO, levels = so_names)) %>% 
@@ -261,14 +263,14 @@ so_plot <- so_prop %>%
   geom_stream(aes(x = period, y = mean, fill = SO), type = "proportion") +
   scale_fill_manual(name = "Sexual Orientation",
                     values = so_cols) +
-  facet_wrap(~gender) +
+  facet_wrap(~gender, ncol = 5) +
   xlab("Period") +
   ylab("Proportion") +
   ggtitle("Sexual Orientation by Gender Identity") +
   theme_classic()
 
 ggsave(filename = "plots/so_by_gi.png", plot = so_plot,
-       width = 6, height = 8, units = "in")
+       width = 10, height = 8, units = "in")
 
 
 
@@ -276,8 +278,8 @@ so_to_test<- so_prop %>%
   pivot_longer(cols = contains("."),
                names_to = c(".value", "SO"),
                names_pattern = "(.*)\\.(.*)") %>% 
-  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
-                            grepl("2_", gender) ~ "Transman",
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transgender woman",
+                            grepl("2_", gender) ~ "Transgender man",
                             grepl("3_", gender) ~ "NB/GNC",
                             grepl("4_", gender) ~ "Cisgender",
                             grepl("5_", gender) ~ "Don't know/Not sure",
@@ -292,7 +294,7 @@ so_to_test<- so_prop %>%
          mean = ifelse(is.na(mean), 0, mean),
          se = ifelse(is.na(se), 0, se)) %>% 
   filter(!is.na(gender) & gender != "Cisgender") %>% 
-  mutate(gender = factor(gender, levels = c("Transwoman", "Transman",
+  mutate(gender = factor(gender, levels = c("Transgender woman", "Transgender man",
                                             "NB/GNC", "Don't know/Not sure",
                                             "Declined to Answer")),
          SO = factor(SO, levels = so_names),
@@ -302,8 +304,8 @@ sex_to_test <- sex_prop %>%
   pivot_longer(cols = contains("."),
                names_to = c(".value", "sex"),
                names_pattern = "(.*)\\.(.*)") %>% 
-  mutate(gender = case_when(grepl("1_", gender) ~ "Transwoman",
-                            grepl("2_", gender) ~ "Transman",
+  mutate(gender = case_when(grepl("1_", gender) ~ "Transgender woman",
+                            grepl("2_", gender) ~ "Transgender man",
                             grepl("3_", gender) ~ "NB/GNC",
                             grepl("4_", gender) ~ "Cisgender",
                             grepl("5_", gender) ~ "Don't know/Not sure",
