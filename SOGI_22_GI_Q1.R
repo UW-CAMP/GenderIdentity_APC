@@ -1699,7 +1699,7 @@ P_labs <- c("\'14","\'15","\'16","\'17","\'18","\'19","\'20","\'21")
 
 ### png ####
 png("plots/GI_Q1/BestModel_6panel_logodds.png", 
-    width = 300*6, height = 300*4, res=300)
+    width = 300*7.5, height = 300*5, res=300)
 {
   par(mfrow = c(2,3), lend = 1)
   par(mar=c(5,0,2,0))

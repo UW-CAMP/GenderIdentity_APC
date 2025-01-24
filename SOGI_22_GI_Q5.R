@@ -1079,7 +1079,194 @@ ref_C_coh_p <- post_ref_C_plot %>%
 ggsave(filename = "plots/GI_Q5/ref_C_coh_prev.png", ref_C_coh_p)
 
 # Manuscript Plots ####
-# 
+
+## Best model ####
+
+## Get min and max endpoints of intervals by sexual orientation
+## and age, period, or cohort across all models
+best_ranges <- 
+  bind_rows(post_dkns_PC_plot %>% 
+              group_by(term) %>% 
+              dplyr::summarize(lower = min(lower_lo),
+                               upper = max(upper_lo),
+                               Group = "Don't Know/Not Sure"),
+            post_ref_PC_plot %>% 
+              group_by(term) %>% 
+              dplyr::summarize(lower = min(lower_lo),
+                               upper = max(upper_lo),
+                               Group = "Declined to Answer"))
+## Across gender groups 
+best_ranges %>% 
+  group_by(term) %>% 
+  dplyr::summarize(lower = min(lower),
+                   upper = max(upper))
+
+## Handset appropriate limits
+best_ylims <- c(-10, -2)
+A_xlims <- c(18, 79) + c(-1, 1)
+C_xlims <- c(1935, 2003) + c(-1,1)
+P_xlims <- c(2014, 2021) + c(-1,1)
+P_labs <- c("\'14","\'15","\'16","\'17","\'18","\'19","\'20","\'21")
+
+### png ####
+png("plots/GI_Q5/BestModel_4panel_logodds.png", 
+    width = 300*5, height = 300*5, res=300)
+{
+  par(mfrow = c(2,2), lend = 1)
+  par(mar=c(5,0,2,0))
+  par(oma=c(0,4,2,1))
+  
+  
+  ## Cohort 
+  {
+    { 
+      ## DKNS
+      plot(NA, xlim = C_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("A) PC Model", x=1935, y=-2.5, cex=.9, adj=0)
+      mtext("Don't Know/Not Sure", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Cohort axis
+      #axis(1, at = seq(1940, 2010, 10))
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(best_ylims[1], best_ylims[2], 2), cex=0.5, labels = FALSE)
+      mtext(side = 2, seq(best_ylims[1], best_ylims[2], 2),
+            at = seq(best_ylims[1], best_ylims[2], 2), 
+            cex=0.5, line=0.5)
+      mtext("Log Odds", side = 2, line = 2, cex = 0.6)
+      
+      ## Ests
+      lines(post_dkns_PC_plot$term_idx_name[post_dkns_PC_plot$term ==
+                                            "Cohort"],
+            post_dkns_PC_plot$med_lo[post_dkns_PC_plot$term == "Cohort"],
+            lwd = 2, col = "forestgreen")
+      polygon(x = c(post_dkns_PC_plot$term_idx_name[post_dkns_PC_plot$term == 
+                                                    "Cohort"],
+                    rev(post_dkns_PC_plot$term_idx_name[post_dkns_PC_plot$term == 
+                                                        "Cohort"])),
+              y = c(post_dkns_PC_plot$upper_lo[post_dkns_PC_plot$term == 
+                                               "Cohort"],
+                    rev(post_dkns_PC_plot$lower_lo[post_dkns_PC_plot$term == 
+                                                   "Cohort"])),
+              col = alpha("forestgreen", 0.35), border = FALSE)
+    }
+    
+    { 
+      ## DTA
+      plot(NA, xlim = C_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("B) PC Model", x=1935, y=-2.5, cex=.9, adj=0)
+      mtext("Declined to Answer", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Age axis
+      #axis(1, at = seq(1940, 2010, 10))
+      # mtext(side = 1, text = "Cohort", line = 2, cex = .9)
+      mtext("Cohort", side = 1, line = 2, cex=0.6)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10), 
+            cex=0.5, line=0.5)
+      
+      ## Ests
+      lines(post_ref_PC_plot$term_idx_name[post_ref_PC_plot$term == "Cohort"],
+            post_ref_PC_plot$med_lo[post_ref_PC_plot$term == "Cohort"],
+            lwd = 2, col = "forestgreen")
+      polygon(x = c(post_ref_PC_plot$term_idx_name[post_ref_PC_plot$term == 
+                                                    "Cohort"],
+                    rev(post_ref_PC_plot$term_idx_name[post_ref_PC_plot$term == 
+                                                        "Cohort"])),
+              y = c(post_ref_PC_plot$upper_lo[post_ref_PC_plot$term == 
+                                               "Cohort"],
+                    rev(post_ref_PC_plot$lower_lo[post_ref_PC_plot$term ==
+                                                   "Cohort"])),
+              col = alpha("forestgreen", 0.35), border = FALSE)
+    }
+
+  }
+  
+  ## Period 
+  {
+    { 
+      ## DKNS
+      plot(NA, xlim = P_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      text("C) PC Model", x=2013, y=-2.5, cex=.9, adj=0)
+      mtext("Don't Know/Not Sure", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, P_labs, at = 2014:2021, 
+            cex=0.5, line=0.5)
+      
+      ## Log odds axis
+      axis(2, at = seq(best_ylims[1], best_ylims[2], 2), cex=0.5, labels = FALSE)
+      mtext(side = 2, seq(best_ylims[1], best_ylims[2], 2),
+            at = seq(best_ylims[1], best_ylims[2], 2), 
+            cex=0.5, line=0.5)
+      mtext("Log Odds", side = 2, line = 2, cex = 0.6)
+      
+      ## Ests
+      lines(post_dkns_PC_plot$term_idx_name[post_dkns_PC_plot$term ==
+                                            "Period"],
+            post_dkns_PC_plot$med_lo[post_dkns_PC_plot$term == "Period"],
+            lwd = 2, col = "navy")
+      polygon(x = c(post_dkns_PC_plot$term_idx_name[post_dkns_PC_plot$term == 
+                                                    "Period"],
+                    rev(post_dkns_PC_plot$term_idx_name[post_dkns_PC_plot$term == 
+                                                        "Period"])),
+              y = c(post_dkns_PC_plot$upper_lo[post_dkns_PC_plot$term == 
+                                               "Period"],
+                    rev(post_dkns_PC_plot$lower_lo[post_dkns_PC_plot$term == 
+                                                   "Period"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+    
+    { 
+      ## DTA
+      plot(NA, xlim = P_xlims, ylim = best_ylims,
+           xlab = "", ylab = "",
+           main = "", type = "n", frame.plot = TRUE, axes = FALSE)
+      ## title
+      text("D) PC Model", x=2013, y=-2.5, cex=.9, adj=0)
+      mtext("Declined to Answer", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      
+      ## Period axis
+      mtext("Period", side = 1, line = 2, cex=0.6)
+      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
+      mtext(side = 1, P_labs, at = 2014:2021, 
+            cex=0.5, line=0.5)
+      
+      ## Ests
+      lines(post_ref_PC_plot$term_idx_name[post_ref_PC_plot$term == "Period"],
+            post_ref_PC_plot$med_lo[post_ref_PC_plot$term == "Period"],
+            lwd = 2, col = "navy")
+      polygon(x = c(post_ref_PC_plot$term_idx_name[post_ref_PC_plot$term == 
+                                                    "Period"],
+                    rev(post_ref_PC_plot$term_idx_name[post_ref_PC_plot$term == 
+                                                        "Period"])),
+              y = c(post_ref_PC_plot$upper_lo[post_ref_PC_plot$term == 
+                                               "Period"],
+                    rev(post_ref_PC_plot$lower_lo[post_ref_PC_plot$term ==
+                                                   "Period"])),
+              col = alpha("navy", 0.35), border = FALSE)
+    }
+  }
+}
+dev.off()
+
+
+
+
 # ## AC ####
 # AC_ranges <- bind_rows(post_dkns_AC_plot %>% 
 #                          group_by(term) %>% 
