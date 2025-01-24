@@ -929,6 +929,7 @@ per_shareage <- mod_shareage$summary.lincomb.derived %>%
   mutate(Period = period) %>%
   arrange(Term)
 
+
 ### Prep Cohort ####
 
 coh_shareage <- mod_shareage$summary.lincomb.derived %>%
@@ -956,16 +957,16 @@ coh_shareage %>%
   dplyr::summarize(lower = min(`0.025quant`),
             upper = max(`0.975quant`))
 
+shareage_ylims <- c(-1.25, 1.25)
 A_xlims <- c(14, 79)
 P_xlims <- c(2013.75, 2021.25) #c(2014, 2021)
 C_xlims <- c(1935, 2007)
-
-shareage_ylims <- c(-1.2, 1.2)
+P_labs <- c("\'14","\'15","\'16","\'17","\'18","\'19","\'20","\'21")
 
 
 ### Plot ####
-png("plots/GI_Q2/SharedAge_panel_curvature.png")
-    # width = 300*3, height = 300*3, res=300)
+png("plots/GI_Q2/SharedAge_panel_curvature.png",
+     width = 300*12, height = 300*12, res=400)
 {
   par(mfrow = c(3,3), lend = 1)
   par(mar=c(5,0,2,0))
@@ -979,25 +980,25 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
 
-      mtext("Transgender woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      mtext("Transgender woman", adj = 0, side = 3, line = 0.5, outer = FALSE,
+            cex=1.5)
 
       ## title
-      text("a. Age", x= 15, y= 1.05, cex=.9, adj=0)
+      text("A) Age", x= 15, y= 1.05, cex=1.25, adj=0)
       
       ## x-axis
-      mtext("Age", side = 1, line = 2, cex=0.6)
-      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext("Age", side = 1, line = 2, cex=1)
+      axis(1, at = seq(15, 75, 5), cex.axis=1, labels=FALSE)
       mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
-            cex=0.5, line=0.5)
+            cex=0.8, line=0.5)
 
       ## Log odds axis
-      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
-           cex=0.5, labels = FALSE)
+      axis(2, at = seq(-1, 1, .5), cex=1, labels = FALSE)
       mtext(side = 2, 
-            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
-            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
-            cex=0.5, line=0.5)
-      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+            round(seq(-1, 1, .5), 1),
+            at = seq(-1, 1, .5),
+            cex=1, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 1)
 
       ## y = 0
       abline(h = 0)
@@ -1021,13 +1022,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
-      text("b. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      text("B) Period", x= 2014, y= 1.05, cex=1.25, adj=0)
 
       ## Period axis
-      mtext("Period", side = 1, line = 2, cex=0.6)
-      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-      mtext(side = 1, 2014:2021, at = 2014:2021,
-            cex=0.5, line=0.5)
+      mtext("Period", side = 1, line = 2, cex=1)
+      axis(1, at = 2014:2021, cex.axis=1, labels=FALSE)
+      mtext(side = 1, P_labs, at = 2014:2021,
+            cex=0.8, line=0.5)
 
       ## y = 0
       abline(h = 0)
@@ -1050,13 +1051,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
-      text("c. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      text("C) Cohort", x= 1938, y= 1.05, cex=1.25, adj=0)
 
       ## Cohort axis
-      mtext("Cohort", side = 1, line = 2, cex=0.6)
-      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext("Cohort", side = 1, line = 2, cex=1)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=1, labels=FALSE)
       mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
-            cex=0.5, line=0.5)
+            cex=0.8, line=0.5)
 
       ## y = 0
       abline(h = 0)
@@ -1064,13 +1065,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
       ## Ests
       lines(coh_shareage$Cohort[coh_shareage$Gender == "Transgender woman"],
             coh_shareage$`0.5quant`[coh_shareage$Gender == "Transgender woman"],
-            lwd = 2, col = "firebrick")
+            lwd = 2, col = "forestgreen")
       polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transgender woman"],
                     rev(coh_shareage$Cohort[coh_shareage$Gender == "Transgender woman"])),
               y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transgender woman"],
                     rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
                                                     "Transgender woman"])),
-              col = alpha("firebrick", 0.35), border = FALSE)
+              col = alpha("forestgreen", 0.35), border = FALSE)
     }
 
   }
@@ -1084,24 +1085,24 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
 
       ## title
-      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
-      mtext("Transgender man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      text("D) Age", x= 15, y= 1.05, cex=1.25, adj=0)
+      mtext("Transgender man", adj = 0, side = 3, line = 0.5, outer = FALSE,
+            cex=1.5)
 
       ## x-axis 
-      mtext("Age", side = 1, line = 2, cex=0.6)
-      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext("Age", side = 1, line = 2, cex=1)
+      axis(1, at = seq(15, 75, 5), cex.axis=1, labels=FALSE)
       mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
-            cex=0.5, line=0.5)
+            cex=0.8, line=0.5)
 
       ## Log odds axis
-      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
-           cex=0.5, labels = FALSE)
+      axis(2, at = seq(-1, 1, .5), cex=1, labels = FALSE)
       mtext(side = 2, 
-            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
-            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
-            cex=0.5, line=0.5)
-      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
-
+            round(seq(-1, 1, .5), 1),
+            at = seq(-1, 1, .5),
+            cex=1, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 1)
+      
       ## y = 0
       abline(h = 0)
 
@@ -1123,13 +1124,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
             xlab = "", ylab = "",
             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
        ## title
-       text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+       text("E) Period", x= 2014, y= 1.05, cex=1.25, adj=0)
 
        ## Period axis
-       mtext("Period", side = 1, line = 2, cex=0.6)
-       axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-       mtext(side = 1, 2014:2021, at = 2014:2021,
-             cex=0.5, line=0.5)
+       mtext("Period", side = 1, line = 2, cex=1)
+       axis(1, at = 2014:2021, cex.axis=1, labels=FALSE)
+       mtext(side = 1, P_labs, at = 2014:2021,
+             cex=0.8, line=0.5)
 
        ## y = 0
        abline(h = 0)
@@ -1152,13 +1153,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
             xlab = "", ylab = "",
             main = "", type = "n", frame.plot = TRUE, axes = FALSE)
        ## title
-       text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+       text("F) Cohort", x= 1938, y= 1.05, cex=1.25, adj=0)
 
        ## Cohort axis
-       mtext("Cohort", side = 1, line = 2, cex=0.6)
-       axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+       mtext("Cohort", side = 1, line = 2, cex=1)
+       axis(1, at = seq(1940, 2000, 10), cex.axis=1, labels=FALSE)
        mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
-             cex=0.5, line=0.5)
+             cex=0.8, line=0.5)
 
        ## y = 0
        abline(h = 0)
@@ -1166,13 +1167,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
       ## Ests
       lines(coh_shareage$Cohort[coh_shareage$Gender == "Transgender man"],
             coh_shareage$`0.5quant`[coh_shareage$Gender == "Transgender man"],
-            lwd = 2, col = "firebrick")
+            lwd = 2, col = "forestgreen")
       polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "Transgender man"],
                     rev(coh_shareage$Cohort[coh_shareage$Gender == "Transgender man"])),
               y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "Transgender man"],
                     rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
                                                     "Transgender man"])),
-              col = alpha("firebrick", 0.35), border = FALSE)
+              col = alpha("forestgreen", 0.35), border = FALSE)
     }
 
   }
@@ -1186,23 +1187,23 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       
       ## title
-      text("d. Age", x= 15, y= 1.05, cex=.9, adj=0)
-      mtext("NB/GNC", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      text("G) Age", x= 15, y= 1.05, cex=1.25, adj=0)
+      mtext("Nonbinary/Gender Non-Conforming", adj = 0, side = 3, line = 0.5,
+            outer = FALSE, cex=1.5)
       
       ## x-axis 
-      mtext("Age", side = 1, line = 2, cex=0.6)
-      axis(1, at = seq(15, 75, 5), cex.axis=0.6, labels=FALSE)
+      mtext("Age", side = 1, line = 2, cex=1)
+      axis(1, at = seq(15, 75, 5), cex.axis=1, labels=FALSE)
       mtext(side = 1, seq(15, 75, 5), at = seq(15, 75, 5),
-            cex=0.5, line=0.5)
+            cex=0.8, line=0.5)
       
       ## Log odds axis
-      axis(2, at = seq(shareage_ylims[1], shareage_ylims[2], .2),
-           cex=0.5, labels = FALSE)
+      axis(2, at = seq(-1, 1, .5), cex=1, labels = FALSE)
       mtext(side = 2, 
-            round(seq(shareage_ylims[1], shareage_ylims[2], .2), 1),
-            at = seq(shareage_ylims[1], shareage_ylims[2], .2),
-            cex=0.5, line=0.5)
-      mtext("Second Differences", side = 2, line = 2, cex = 0.6)
+            round(seq(-1, 1, .5), 1),
+            at = seq(-1, 1, .5),
+            cex=1, line=0.5)
+      mtext("Second Differences", side = 2, line = 2, cex = 1)
       
       ## y = 0
       abline(h = 0)
@@ -1225,13 +1226,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
-      text("e. Period", x= 2014, y= 1.05, cex=.9, adj=0)
+      text("H) Period", x= 2014, y= 1.05, cex=1.25, adj=0)
       
       ## Period axis
-      mtext("Period", side = 1, line = 2, cex=0.6)
-      axis(1, at = 2014:2021, cex.axis=0.6, labels=FALSE)
-      mtext(side = 1, 2014:2021, at = 2014:2021,
-            cex=0.5, line=0.5)
+      mtext("Period", side = 1, line = 2, cex=1)
+      axis(1, at = 2014:2021, cex.axis=1, labels=FALSE)
+      mtext(side = 1, P_labs, at = 2014:2021,
+            cex=0.8, line=0.5)
       
       ## y = 0
       abline(h = 0)
@@ -1254,13 +1255,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
-      text("f. Cohort", x= 1938, y= 1.05, cex=.9, adj=0)
+      text("I) Cohort", x= 1938, y= 1.05, cex=1.25, adj=0)
       
       ## Cohort axis
-      mtext("Cohort", side = 1, line = 2, cex=0.6)
-      axis(1, at = seq(1940, 2000, 10), cex.axis=0.6, labels=FALSE)
+      mtext("Cohort", side = 1, line = 2, cex=1)
+      axis(1, at = seq(1940, 2000, 10), cex.axis=1, labels=FALSE)
       mtext(side = 1, seq(1940, 2000, 10), at = seq(1940, 2000, 10),
-            cex=0.5, line=0.5)
+            cex=0.8, line=0.5)
       
       ## y = 0
       abline(h = 0)
@@ -1268,13 +1269,13 @@ png("plots/GI_Q2/SharedAge_panel_curvature.png")
       ## Ests
       lines(coh_shareage$Cohort[coh_shareage$Gender == "NB/GNC"],
             coh_shareage$`0.5quant`[coh_shareage$Gender == "NB/GNC"],
-            lwd = 2, col = "firebrick")
+            lwd = 2, col = "forestgreen")
       polygon(x = c(coh_shareage$Cohort[coh_shareage$Gender == "NB/GNC"],
                     rev(coh_shareage$Cohort[coh_shareage$Gender == "NB/GNC"])),
               y = c(coh_shareage$`0.025quant`[coh_shareage$Gender == "NB/GNC"],
                     rev(coh_shareage$`0.975quant`[coh_shareage$Gender == 
                                                     "NB/GNC"])),
-              col = alpha("firebrick", 0.35), border = FALSE)
+              col = alpha("forestgreen", 0.35), border = FALSE)
     }
     
   }
