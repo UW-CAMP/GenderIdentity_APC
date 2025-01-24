@@ -1714,8 +1714,8 @@ png("plots/GI_Q1/BestModel_6panel_logodds.png",
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
-      # text("A. Transwoman", x=1935, y=-2.5, cex=.9, adj=0)
-      mtext("Trans woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      text("A) PC Model", x=1935, y=-2.5, cex=.9, adj=0)
+      mtext("Transgender woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## Cohort axis
       #axis(1, at = seq(1940, 2010, 10))
@@ -1753,7 +1753,8 @@ png("plots/GI_Q1/BestModel_6panel_logodds.png",
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
-      mtext("Trans man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      text("B) PC Model", x=1935, y=-2.5, cex=.9, adj=0)
+      mtext("Transgender man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## Age axis
       #axis(1, at = seq(1940, 2010, 10))
@@ -1784,6 +1785,7 @@ png("plots/GI_Q1/BestModel_6panel_logodds.png",
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
+      text("C) AC Model", x=1935, y=-2.5, cex=.9, adj=0)
       mtext("Nonbinary/\nGender Non-conforming", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## Cohort axis
@@ -1814,7 +1816,8 @@ png("plots/GI_Q1/BestModel_6panel_logodds.png",
       plot(NA, xlim = P_xlims, ylim = best_ylims,
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
-      mtext("Trans woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      text("D) PC Model", x=2013, y=-2.5, cex=.9, adj=0)
+      mtext("Transgender woman", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## Period axis
       mtext("Period", side = 1, line = 2, cex=0.6)
@@ -1851,7 +1854,8 @@ png("plots/GI_Q1/BestModel_6panel_logodds.png",
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
-      mtext("Trans man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
+      text("E) PC Model", x=2013, y=-2.5, cex=.9, adj=0)
+      mtext("Transgender man", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## Period axis
       mtext("Period", side = 1, line = 2, cex=0.6)
@@ -1880,6 +1884,7 @@ png("plots/GI_Q1/BestModel_6panel_logodds.png",
            xlab = "", ylab = "",
            main = "", type = "n", frame.plot = TRUE, axes = FALSE)
       ## title
+      text("F) AC Model", x=18, y=-2.5, cex=.9, adj=0)
       mtext("Nonbinary/\nGender Non-conforming", adj = 0, side = 3, line = 0.5, outer = FALSE, cex=0.8)
       
       ## Age axis
