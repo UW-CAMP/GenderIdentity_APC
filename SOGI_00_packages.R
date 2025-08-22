@@ -1,5 +1,8 @@
 ##### This script contains all packages used by GI Analyses -----
 
+############################################################### 
+# Un-comment and run these lines for any packages not already downloaded
+############################################################### 
 #install.packages("visdat") #used to visualize missing data patterns in script 01
 #install.packages("tidyverse") #used for data management
 #install.packages("haven") #used for data management
@@ -20,6 +23,9 @@
 #install.packages("multiCA") # multinomial trend test
 #install.packages("gridExtra")
 
+############################################################### 
+# Load packages
+############################################################### 
 library(visdat) #used to visualize missing data patterns in script 01
 library(tidyverse) #used for data management
 library(haven) #used for data management
@@ -39,14 +45,3 @@ library(ggstream) # for proportions over time plots
 library(trend) # for Mann-Kendall test of monotonicty
 library(multiCA) # multinomial trend test
 library(gridExtra)
-
-# library(msm)
-# library(EnvStats)
-# library(exact2x2)
-# library(VIM)
-# library(lme4)
-# library(mice)
-# library(geepack)
-# library(broom.mixed)
-# library(GDAtools) 
-
