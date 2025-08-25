@@ -68,3 +68,10 @@ tables/SO_Q4/*
 tables/SO_Q5/*
 
 *.txt
+
+plots/*
+plots/GI_Q1/*
+plots/GI_Q2/*
+plots/GI_Q3/*
+plots/GI_Q4/*
+plots/GI_Q5/*
