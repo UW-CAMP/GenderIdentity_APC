@@ -38,5 +38,5 @@ There are two different ways you can run the scripts to obtain the analyses:
 
 - *Prepare Data Sets*. Run the script "SOGI_00_packages.R", then "SOGI_01_generate_BRFSS_index_variable.R", then "SOGI_02_prepare_BRFSS.R". These  files together generate the final clean data files. You only need to run this step once, regardless of how many different analyses you chose to conduct in the nest step.
 
-- *Run Project Analyses*. You may now run the or parts of the remaining scripts based on which specific elements are of interest. A full list can all be found in "GI master script.R." 
+- *Run Project Analyses*. You may now run all or parts of the remaining scripts based on which specific elements are of interest. A full list can all be found in "GI master script.R." 
 
