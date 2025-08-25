@@ -7,10 +7,7 @@
 
 This manuscript uses data from the US Centers for Disease Control's *Behavioral Risk Factor Surveillance System* (BRFSS) from years 2014-2021. The following instructions explain how to replicate the data retrieval, cleaning, and analyses used in this manuscript.
 
-To recreate this analysis, you will need access to SAS and RStudio. Original work done in the software and operating system environments indicated below.
-
-- SAS version 9.4 in Windows: Edition	Windows Server 2022 Datacenter Version 21H2 Installed on	10/30/2022, OS build	20348.1487
-
+To recreate this analysis, you will need access to R, ideally with RStudio. Original work done in the software and operating system environments indicated below.
 - RStudio Version 2022.12.0+353 (2022.12.0+353), R Version 4.1.0 (2021-05-18) in Mac OS 13.1
 
 ---
