@@ -26,22 +26,12 @@ To run the scripts in this project, you will need to create folders to store you
 As of this writing, the BRFSS datasets can be found here: https://www.cdc.gov/brfss/annual_data/annual_data.htm. Note that you must individually download each year of data from 2014-2021. Select the "SAS Transport Format" file, and save it to the "data - raw" folder that you created in Step 2. Unzip the files after downloading, if needed.
 
 
-**Step 4. Convert data from SAS format to .csv** 
-
-To do this, use the four SAS programs found in the "SAS files" directory. These are  each derived from files provided by CDC but modified for the present analysis. 
-
-Note that each file contains specific instructions in the heading related to editing the file paths that you *must* follow to properly save the data format file.
-
-Once you have made the necessary path edits, you should then open SAS and run the four files in this order:
-
-- YRBS SAS Formats.sas
-- YRBS SAS Input.sas 
-- 2021 YRBS SAS Formats.sas
-- 2021 YRBS SAS Input.sas
-
 **Step 4. Prepare datasets and run analyses**
 
 There are two different ways you can run the scripts to obtain the analyses:
+
+
+## Below here is work in progress; should be complete within a few days (8/22/2025)
 
 ***Option A: Run all files***
 
