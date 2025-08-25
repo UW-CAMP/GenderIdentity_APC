@@ -17,8 +17,11 @@ source("SOGI_01_generate_BRFSS_index_variable.R") # !! SLOW !! creates manageabl
 source("SOGI_02_prepare_BRFSS.R") # run this file to prepare a single file `brfss_final.rds`
 
 # GI Analyses
-# source("SOGI_21_GI_prepare.R") # prepare objects for GI analyses
-# source("SOGI_22_GI_analyses.R") # GI analyses
+source("SOGI_21_GI_prepare.R") # prepare objects for GI analyses
+source("SOGI_22_GI_analyses.R") # GI analyses
 source("SOGI_21_GI_design_based.R") # Get design based prev estimates
 source("SOGI_22_GI_Q1.R") # Fit null, A, P, C, AP, AC, PC models
 source("SOGI_22_GI_Q2_mAPC.R") # Fit Bayesian mAPC models for tw, tm, nbgnc
+source("SOGI_22_GI_Q3.R")
+source("SOGI_22_GI_Q4.R") 
+source("SOGI_22_GI_Q5.R")

@@ -22,6 +22,7 @@
 #install.packages("trend") # for Mann-Kendall test of monotonicty
 #install.packages("multiCA") # multinomial trend test
 #install.packages("gridExtra")
+#install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
 
 ############################################################### 
 # Load packages
@@ -45,3 +46,4 @@ library(ggstream) # for proportions over time plots
 library(trend) # for Mann-Kendall test of monotonicty
 library(multiCA) # multinomial trend test
 library(gridExtra)
+library(INLA)
