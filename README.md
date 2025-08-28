@@ -27,7 +27,7 @@ As of this writing, the BRFSS datasets can be found here: https://www.cdc.gov/br
 
 There are two different ways you can run the scripts to obtain the analyses:
 
-***Option A: Run all files***
+***Option A: Run all files in order***
 
 - *Single Step: Run the Master Script*. Run "GI master script.R" to generate the necessary data sets and all project files, conduct analyses, and generate figures.
 
@@ -35,5 +35,6 @@ There are two different ways you can run the scripts to obtain the analyses:
 
 - *Prepare Data Sets*. Run the script "00_packages.R", then "01_BRFSS_index_variable.R", then "02_prepare_BRFSS.R". These files together generate the final clean data files. You only need to run this step once, regardless of how many different analyses you chose to conduct in the nest step.
 
-- *Run Project Analyses*. You may now run all or parts of the remaining scripts based on which specific elements are of interest. A full list can all be found in "GI master script.R." 
-
+- *Run Project Analyses*. You may now run all or parts of the remaining scripts based on which specific elements are of interest, with a few caveats noted below.
+    - "20_survey_weighted.R" must be run after the data preparation scripts (00-02), and before analyses involving Bayesian smoothing in scripts "22_one_two_factor_GI.R", "23_mAPC_GI.R", and "24_one_two_factor_other.R". The three analyses (22-24) can be run in any order.
+    - You can generate descriptive plots with "21_descriptive_plots.R" or visualize sex, sex assigned at birth and sexual orientation by gender identity with "25_sex_SAB_SO_GI.R" in any order directly following data preparation scripts (00-02). 
