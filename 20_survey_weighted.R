@@ -16,7 +16,7 @@
 ##     -  data - clean/BRFSS_HT_GI_prevs.csv
 ##     -  data - clean/BRFSS_HT_AP_GI_prevs.csv
 ## 
-## Jessica Godwin
+
 
 # Setup ####
 rm(list = ls())
