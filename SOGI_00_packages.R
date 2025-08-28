@@ -47,3 +47,4 @@ library(trend) # for Mann-Kendall test of monotonicty
 library(multiCA) # multinomial trend test
 library(gridExtra)
 library(INLA)
+library(ggpubr)

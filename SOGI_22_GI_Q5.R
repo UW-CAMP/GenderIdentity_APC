@@ -5,6 +5,7 @@
 # Setup ####
 rm(list = ls())
 
+## Folders ####
 if(!dir.exists("tables/GI_Q5")){
   if(!dir.exists("tables/")){
     dir.create("tables/")
@@ -18,15 +19,6 @@ if(!dir.exists("plots/GI_Q5")){
   }
   dir.create("plots/GI_Q5")
 }
-
-# ## Libraries ####
-# install.packages("INLA",
-#                  repos=c(getOption("repos"),
-#                          INLA="https://inla.r-inla-download.org/R/stable"))
-library(INLA) 
-library(tidyverse)
-library(ggpubr)
-
 
 ## Functions ####
 tableNA <- function(x, ...){
@@ -400,6 +392,8 @@ post_dkns_PC_plot <- post_dkns_PC_df %>%
   mutate(term_idx_name = ifelse(term == "Period", period_idx$period[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+write.csv(post_dkns_PC_plot, file = "data - clean/dkns_PC_posteriors.csv",
+          row.names = FALSE)
 
 dkns_PC_per_lo <- post_dkns_PC_plot %>%
   filter(term == "Period") %>% 
@@ -880,6 +874,8 @@ post_ref_PC_plot <- post_ref_PC_df %>%
   mutate(term_idx_name = ifelse(term == "Period", period_idx$period[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+write.csv(post_ref_PC_plot, file = "data - clean/ref_PC_posteriors.csv",
+          row.names = FALSE)
 
 ref_PC_per_lo <- post_ref_PC_plot %>%
   filter(term == "Period") %>% 
