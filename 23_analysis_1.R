@@ -10,6 +10,7 @@
 ##
 ##  This script fits  null (intercept-only), A, P, C, AP, AC, PC
 ##  Bayesian smoothing models to survey-weighted prevalence  estimates
+##  for trans women, trans men, and nonbinary/gender non-conforming
 ##  by age x period (survey) x cohort
 ##
 ##  Inputs:
