@@ -256,7 +256,7 @@ summary(mod_dkns_AC)
 summary(mod_dkns_PC)
 sink(file = NULL)
 
-### Plots ####
+## Plots ####
 age_idx <- mod_data %>% 
   select(age, age_idx) %>% 
   unique()
@@ -270,7 +270,7 @@ period_idx <- mod_data %>%
   unique() %>% 
   arrange(period_idx)
 
-#### PC ####
+### PC ####
 post_dkns_PC <- inla.posterior.sample(n = 1000, mod_dkns_PC)
 
 post_dkns_PC_df <- lapply(post_dkns_PC, function(draw){
@@ -475,8 +475,8 @@ summary(mod_dta_AC)
 summary(mod_dta_PC)
 sink(file = NULL)
 
-### Plots ####
-#### PC ####
+## Plots ####
+### PC ####
 
 post_dta_PC <- inla.posterior.sample(n = 1000, mod_dta_PC)
 
