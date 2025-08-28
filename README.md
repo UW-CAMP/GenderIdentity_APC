@@ -27,16 +27,13 @@ As of this writing, the BRFSS datasets can be found here: https://www.cdc.gov/br
 
 There are two different ways you can run the scripts to obtain the analyses:
 
-
-## Below here is work in progress; should be complete within a few days (8/25/2025)
-
 ***Option A: Run all files***
 
 - *Single Step: Run the Master Script*. Run "GI master script.R" to generate the necessary data sets and all project files, conduct analyses, and generate figures.
 
 ***Option B: Run specified files***
 
-- *Prepare Data Sets*. Run the script "SOGI_00_packages.R", then "SOGI_01_generate_BRFSS_index_variable.R", then "SOGI_02_prepare_BRFSS.R". These  files together generate the final clean data files. You only need to run this step once, regardless of how many different analyses you chose to conduct in the nest step.
+- *Prepare Data Sets*. Run the script "00_packages.R", then "01_BRFSS_index_variable.R", then "02_prepare_BRFSS.R". These files together generate the final clean data files. You only need to run this step once, regardless of how many different analyses you chose to conduct in the nest step.
 
 - *Run Project Analyses*. You may now run all or parts of the remaining scripts based on which specific elements are of interest. A full list can all be found in "GI master script.R." 
 
