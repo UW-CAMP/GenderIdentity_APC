@@ -1,29 +1,38 @@
-# BRFSS data preparation script
-# Mike Barry, MPH PhC | mpbarry@uw.edu | 2023 September
+## Code for processing raw BRFSS data into main analytic dataset 
+## of the following manuscript:
+##
+##    Barry MP, Godwin J, Lucas R, Tordoff DM, Koenig LJ, Goodreau SM. 2025.
+##      Demographic trends in gender identity among adults in the United States,
+##      2014-2021. International Journal of Transgender Health. 
+##      Online first: https://www.tandfonline.com/doi/full/10.1080/26895269.2025.2537874.
+## 
+##  Script authors: Barry MP, Godwin J, Goodreau SM
+##
+##  This script takes BRFSS datasets (2014:2021) which are
+##  outputs of 01_BRFSS_index_variable.R and cleans and combines them
+##  into one dataset for downstream analysis.
+##
+##  Inputs:
+##     -  data - clean/brfssYY.rds for YY in 14:21
+##
+##  Outputs:
+##     -  plots/sex-so-gi/Fig5_sex_stream_sab_by_gi.png
+##     -  plots/sex-so-gi/Fig6_so_by_gi.png
+##     -  tables/sex-gi/multiCA_sex_[gender].txt
+##     -  tables/so-gi/multiCA_so_[gender].txt
 
-# !!! Before running this script, please review this repository's ReadMe file to ensure that "Step 1: Prepare Data Sets" is complete.
-
-# This script takes BRFSS data sets (2014:2021), which must have been previously obtained and prepared for use in the R environment, 
-# and prepares them data for an analysis concerned with sexual orientation (SO) and gender identity (GI).
-
+# 
 # Key product: A single, combined BRFSS .rds data set for 2014:2021 with variables needed for SO & GI analyses.
 
-### Prepare workspace ----- 
-# clear environment
+# Setup ####
 rm(list = ls())
 
-# * call in packages ----
-source("SOGI_00_packages.R")
-
-# * define functions -----
+## Functions ####
 tableNA <- function(x, ...){
    table(x, useNA = "ifany", ...)  
 }
-# the `tableNA` function tabulates data as the `table` function, but includes "NA"s by default.
 
-# * call in data -------------------
-# Note: before calling in data, ensure that the directory location is correct; you may need to change that used here.
-
+# Load data ####
 # the `brfss_years` object is designed to facilitate the addition of future years of BRFSS
 brfss_years <- 14:21
 
@@ -36,8 +45,8 @@ for (year in brfss_years) {
 }
 
 
-# Data management --------
-# * 6-level S.O. variable -------------
+# Clean data ####
+## S.O.####
 for(year in 14:17) {
    brfss[[year]]$so <- factor(brfss[[year]]$SXORIENT,
                               levels = c(1,2,3,4,7,9),
@@ -59,7 +68,7 @@ for(year in 18:max(brfss_years)) {
    brfss[[year]]$so[brfss[[year]]$SOMALE == 9 | brfss[[year]]$SOFEMALE == 9] <- "6_ref"
 }
 
-# * so_new (to match up with YRBS categories) ------
+## so_new ####
 for(year in brfss_years) {
    brfss[[year]]$so_new <- NA
    brfss[[year]]$so_new[brfss[[year]]$so == "1_straight"] <- "1_straight"
@@ -70,7 +79,7 @@ for(year in brfss_years) {
    brfss[[year]]$so_new[brfss[[year]]$so == "6_ref"] <- "5_ref"
 }
 
-# * G.I. variable --------
+## gender ####
 for(year in brfss_years) {
    brfss[[year]]$gender <- factor(brfss[[year]]$TRNSGNDR,
                                   levels = c(1,2,3,4,7,9),
@@ -84,33 +93,32 @@ for(year in brfss_years) {
                                   ))
 }
 
-# * age variable ------
+## age ####
 for (year in brfss_years) {
    brfss[[year]]$age <- brfss[[year]]$`_AGE80`
 }
 
-# * restrict to those under 80 -----
+## subset to below 80 years old ####
 for (year in brfss_years) {
    brfss[[year]] <- subset(brfss[[year]], age < 80)
 }
 
-# * year variable -----
+## year ####
 for (yr in brfss_years) {
    brfss[[yr]]$year <- paste0("20", yr)
 }
 
-# * strata variable ----
+## strata ####
 for (year in brfss_years) {
   brfss[[year]]$strata <- brfss[[year]]$`_STSTR`
 }
 
-
-# * weight variable -----
+## weight ####
 for (year in brfss_years) {
    brfss[[year]]$weight <- brfss[[year]]$`_LLCPWT`
 }
 
-# * sex variable -------
+## sex ####
 for (year in 14:17) {
    brfss[[year]]$sex <- factor(brfss[[year]]$SEX, 
                                levels = 1:2,
@@ -127,14 +135,14 @@ for (year in 19:max(brfss_years)) {
                                labels = c("Male", "Female"))
 }
 
-# * sex_bin -------
+## sex_bin ####
 for (yr in brfss_years) {
    brfss[[yr]]$sex_bin <- NA
    brfss[[yr]]$sex_bin[brfss[[yr]]$sex == "Male"] <- "male"
    brfss[[yr]]$sex_bin[brfss[[yr]]$sex == "Female"] <- "female"
 }
 
-# * birthsex_state -------
+## birthsex_state ####
 for (year in 14:18) {
    brfss[[year]]$birthsex_state <- 0
 }
@@ -143,7 +151,7 @@ brfss[[19]]$birthsex_state <- ifelse(brfss[[19]]$`_STATE` %in% c(15, 22, 27, 36,
 brfss[[20]]$birthsex_state <- ifelse(brfss[[20]]$`_STATE` %in% c(6, 13, 15, 19, 22, 27, 35, 36, 39, 49, 50), 1, 0)
 brfss[[21]]$birthsex_state <- ifelse(brfss[[21]]$`_STATE` %in% c(13, 15, 19, 20, 22, 27, 35, 39, 49, 50), 1, 0)
 
-# * sab ---------
+## sab ####
 for (year in 14:18) {
    brfss[[year]]$sab <- NA
 }
@@ -156,7 +164,7 @@ for (year in 19:21) {
                                labels = c("1_male", "2_female", "3_dnks", "4_ref"))
 }
 
-# * sab_bin -------
+## sab_bin ####
 for (yr in brfss_years) {
    brfss[[yr]]$sab_bin <- NA
 }
@@ -237,12 +245,12 @@ for (year in brfss_years) {
 }
 
 # Add last variables ####
-# add `source` variable
+## source ####
 for (year in brfss_years) {
    brfss[[year]]$source <- "BRFSS"
 }
 
-# add `cohort_5` and `age_5` variable
+## cohort_5 and age_5 ####
 for (yr in brfss_years) {
    
    brfss[[yr]]$cohort_5 <- NA
@@ -277,7 +285,7 @@ for (yr in brfss_years) {
    brfss[[yr]]$age_5[brfss[[yr]]$age >= 75 & brfss[[yr]]$age <= 79] <- "M_79"
 }
 
-# write BRFSS RDS file ------
+# Save ####
 brfss_data <- rbind(brfss[[14]],
                     brfss[[15]],
                     brfss[[16]],
@@ -287,7 +295,6 @@ brfss_data <- rbind(brfss[[14]],
                     brfss[[20]],
                     brfss[[21]])
 
-# * rename strata variable ----
 brfss_data <- brfss_data %>% 
   rename("stratum" = "strata")
 
@@ -295,7 +302,7 @@ brfss_data <-  remove_var_label(brfss_data)
 write_rds(brfss_data,
           "data - clean/brfss_final.rds")
 
-# prepare and write sex-at-birth RDS file ------
+# SAB ####
 brfss_sab <- rbind(brfss[[19]],
                    brfss[[20]],
                    brfss[[21]])
