@@ -4,6 +4,7 @@
 # Setup ####
 rm(list = ls())
 
+## Folders ####
 if(!dir.exists("tables/GI_Q4")){
   if(!dir.exists("tables")){
     dir.create("tables")
@@ -18,13 +19,6 @@ if(!dir.exists("plots/GI_Q4")){
   dir.create("plots/GI_Q4")
 }
 
-
-## Libraries ####
-library(survey)
-library(tidyverse)
-library(trend)
-
-
 ## Functions ####
 tableNA <- function(x, ...){
   table(x, useNA = "ifany", ...)  
@@ -32,20 +26,21 @@ tableNA <- function(x, ...){
 
 # Load Data ####
 
-combo <- readRDS(file = "data - clean/combined.rds")
+brfss <- readRDS(file = "data - clean/brfss_final.rds")
 
-str(combo)
-summary(combo)
-head(combo)
+str(brfss)
+summary(brfss)
+head(brfss)
 
 # Prep for total ests ####
 
 ## Filter to analysis ages ####
 
-mod_data <- combo %>% 
+mod_data <- brfss %>% 
   ## Filter to correct ages & periods
-  filter(age <= 30 & source == "BRFSS") %>% 
-  ## Create binary indicators of SO
+  filter(age <= 30) %>% 
+  ## Create binary indicators of gender
+  ## and 2-year cohort variable
   mutate(tw_bin = ifelse(gender == "1_transwoman", 1, 0),
          tm_bin = ifelse(gender == "2_transman", 1, 0),
          nb_bin = ifelse(gender == "3_nbgnc", 1, 0),
@@ -54,13 +49,11 @@ mod_data <- combo %>%
 
 # Specify design ####
 
-brfss_des <- svydesign(ids = ~1, strata = ~year + stratum, weights = ~weight,
+brfss_des <- svydesign(ids = ~1, strata = ~year + strata, weights = ~weight,
                        data = mod_data, nest = TRUE)
 brfss_des
 
 # Get means and contrasts by cohort and period ####
-
-## BRFSS ####
 
 brfss_means <- list()
 cohorts <- unique(brfss_des$variables$cohort) %>%  sort()
