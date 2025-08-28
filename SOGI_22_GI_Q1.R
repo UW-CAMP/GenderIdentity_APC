@@ -26,7 +26,6 @@ if(!dir.exists("plots/GI_Q1")){
 library(INLA) 
 library(tidyverse)
 
-
 ## Functions ####
 tableNA <- function(x, ...){
   table(x, useNA = "ifany", ...)  
@@ -60,8 +59,7 @@ mod_data <- prev_data %>%
          age_idx = as.numeric(age_fac),
          cohort_idx = as.numeric(cohort_fac),
          sex_idx = as.numeric(sex_fac),
-         prec_logit_pijk = 1/var_logit_pijk) %>% 
-  rename("gender" = "so")
+         prec_logit_pijk = 1/var_logit_pijk)
 
 coh_summary <- mod_data %>% 
   group_by(cohort) %>% tally()
@@ -432,6 +430,8 @@ post_tw_PC_plot <- post_tw_PC_df %>%
   mutate(term_idx_name = ifelse(term == "Period", period_idx$period[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+write.csv(post_tw_PC_plot, file = "data - clean/tw_PC_posteriors.csv",
+          row.names = FALSE)
 ##### Log Odds ####
 
 tw_PC_per_lo <- post_tw_PC_plot %>%
@@ -941,6 +941,9 @@ post_tm_PC_plot <- post_tm_PC_df %>%
   mutate(term_idx_name = ifelse(term == "Period", period_idx$period[term_idx],
                                 cohort_idx$cohort[term_idx]))
 
+write.csv(post_tm_PC_plot, file = "data - clean/tm_PC_posteriors.csv",
+          row.names = FALSE)
+
 ##### Log Odds ####
 
 tm_PC_per_lo <- post_tm_PC_plot %>%
@@ -1347,6 +1350,9 @@ post_nbgnc_AC_plot <- post_nbgnc_AC_df %>%
                    upper_p = quantile(expit(draw_sum), 0.975)) %>% 
   mutate(term_idx_name = ifelse(term == "Age", age_idx$age[term_idx],
                                 cohort_idx$cohort[term_idx]))
+
+write.csv(post_nbgnc_AC_plot, file = "data - clean/nbgnc_AC_posteriors.csv",
+          row.names = FALSE)
 
 ##### Log Odds ####
 nbgnc_AC_age_lo <- post_nbgnc_AC_plot %>%

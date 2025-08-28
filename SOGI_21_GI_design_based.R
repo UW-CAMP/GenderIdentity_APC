@@ -117,7 +117,7 @@ names(prevs_age_per)
 ### BRFSS ####
 prevs_long <- prevs %>% 
   pivot_longer(cols = contains("_bin"),
-               names_to = c(".value", "so"),
+               names_to = c(".value", "gender"),
                names_pattern = "(.*)\\.(.*)_bin") %>% 
   ## Calculate logit(phat)
   ## And var(logit(phat)) = var(phat)/[phat^2*(1-phat)^2]
@@ -132,7 +132,7 @@ write.csv(prevs_long, row.names = FALSE,
 
 prevs_age_per_long <- prevs_age_per %>% 
   pivot_longer(cols = contains("_bin"),
-               names_to = c(".value", "so"),
+               names_to = c(".value", "gender"),
                names_pattern = "(.*)\\.(.*)_bin") %>% 
   ## Calculate logit(phat)
   ## And var(logit(phat)) = var(phat)/[phat^2*(1-phat)^2]
