@@ -5,11 +5,6 @@
 # Setup ####
 rm(list = ls())
 
-## Libraries ####
-library(survey)
-library(tidyverse)
-
-
 ## Functions ####
 tableNA <- function(x, ...){
   table(x, useNA = "ifany", ...)  
