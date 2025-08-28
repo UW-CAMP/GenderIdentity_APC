@@ -219,7 +219,7 @@ for (year in brfss_years) {
 }
 
 # Make year numeric ####
-# make `year` variable a numerica
+# make `year` variable a numeric
 for (yr in brfss_years) {
    brfss[[yr]]$year <- as.numeric(brfss[[yr]]$year)
 }
@@ -287,6 +287,11 @@ brfss_data <- rbind(brfss[[14]],
                     brfss[[20]],
                     brfss[[21]])
 
+# * rename strata variable ----
+brfss_data <- brfss_data %>% 
+  rename("stratum" = "strata")
+
+brfss_data <-  remove_var_label(brfss_data)
 write_rds(brfss_data,
           "data - clean/brfss_final.rds")
 
