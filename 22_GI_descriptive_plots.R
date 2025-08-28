@@ -40,7 +40,6 @@ tableNA <- function(x, ...){
 
 # Load data ####
 brfss_dat <- readRDS("data - clean/brfss_final.rds")
-gi_props_A <- readRDS("data - clean/gi_props_A.rds")
 
 ## Get important objects ####
 gi_values <- levels(as.factor(brfss_dat$gender))
@@ -49,6 +48,30 @@ cohort_n <- length(min(brfss_dat$cohort):max(brfss_dat$cohort))
 period_n <- length(min(brfss_dat$year):max(brfss_dat$year))
 cohort_v <- min(brfss_dat$cohort):max(brfss_dat$cohort) 
 period_v <- min(brfss_dat$year):max(brfss_dat$year)
+
+# Create estimates ####
+cohort <- list()
+for (yr in cohort_v) {
+  cohort[[yr]] <- subset(brfss, cohort == yr)  # if no rows, nothing to add
+}
+
+gi_props_A <- array(NA, dim=c(cohort_n, period_n, 
+                              length(unique(brfss$gender))))
+
+# fill the empty arrays with population-level estimates
+for(cohort_xi in 1:cohort_n) {
+  cohort_vi <- cohort_v[cohort_xi]
+  period_x <- which(period_v %in% cohort[[cohort_vi]]$year)
+  for (period_xi in period_x) {
+    temp1 <- cohort[[cohort_vi]] %>% filter(year == period_v[period_xi]) 
+    temp2 <- round(prop.table(questionr::wtd.table(x=temp1$age,
+                                                   y=temp1$gender,
+                                                   weights=temp1$weight,
+                                                   digits=1),
+                              margin=1)*100, 3)
+    gi_props_A[cohort_xi, period_xi,] <- temp2
+    }
+}
 
 # Plots & Visual Analyses ####
 
