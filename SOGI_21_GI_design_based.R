@@ -31,8 +31,6 @@ tableNA(brfss$sab)
   
 
 # Prep for estimation ####
-
-
 ## Filter to analysis ages ####
 
 data_1x1 <- brfss %>%  
@@ -75,7 +73,6 @@ brfss_des <- svydesign(ids = ~1, strata = ~period + stratum,
                        weights = ~weight, data = data_1x1)
 
 brfss_des
-
 
 # Estimate prevalence ####
 ## BRFSS ####
