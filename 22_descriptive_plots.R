@@ -52,11 +52,11 @@ period_v <- min(brfss_dat$year):max(brfss_dat$year)
 # Create estimates ####
 cohort <- list()
 for (yr in cohort_v) {
-  cohort[[yr]] <- subset(brfss, cohort == yr)  # if no rows, nothing to add
+  cohort[[yr]] <- subset(brfss_dat, cohort == yr)  # if no rows, nothing to add
 }
 
 gi_props_A <- array(NA, dim=c(cohort_n, period_n, 
-                              length(unique(brfss$gender))))
+                              length(unique(brfss_dat$gender))))
 
 # fill the empty arrays with population-level estimates
 for(cohort_xi in 1:cohort_n) {

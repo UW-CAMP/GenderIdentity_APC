@@ -45,7 +45,6 @@ head(brfss)
 tableNA(brfss$gender)
 tableNA(brfss$sab)
   
-
 # Prep for estimation ####
 ## Filter to analysis ages ####
 
