@@ -16,13 +16,9 @@
 ##     -  data - clean/brfssYY.rds for YY in 14:21
 ##
 ##  Outputs:
-##     -  plots/sex-so-gi/Fig5_sex_stream_sab_by_gi.png
-##     -  plots/sex-so-gi/Fig6_so_by_gi.png
-##     -  tables/sex-gi/multiCA_sex_[gender].txt
-##     -  tables/so-gi/multiCA_so_[gender].txt
-
-# 
-# Key product: A single, combined BRFSS .rds data set for 2014:2021 with variables needed for SO & GI analyses.
+##     -  data - clean/brfss_final.rds
+##     -  data - clean/brfss_sab.rds
+##     -  data - clean/brfss_sab_compare.rds
 
 # Setup ####
 rm(list = ls())

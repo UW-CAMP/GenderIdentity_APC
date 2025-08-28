@@ -1,5 +1,21 @@
-## Get Horvitz-Thompson/Hajek estimators for
-## Prevalence by age x period (survey) x cohort
+## Code for getting Horvitz-Thompson/Hajek estimators for
+## prevalence by age x period (survey) x cohort, and age x period (survey)
+## of the following manuscript:
+##
+##    Barry MP, Godwin J, Lucas R, Tordoff DM, Koenig LJ, Goodreau SM. 2025.
+##      Demographic trends in gender identity among adults in the United States,
+##      2014-2021. International Journal of Transgender Health. 
+##      Online first: https://www.tandfonline.com/doi/full/10.1080/26895269.2025.2537874.
+## 
+##  Script authors: Godwin J
+##
+##  Inputs:
+##     -  data - clean/brfss_final.rds
+##
+##  Outputs:
+##     -  data - clean/BRFSS_HT_GI_prevs.csv
+##     -  data - clean/BRFSS_HT_AP_GI_prevs.csv
+## 
 ## Jessica Godwin
 
 # Setup ####
@@ -75,7 +91,6 @@ brfss_des <- svydesign(ids = ~1, strata = ~period + stratum,
 brfss_des
 
 # Estimate prevalence ####
-## BRFSS ####
 
 prevs <- svyby(~tw_bin + tm_bin + nbgnc_bin + dkns_bin + ref_bin,
                by = ~sex + period + age + cohort,
@@ -91,7 +106,6 @@ prevs_age_per <- svyby(~tw_bin + tm_bin + nbgnc_bin + dkns_bin + ref_bin,
 # Clean up output & Save ####
 
 ## Fix names ####
-### BRFSS ####
 names(prevs)[names(prevs) %in% paste(c("tw","tm", "nbgnc", "dkns", "ref"),
                                     "bin", sep = "_")] <- 
   paste0("mean.", c("tw","tm", "nbgnc", "dkns", "ref"), "_bin")
@@ -106,7 +120,6 @@ names(prevs_age_per)[names(prevs_age_per) %in%
 names(prevs_age_per)
 
 ## pivot_longer & save ####
-### BRFSS ####
 prevs_long <- prevs %>% 
   pivot_longer(cols = contains("_bin"),
                names_to = c(".value", "gender"),
