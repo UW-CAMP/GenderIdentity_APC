@@ -62,7 +62,6 @@ summary(brfss)
 
 # Prep data ####
 data_1x1 <- brfss %>%
-  filter(source == "BRFSS") %>% 
   select(year, age, cohort,
          sex, gender, gender, so, so_new, sab, sex,
          contains("cohort_"), contains("pd_"),

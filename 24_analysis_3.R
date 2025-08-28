@@ -65,7 +65,6 @@ str(prev_data)
 summary(prev_data)
 head(prev_data)
 
-
 # Prep for estimation ####
 
 mod_data <- prev_data %>% 
@@ -136,7 +135,7 @@ mod_PC <- logit_pijk ~ 1 +
 
 mod_dkns_null <- inla(mod_null,
                       data = mod_data %>% 
-                        filter(so == "dkns" & !is.na(prec_logit_pijk)), 
+                        filter(gender == "dkns" & !is.na(prec_logit_pijk)), 
                       family = "gaussian",
                       control.family = list(hyper = list(
                         prec = list(initial = log(1),
@@ -146,7 +145,7 @@ mod_dkns_null <- inla(mod_null,
                       verbose = TRUE)
 mod_dkns_P <- inla(mod_P,
                    data = mod_data %>%
-                     filter(so == "dkns" & !is.na(prec_logit_pijk)), 
+                     filter(gender == "dkns" & !is.na(prec_logit_pijk)), 
                    family = "gaussian",
                    control.family = list(hyper = list(
                      prec = list(initial = log(1),
@@ -158,7 +157,7 @@ mod_dkns_P <- inla(mod_P,
 
 mod_dkns_C <- inla(mod_C,
                    data = mod_data %>%
-                     filter(so == "dkns" & !is.na(prec_logit_pijk)), 
+                     filter(gender == "dkns" & !is.na(prec_logit_pijk)), 
                    family = "gaussian",
                    control.family = list(hyper = list(
                      prec = list(initial = log(1),
@@ -170,7 +169,7 @@ mod_dkns_C <- inla(mod_C,
 
 mod_dkns_A <- inla(mod_A,
                    data = mod_data %>%
-                     filter(so == "dkns" & !is.na(prec_logit_pijk)), 
+                     filter(gender == "dkns" & !is.na(prec_logit_pijk)), 
                    family = "gaussian",
                    control.family = list(hyper = list(
                      prec = list(initial = log(1),
@@ -182,7 +181,7 @@ mod_dkns_A <- inla(mod_A,
 
 mod_dkns_AP <- inla(mod_AP,
                     data = mod_data %>%
-                      filter(so == "dkns" & !is.na(prec_logit_pijk)), 
+                      filter(gender == "dkns" & !is.na(prec_logit_pijk)), 
                     family = "gaussian",
                     control.family = list(hyper = list(
                       prec = list(initial = log(1),
@@ -194,7 +193,7 @@ mod_dkns_AP <- inla(mod_AP,
 
 mod_dkns_AC <- inla(mod_AC,
                     data = mod_data %>%
-                      filter(so == "dkns" & !is.na(prec_logit_pijk)), 
+                      filter(gender == "dkns" & !is.na(prec_logit_pijk)), 
                     family = "gaussian",
                     control.family = list(hyper = list(
                       prec = list(initial = log(1),
@@ -206,7 +205,7 @@ mod_dkns_AC <- inla(mod_AC,
 
 mod_dkns_PC <- inla(mod_PC,
                     data = mod_data %>%
-                      filter(so == "dkns" & !is.na(prec_logit_pijk)), 
+                      filter(gender == "dkns" & !is.na(prec_logit_pijk)), 
                     family = "gaussian",
                     control.family = list(hyper = list(
                       prec = list(initial = log(1),
@@ -346,7 +345,7 @@ ggsave(filename = "plots/analysis 3/dkns_PC_coh_logodds.png", dkns_PC_coh_lo)
 ## Decline ####
 mod_dta_null <- inla(mod_null,
                       data = mod_data %>%
-                        filter(so == "ref" & !is.na(prec_logit_pijk)) %>% 
+                        filter(gender == "ref" & !is.na(prec_logit_pijk)) %>% 
                         drop_na(), 
                       family = "gaussian",
                       control.family = list(hyper = list(
@@ -358,7 +357,7 @@ mod_dta_null <- inla(mod_null,
                       verbose = TRUE)
 mod_dta_P <- inla(mod_P,
                    data = mod_data %>%
-                     filter(so == "ref" & !is.na(prec_logit_pijk)) %>% 
+                     filter(gender == "ref" & !is.na(prec_logit_pijk)) %>% 
                      drop_na(), 
                    family = "gaussian",
                    control.family = list(hyper = list(
@@ -371,7 +370,7 @@ mod_dta_P <- inla(mod_P,
 
 mod_dta_C <- inla(mod_C,
                    data = mod_data %>% 
-                     filter(so == "ref" & !is.na(prec_logit_pijk)) %>% 
+                     filter(gender == "ref" & !is.na(prec_logit_pijk)) %>% 
                      drop_na(), 
                    family = "gaussian",
                    control.family = list(hyper = list(
@@ -384,7 +383,7 @@ mod_dta_C <- inla(mod_C,
 
 mod_dta_A <- inla(mod_A,
                    data = mod_data %>%
-                     filter(so == "ref" & !is.na(prec_logit_pijk)) %>% 
+                     filter(gender == "ref" & !is.na(prec_logit_pijk)) %>% 
                      drop_na(), 
                    family = "gaussian",
                    control.family = list(hyper = list(
@@ -397,7 +396,7 @@ mod_dta_A <- inla(mod_A,
 
 mod_dta_AP <- inla(mod_AP,
                     data = mod_data %>%
-                      filter(so == "ref" & !is.na(prec_logit_pijk)) %>% 
+                      filter(gender == "ref" & !is.na(prec_logit_pijk)) %>% 
                       drop_na(), 
                     family = "gaussian",
                     control.family = list(hyper = list(
@@ -410,7 +409,7 @@ mod_dta_AP <- inla(mod_AP,
 
 mod_dta_AC <- inla(mod_AC,
                     data = mod_data %>%
-                      filter(so == "ref" & !is.na(prec_logit_pijk)) %>% 
+                      filter(gender == "ref" & !is.na(prec_logit_pijk)) %>% 
                       drop_na(), 
                     family = "gaussian",
                     control.family = list(hyper = list(
@@ -423,7 +422,7 @@ mod_dta_AC <- inla(mod_AC,
 
 mod_dta_PC <- inla(mod_PC,
                     data = mod_data %>%
-                      filter(so == "ref" & !is.na(prec_logit_pijk)) %>% 
+                      filter(gender == "ref" & !is.na(prec_logit_pijk)) %>% 
                       drop_na(), 
                     family = "gaussian",
                     control.family = list(hyper = list(
