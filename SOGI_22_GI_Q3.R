@@ -4,6 +4,7 @@
 # Setup ####
 rm(list = ls())
 
+## Folders ####
 if(!dir.exists("tables/GI_Q3")){
   if(!dir.exists("tables")){
     dir.create("tables")
@@ -18,10 +19,6 @@ if(!dir.exists("plots/GI_Q3")){
   dir.create("plots/GI_Q3")
 }
 
-## Libraries ####
-library(survey)
-library(tidyverse)
-
 ## Functions ####
 tableNA <- function(x, ...){
   table(x, useNA = "ifany", ...)  
@@ -29,30 +26,26 @@ tableNA <- function(x, ...){
 
 # Load Data ####
 
-combo <- readRDS(file = "data - clean/combined.rds")
+brfss <- readRDS(file = "data - clean/brfss_final.rds")
 
-str(combo)
-summary(combo)
-head(combo)
+str(brfss)
+summary(brfss)
+head(brfss)
 
 # Prep for total ests ####
 
 ## Filter to analysis ages ####
 
-mod_data <- combo %>% 
-  filter(age <= 30 & source == "BRFSS")
-
+mod_data <- brfss %>% 
+  filter(age <= 30)
 
 # Specify YRBS design ####
 
-
-brfss_des <- svydesign(ids = ~1, strata = ~year + stratum, weights = ~weight,
+brfss_des <- svydesign(ids = ~1, strata = ~year + strata, weights = ~weight,
                        data = mod_data, nest = TRUE)
 brfss_des
 
 # Get totals by age and year ####
-
-## BRFSS ####
 
 brfss_totals <- brfss_E <- list()
 for(age_calc in 18:30){
@@ -67,7 +60,6 @@ for(age_calc in 18:30){
 
 # Get test statistics & p-values ####
 
-## BRFSS ####
 brfss_test <- list()
 for(age_calc in 18:30){
   observed <- brfss_totals[[paste0("age_", age_calc)]][,-1] %>% 
@@ -82,8 +74,6 @@ for(age_calc in 18:30){
 
 
 ## Save tables ####
-
-### BRFSS ####
 brfss_tab_list <- list()
 for(age_calc in 18:30){
   brfss_tab_list[[paste0("age_", age_calc)]] <- 
@@ -102,8 +92,6 @@ write.csv(brfss_tab, row.names = FALSE,
 # Plot changes ####
 
 ## Get means by age & year ####
-### BRFSS ####
-
 brfss_means <- svyby(~gender, by = ~age + year,
                      design = brfss_des, svymean)
 names(brfss_means)[3:8] <- paste0("mean.", names(brfss_means)[3:8])
@@ -123,9 +111,9 @@ brfss_prev <- brfss_means %>%
          lower = mean - qnorm(.975)*se,
          upper = mean + qnorm(.975)*se)
 
-#### Transwoman ####
+### Transwoman ####
 
-##### base R ####
+#### base R ####
 
 gender_cols <- c("navy", "forestgreen", "goldenrod")
 
@@ -154,13 +142,6 @@ for(age in seq(18, 29, 4)){
       axis(1, at = 2014:2021, labels = as.character(2014:2021), cex = .9)
       axis(2, at = seq(0, 0.04, 0.005))
 
-      # polygon(x = c(2014:2021, 2021:2014), 
-      #         y = c(plotdat$lower[plotdat$Gender == "transwoman" &
-      #                              plotdat$age == age_pane],
-      #               rev(plotdat$upper[plotdat$Gender == "transwoman" &
-      #                                  plotdat$age == age_pane])),
-      #         col = alpha(gender_cols[1], 0.25),
-      #         border = FALSE)
       segments(x0 = plotdat$year[plotdat$Gender == "transwoman" &
                                    plotdat$age == age_pane] - 0.2,
                x1 = plotdat$year[plotdat$Gender == "transwoman" &
@@ -185,14 +166,6 @@ for(age in seq(18, 29, 4)){
                                     plotdat$age == age_pane],
                col = gender_cols[3])
       
-      # polygon(x = c(2014:2021, 2021:2014), 
-      #         y = c(plotdat$lower[plotdat$Gender == "transman" &
-      #                               plotdat$age == age_pane],
-      #               rev(plotdat$upper[plotdat$Gender == "transman" &
-      #                                   plotdat$age == age_pane])),
-      #         col = alpha(gender_cols[3], 0.25),
-      #         border = FALSE)
-      
        points(plotdat$year[plotdat$Gender == "nbgnc" &
                            plotdat$age == age_pane] + 0.2, 
             plotdat$mean[plotdat$Gender == "nbgnc" &
@@ -207,14 +180,7 @@ for(age in seq(18, 29, 4)){
                 y1 = plotdat$upper[plotdat$Gender == "nbgnc" &
                                      plotdat$age == age_pane],
                 col = gender_cols[2])      
-      # 
-      # polygon(x = c(2014:2021, 2021:2014), 
-      #         y = c(plotdat$lower[plotdat$Gender == "nbgnc" &
-      #                               plotdat$age == age_pane],
-      #               rev(plotdat$upper[plotdat$Gender == "nbgnc" &
-      #                                   plotdat$age == age_pane])),
-      #         col = alpha(gender_cols[2], 0.25),
-      #         border = FALSE)
+  
       if(age == age_pane){
         legend("topleft", lty = 1, pch = 19, col = gender_cols[c(1, 3, 2)],
                legend = c("Transgender Woman", "Transgender Man",
@@ -226,9 +192,9 @@ for(age in seq(18, 29, 4)){
   dev.off()
 }
 
-#### Transman ####
+### Transman ####
 
-##### base R ####
+#### base R ####
 plotdat <- brfss_prev %>% 
   filter(Gender == "transman" & year %in% seq(2015, 2021, 2)) %>% 
   mutate(age = case_when(year == 2015 ~ age - .2,
@@ -266,9 +232,9 @@ png("plots/GI_Q3/Prev_tm_18to30_baseR.png")
 }
 dev.off()
 
-#### Nonbinary ####
+### Nonbinary ####
 
-##### base R ####
+#### base R ####
 
 plotdat <- brfss_prev %>% 
   filter(Gender == "nbgnc" & year %in% seq(2015, 2021, 2)) %>% 
