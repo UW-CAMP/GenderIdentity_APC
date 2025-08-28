@@ -73,7 +73,6 @@ mod_data <- prev_data %>%
          cohort_idx = as.numeric(cohort_fac),
          sex_idx = as.numeric(sex_fac),
          prec_logit_pijk = 1/var_logit_pijk) %>% 
-  rename("gender" = "so") %>% 
   filter(gender %in% c("tw", "tm", "nbgnc")) %>% 
   mutate(gender_idx = case_when(gender == "tw" ~ 1,
                                 gender == "tm" ~ 2,
