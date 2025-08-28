@@ -17,9 +17,9 @@ source("01_BRFSS_index_variable.R") # !! SLOW !! creates manageable versions of 
 source("02_prepare_BRFSS.R") # run this file to prepare a single file `brfss_final.rds`
 
 # GI Analyses
-source("21_survey_weighted.R") # Get design based prev estimates
-source("22_descriptive_plots.R") # Generage Figs 1, S1, and S2
-source("23_analysis_1.R") # Fit null, A, P, C, AP, AC, PC models for tw, tm, nbgnc
-source("24_analysis_2.R") # Fit Bayesian mAPC models for tw, tm, nbgnc
-source("25_analysis_3.R") # Fit null, A, P, C, AP, AC, PC models for dkns, dta
-source("26_analysis_4.R") # Sex, Sex assigned at birth, and So by GI
+source("20_survey_weighted.R") # Get design based prev estimates
+source("21_descriptive_plots.R") # Generate Figs 1, S1, and S2
+source("22_analysis_1.R") # Generate Fig 2, Table 2
+source("23_analysis_2.R") # Generate Fig 3
+source("24_analysis_3.R") # Generate Fig 4
+source("25_analysis_4.R") # Generate Figs 5, 6, Table S2
