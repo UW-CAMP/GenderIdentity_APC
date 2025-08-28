@@ -5,6 +5,7 @@
 # Setup ####
 rm(list = ls())
 
+## Folders ####
 if(!dir.exists("tables/GI_Q1")){
   if(!dir.exists("tables/")){
     dir.create("tables/")
@@ -18,13 +19,6 @@ if(!dir.exists("plots/GI_Q1")){
   }
   dir.create("plots/GI_Q1")
 }
-
-# ## Libraries ####
-# install.packages("INLA",
-#                  repos=c(getOption("repos"),
-#                          INLA="https://inla.r-inla-download.org/R/stable"))
-library(INLA) 
-library(tidyverse)
 
 ## Functions ####
 tableNA <- function(x, ...){
