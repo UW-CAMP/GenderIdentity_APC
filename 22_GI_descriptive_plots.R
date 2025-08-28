@@ -6,7 +6,7 @@
 ##      2014-2021. International Journal of Transgender Health. 
 ##      Online first: https://www.tandfonline.com/doi/full/10.1080/26895269.2025.2537874.
 ## 
-##  Script authors: Godwin J
+##  Script authors: Barry MP, Godwin J, Goodreau SM
 ##
 ##  This script creates 6-panel period-cohort (Figure 1) and
 ##  age-period (Figure S1) plots for the non cisgender responses to 
