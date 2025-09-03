@@ -28,7 +28,7 @@ source("02_prepare_BRFSS.R") # run this file to prepare a single file `brfss_fin
 # Analyses ####
 source("20_survey_weighted.R") # Get survey-weighted GI prevalence estimates
 source("21_descriptive_plots.R") # Generate Figs 1, S1, and S2
-source("22_analysis_1.R") # Generate Fig 2, Table 2
-source("23_analysis_2.R") # Generate Fig 3
-source("24_analysis_3.R") # Generate Fig 4
-source("25_analysis_4.R") # Generate Figs 5, 6, Table S2
+source("22_one_two_factor_GI.R") # Generate Fig 2, Table 2
+source("23_mAPC_GI.R") # Generate Fig 3
+source("24_one_two_factor_other.R") # Generate Fig 4
+source("25_sex_SAB_SO_GI.R") # Generate Figs 5, 6, Table S2
